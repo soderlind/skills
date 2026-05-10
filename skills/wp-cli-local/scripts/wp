@@ -1,0 +1,238 @@
+#!/bin/bash
+# WP-CLI wrapper for Local by Flywheel sites
+#
+# Auto-detects the site from CWD by matching against sites.json paths.
+# Falls back to --site=<name> if CWD is not inside a Local site.
+#
+# Usage:
+#   wp <wp-cli-command...>          # auto-detect site from CWD
+#   wp --site=<name> <command...>   # explicit site
+#   wp --list                       # show all sites with status
+
+set -euo pipefail
+
+LOCAL_BASE="$HOME/Library/Application Support/Local"
+SITES_JSON="$LOCAL_BASE/sites.json"
+STATUSES_JSON="$LOCAL_BASE/site-statuses.json"
+ARCH="$(uname -m)"
+
+if [[ "$ARCH" == "arm64" ]]; then
+  ARCH_DIR="darwin-arm64"
+else
+  ARCH_DIR="darwin"
+fi
+
+# Locate WP-CLI phar
+WP_CLI_BIN=$(command -v wp 2>/dev/null || true)
+if [[ -z "$WP_CLI_BIN" ]]; then
+  echo "Error: wp (WP-CLI) not found in PATH." >&2
+  exit 1
+fi
+
+# ── Helpers ──────────────────────────────────────────────────────────
+
+list_sites() {
+  python3 -c "
+import json, os, sys
+
+sites_path = os.path.expanduser('$SITES_JSON')
+statuses_path = os.path.expanduser('$STATUSES_JSON')
+
+with open(sites_path) as f:
+    sites = json.load(f)
+
+statuses = {}
+if os.path.exists(statuses_path):
+    with open(statuses_path) as f:
+        statuses = json.load(f)
+
+for s in sorted(sites.values(), key=lambda x: x['name']):
+    status = statuses.get(s['id'], 'unknown')
+    marker = '●' if status == 'running' else '○'
+    print(f'  {marker} {s[\"name\"]:20s} {status:10s} {s[\"path\"]}')
+"
+}
+
+# Auto-detect site from CWD: find the site whose path is the longest
+# prefix of the current directory.
+auto_detect_site() {
+  python3 -c "
+import json, os, sys
+
+cwd = os.getcwd()
+sites_path = os.path.expanduser('$SITES_JSON')
+
+with open(sites_path) as f:
+    sites = json.load(f)
+
+best = None
+best_len = 0
+for s in sites.values():
+    p = s['path'].rstrip('/')
+    # CWD must equal the site path or be a subdirectory of it
+    if cwd == p or cwd.startswith(p + '/'):
+        if len(p) > best_len:
+            best = s
+            best_len = len(p)
+
+if best is None:
+    sys.exit(1)
+
+php_ver = best['services']['php']['version']
+mysql_ver = best['services']['mysql']['version']
+print(f\"{best['id']}|{best['name']}|{best['path']}|{php_ver}|{mysql_ver}\")
+"
+}
+
+lookup_site_by_name() {
+  local name="$1"
+  python3 -c "
+import json, os, sys
+
+sites_path = os.path.expanduser('$SITES_JSON')
+
+with open(sites_path) as f:
+    sites = json.load(f)
+
+for s in sites.values():
+    if s['name'] == '$name':
+        php_ver = s['services']['php']['version']
+        mysql_ver = s['services']['mysql']['version']
+        print(f\"{s['id']}|{s['name']}|{s['path']}|{php_ver}|{mysql_ver}\")
+        sys.exit(0)
+
+sys.exit(1)
+" 2>/dev/null
+}
+
+check_site_status() {
+  local site_id="$1"
+  local site_name="$2"
+  python3 -c "
+import json, os, sys
+
+statuses_path = os.path.expanduser('$STATUSES_JSON')
+
+if not os.path.exists(statuses_path):
+    sys.exit(0)
+
+with open(statuses_path) as f:
+    statuses = json.load(f)
+
+status = statuses.get('$site_id', 'unknown')
+if status != 'running':
+    print(f'Warning: Site \"$site_name\" is {status}. It may need to be started in Local.', file=sys.stderr)
+"
+}
+
+# ── Parse arguments ──────────────────────────────────────────────────
+
+SITE_NAME=""
+PASSTHROUGH_ARGS=()
+
+# Handle --list
+if [[ "${1:-}" == "--list" ]]; then
+  echo "Local by Flywheel sites:"
+  echo ""
+  list_sites
+  exit 0
+fi
+
+# Handle --site=<name>
+if [[ "${1:-}" == --site=* ]]; then
+  SITE_NAME="${1#--site=}"
+  shift
+fi
+
+# ── Resolve site ─────────────────────────────────────────────────────
+
+SITE_INFO=""
+
+if [[ -n "$SITE_NAME" ]]; then
+  SITE_INFO=$(lookup_site_by_name "$SITE_NAME") || {
+    echo "Error: Site '$SITE_NAME' not found in Local by Flywheel." >&2
+    echo "" >&2
+    echo "Available sites:" >&2
+    list_sites >&2
+    exit 1
+  }
+else
+  SITE_INFO=$(auto_detect_site 2>/dev/null) || true
+
+  if [[ -z "$SITE_INFO" ]]; then
+    if [[ $# -eq 0 ]]; then
+      echo "Usage: wp [--site=<name>] <wp-cli-command...>"
+      echo "       wp --list"
+      echo ""
+      echo "Run from inside a Local site directory for auto-detection,"
+      echo "or use --site=<name> to specify explicitly."
+      echo ""
+      echo "Available sites:"
+      list_sites
+      exit 0
+    else
+      echo "Error: Could not auto-detect site from current directory." >&2
+      echo "Use --site=<name> or cd into a Local site directory." >&2
+      echo "" >&2
+      echo "Available sites:" >&2
+      list_sites >&2
+      exit 1
+    fi
+  fi
+fi
+
+IFS='|' read -r SITE_ID SITE_NAME SITE_PATH PHP_VER MYSQL_VER <<< "$SITE_INFO"
+
+WP_PATH="$SITE_PATH/app/public"
+
+# ── Warn if site is not running ──────────────────────────────────────
+
+check_site_status "$SITE_ID" "$SITE_NAME"
+
+# ── Resolve PHP binary ───────────────────────────────────────────────
+
+PHP_BASE=$(find "$LOCAL_BASE/lightning-services" -maxdepth 1 -type d -name "php-${PHP_VER}*" | head -1)
+if [[ -z "$PHP_BASE" ]]; then
+  echo "Error: Could not find PHP $PHP_VER in Local lightning-services." >&2
+  exit 1
+fi
+PHP_BIN="$PHP_BASE/bin/$ARCH_DIR/bin/php"
+
+# ── Resolve MySQL binary directory ────────────────────────────────────
+
+MYSQL_BASE=$(find "$LOCAL_BASE/lightning-services" -maxdepth 1 -type d -name "mysql-${MYSQL_VER}*" | head -1)
+if [[ -z "$MYSQL_BASE" ]]; then
+  echo "Error: Could not find MySQL $MYSQL_VER in Local lightning-services." >&2
+  exit 1
+fi
+MYSQL_BIN_DIR="$MYSQL_BASE/bin/$ARCH_DIR/bin"
+
+# ── Site-specific php.ini ─────────────────────────────────────────────
+
+PHP_INI="$LOCAL_BASE/run/$SITE_ID/conf/php/php.ini"
+
+if [[ ! -f "$PHP_INI" ]]; then
+  echo "Error: php.ini not found at $PHP_INI" >&2
+  echo "Is the '$SITE_NAME' site running in Local?" >&2
+  exit 1
+fi
+
+# ── MySQL client config (socket, credentials) ────────────────────────
+
+MYSQL_CONF_DIR="$LOCAL_BASE/run/$SITE_ID/conf/mysql"
+if [[ -f "$MYSQL_CONF_DIR/my.cnf" ]]; then
+  export MYSQL_HOME="$MYSQL_CONF_DIR"
+fi
+
+MYSQL_SOCKET="$LOCAL_BASE/run/$SITE_ID/mysql/mysqld.sock"
+if [[ -S "$MYSQL_SOCKET" ]]; then
+  export MYSQL_UNIX_PORT="$MYSQL_SOCKET"
+fi
+
+# ── Execute WP-CLI ────────────────────────────────────────────────────
+
+export PATH="$MYSQL_BIN_DIR:$PATH"
+
+echo "[$SITE_NAME] wp $*" >&2
+
+exec "$PHP_BIN" -c "$PHP_INI" "$WP_CLI_BIN" --path="$WP_PATH" "$@"
