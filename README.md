@@ -1,16 +1,14 @@
 # Skills
 
-[![skills.sh](https://skills.sh/b/soderlind/skills)](https://skills.sh/soderlind/skills)
-
 Public AI agent skills for WordPress development workflows.
 
 ## Available Skills
 
 | Skill | Purpose |
 | --- | --- |
-| `wp-cli-local` | Run WP-CLI commands against Local by Flywheel sites on macOS. |
-| `prepare-wordpress` | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
-| `wp-bump` | Bump a WordPress plugin version and update related release metadata. |
+| [`wp-cli-local`](https://skills.sh/soderlind/skills/wp-cli-local) | Run WP-CLI commands against Local by Flywheel sites on macOS. |
+| [`prepare-wordpress`](https://skills.sh/soderlind/skills/prepare-wordpress) | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
+| [`wp-bump`](https://skills.sh/soderlind/skills/wp-bump) | Bump a WordPress plugin version and update related release metadata. |
 
 ## Install
 
