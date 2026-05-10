@@ -1,5 +1,7 @@
 # Skills
 
+[![skills.sh](https://skills.sh/b/soderlind/skills)](https://skills.sh/soderlind/skills)
+
 Public AI agent skills for WordPress development workflows.
 
 ## Available Skills
@@ -15,17 +17,23 @@ Public AI agent skills for WordPress development workflows.
 Install a skill globally with `npx skills add`:
 
 ```sh
-npx skills add https://github.com/soderlind/skills --skill wp-cli-local -g
-npx skills add https://github.com/soderlind/skills --skill prepare-wordpress -g
-npx skills add https://github.com/soderlind/skills --skill wp-bump -g
+npx skills add soderlind/skills --skill wp-cli-local -g
+npx skills add soderlind/skills --skill prepare-wordpress -g
+npx skills add soderlind/skills --skill wp-bump -g
 ```
 
 Install all detected agent integrations without prompts:
 
 ```sh
-npx skills add https://github.com/soderlind/skills --skill wp-cli-local -g --all
-npx skills add https://github.com/soderlind/skills --skill prepare-wordpress -g --all
-npx skills add https://github.com/soderlind/skills --skill wp-bump -g --all
+npx skills add soderlind/skills --skill wp-cli-local -g --all
+npx skills add soderlind/skills --skill prepare-wordpress -g --all
+npx skills add soderlind/skills --skill wp-bump -g --all
+```
+
+Preview the skills available from this repository:
+
+```sh
+npx skills add soderlind/skills --list
 ```
 
 List installed skills:
