@@ -68,6 +68,14 @@ Prepare this project for WordPress plugin development.
 Bump this WordPress plugin to 1.2.3.
 ```
 
+## Invocation Strategy
+
+Use model-invoked skills when autonomous triggering is important or when one skill should call another.
+
+Use user-invoked skills when you want zero context load and explicit manual control.
+
+When many user-invoked skills accumulate, add a lightweight router skill that maps tasks to the right skill so you do not rely on memory.
+
 ## Skill Notes
 
 ### wp-cli-local
@@ -145,3 +153,13 @@ skills/
 - `wp-cli-local`: MIT, as published in the original source repository.
 - `prepare-wordpress`: GPL-2.0-or-later, as published in the original source repository.
 - `wp-bump`: GPL-2.0-or-later, distributed with `prepare-wordpress` in the original source repository.
+
+## AI Contribution Attribution
+
+When AI tools contribute to development, add an attribution line in commits, PR descriptions, or release notes using:
+
+`Assisted-by: AGENT_NAME:MODEL_VERSION [TOOL1] [TOOL2]`
+
+Example:
+
+`Assisted-by: GitHub Copilot:GPT-5.3-Codex`

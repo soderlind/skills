@@ -1,6 +1,6 @@
 ---
 name: wp-cli-local
-description: "Run WP-CLI commands against any Local by Flywheel site. Use when the user says 'wp-cli', 'run wp', 'use wp-cli', 'activate plugin', 'deactivate plugin', 'flush cache', 'wp option', 'wp transient', 'wp db', 'wp eval', 'wp cron', 'wp rewrite', or any request involving WordPress CLI commands."
+description: "Safe WP-CLI execution for Local by Flywheel via wrapper, including explicit site resolution before mutating operations."
 ---
 
 # WP-CLI for Local by Flywheel
@@ -12,6 +12,10 @@ Run WP-CLI commands against Local sites using the wrapper script bundled with th
 ```bash
 bash {{SKILL_DIR}}/scripts/wp <wp-cli-command...>
 ```
+
+## Determinism checklist
+
+Apply [DETERMINISM-CHECKLIST.md](../DETERMINISM-CHECKLIST.md) for this skill run.
 
 ## Site Detection
 
@@ -32,6 +36,8 @@ $WP --list
 ```
 
 **If auto-detection fails** (CWD is not inside any Local site) and no `--site=` is given, the script prints available sites. Ask the user which site to target, or use `--site=<name>`.
+
+Completion criterion: A target site is explicitly resolved by auto-detection or `--site=<name>` before mutating commands are run.
 
 ## Requirements
 
@@ -80,4 +86,13 @@ $WP option get siteurl
 $WP core version
 ```
 
+## Failure modes / recovery
+
+- `WP-CLI not found`: Verify `wp --info` works in PATH, then retry wrapper command.
+- `Site is not running`: Start the Local site first, then rerun command.
+- `Auto-detection failed`: Run `$WP --list`, then rerun with `--site=<name>`.
+- `Wrapper path issue`: Use absolute wrapper path from `{{SKILL_DIR}}/scripts/wp` and retry.
+
 **Note:** The AI agent should always use the wrapper script, not direnv. The direnv setup is a convenience for the user's own interactive terminal sessions.
+
+Completion criterion: Commands were executed through the wrapper, target site was explicit, and any failures were reported with the exact failing command.

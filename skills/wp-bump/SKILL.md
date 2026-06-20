@@ -1,6 +1,6 @@
 ---
 name: wp-bump
-description: "Use when: bumping or releasing a WordPress plugin version, updating the main plugin file, readme.txt, package.json, CHANGELOG.md, rebuilding assets, and running tests. Trigger phrases: wp-bump, bump plugin version, release WordPress plugin, update changelog."
+description: "Structured WordPress plugin release-bump workflow that orchestrates version sync, changelog, rebuild, and validation steps with explicit gates."
 compatibility: "WordPress plugin projects with PHP; optional package.json, Composer, npm, and build/test scripts."
 ---
 
@@ -10,10 +10,9 @@ compatibility: "WordPress plugin projects with PHP; optional package.json, Compo
 
 Use this skill when:
 
-- Bumping a WordPress plugin version for a release.
-- Updating version metadata in the plugin file, `readme.txt`, and `package.json`.
-- Updating release notes in `CHANGELOG.md` and the WordPress.org `readme.txt` changelog.
-- Rebuilding generated assets and running the project's available tests.
+- Performing a plugin release bump with coordinated version updates across existing files.
+- Generating release notes from commit history and writing them to available changelog locations.
+- Running the project's existing build and validation commands as a release gate.
 
 ## Inputs required
 
@@ -21,6 +20,10 @@ Use this skill when:
 - Target version, preferably SemVer (`1.2.3`). If missing, ask the user.
 - Changelog entry: auto-derived from `git log` since the last tag; prompt only if no useful commits are found.
 - Release date. Default to today's date.
+
+## Determinism checklist
+
+Apply [DETERMINISM-CHECKLIST.md](../DETERMINISM-CHECKLIST.md) for this skill run.
 
 Do not create commits, tags, or releases unless the user explicitly asks.
 
@@ -58,11 +61,15 @@ Inspect these files if they exist:
 - `composer.json` (available scripts)
 - `CHANGELOG.md`
 
+Completion criterion: Current version sources and candidate changelog commits are collected before any edits.
+
 ### 1) Validate the target version
 
 Use a plain version string without a leading `v` in project files. If the user provides `v1.2.3`, write `1.2.3`.
 
 Confirm the target version is newer than the current plugin header version when both are valid SemVer values. If the target version is not newer, ask before continuing.
+
+Completion criterion: Target version format and upgrade direction are validated, and any non-increasing bump is explicitly user-approved.
 
 ### 2) Bump version fields
 
@@ -80,6 +87,8 @@ npm version <target-version> --no-git-tag-version
 
 If there is no npm lockfile, it is acceptable to edit `package.json` directly as structured JSON. Do not create `package.json` only for a version bump.
 
+Completion criterion: All existing version fields match the target version.
+
 ### 3) Update changelogs
 
 #### Draft the changelog entry
@@ -90,6 +99,8 @@ Use the candidate commit subjects collected in step 0 to draft bullet points:
 - One bullet per subject line.
 - Present the draft to the user for confirmation or editing before writing files.
 - If no candidates were found, prompt the user for concise release notes.
+
+Hard gate: Do not write changelog files until the draft entry is confirmed by the user.
 
 Update both changelog locations.
 
@@ -124,6 +135,8 @@ In `readme.txt`, insert the release entry directly under `== Changelog ==`:
 
 Preserve the existing WordPress.org readme format. If `readme.txt` does not exist, skip it and report that it was absent.
 
+Completion criterion: Changelog entry exists in every available changelog location with consistent version/date.
+
 ### 4) Rebuild
 
 Run the project's build step if one exists.
@@ -137,6 +150,8 @@ npm run build --if-present
 If dependencies are missing and the project has a lockfile, install them with the matching package manager before rebuilding. Do not add new dependencies as part of a version bump unless the user explicitly asks.
 
 For Composer-only projects, run the relevant generated/build script only if it exists in `composer.json`.
+
+Completion criterion: Existing build command(s) completed or the exact skip reason was reported.
 
 ### 5) Run tests and checks
 
@@ -160,6 +175,8 @@ composer run check
 
 Report any command that could not run because a tool, dependency, or local WordPress environment was missing.
 
+Completion criterion: Every available check command was run in order, with pass/fail/skip status captured.
+
 ### 6) Final review
 
 Review the diff before responding:
@@ -177,6 +194,8 @@ In the final response, include:
 - Rebuild command result.
 - Test/check command results.
 - Any skipped files or commands and why.
+
+Completion criterion: Diff review completed and final report includes all required release details.
 
 ## Failure modes / debugging
 

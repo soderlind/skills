@@ -1,6 +1,6 @@
 ---
 name: prepare-wordpress
-description: "Use to scaffold or update a WordPress project with dev tooling, agent skills, linting (WPCS), testing (PHPUnit/Pest/Vitest), config files (.editorconfig, .gitignore), and i18n support. Works for both new and existing projects."
+description: "Phase-based WordPress project setup workflow with dry-run planning and confirmed apply for predictable scaffolding/standardization."
 compatibility: "macOS/Linux with Node.js 18+, Composer 2+, PHP 8.3+, git. Optional: WP-CLI for i18n commands."
 ---
 
@@ -10,16 +10,19 @@ compatibility: "macOS/Linux with Node.js 18+, Composer 2+, PHP 8.3+, git. Option
 
 Use this skill when:
 
-- Starting a new WordPress plugin or theme project from scratch
-- Adding standard dev tooling to an existing WordPress project
-- Ensuring a WordPress project follows coding standards and best practices
-- Setting up testing, linting, or i18n scaffolding
+- Bootstrapping a new WordPress plugin or theme repo with standard tooling.
+- Backfilling missing tooling in an existing project after drift or partial setup.
+- Running a selective, phase-based setup flow with dry-run then confirmed apply.
 
 ## Inputs required
 
 - Repo root (current working directory).
 - Whether this is a new or existing project (auto-detected).
 - Plugin metadata (prompted during execution).
+
+## Determinism checklist
+
+Apply [DETERMINISM-CHECKLIST.md](../DETERMINISM-CHECKLIST.md) for this skill run.
 
 ## Procedure
 
@@ -33,9 +36,13 @@ node skills/prepare-wordpress/scripts/detect_project.mjs
 
 This outputs JSON with booleans for each component. Use it to skip phases that are already configured. Report to the user what will be added and what will be skipped.
 
+Completion criterion: Detection JSON was produced and a phase-by-phase add/skip summary was shown to the user.
+
 ### 0b) Choose feature flags and execution mode
 
 Before changing files, ask which phases to run. Defaults: all phases enabled, dry-run first.
+
+Hard gate: Do not run any `--apply` command until dry-run output is shown and the user confirms the selected phases.
 
 - `plugin` — create plugin bootstrap file
 - `readme` — create `readme.txt`
@@ -81,6 +88,8 @@ Machine-readable apply output with command execution results:
 node skills/prepare-wordpress/scripts/plan_setup.mjs --json --apply --only=cleanup
 ```
 
+Completion criterion: Selected phases and execution mode are explicit, dry-run output is shown, and user confirmation is captured before apply mode.
+
 ### 1) Gather plugin metadata
 
 Derive the **plugin slug** from the current folder name (e.g. `~/Projects/my-plugin` → `my-plugin`). Use this as the default for the text domain.
@@ -102,6 +111,8 @@ Store these values — they are used in Phase 1b (`plugin.php`), Phase 1b-2 (`re
 Also ask:
 - **Create readme.txt?**: Whether to create a WordPress.org-style `readme.txt` (default: yes)
 - **Git remote URL**: URL for the remote repository (e.g. `https://github.com/user/my-plugin` or `git@github.com:user/my-plugin.git`). Leave empty to skip.
+
+Completion criterion: Every metadata field is filled (or intentionally empty), including readme and remote decisions.
 
 ### 1b) Create plugin.php
 
@@ -133,6 +144,8 @@ defined( 'ABSPATH' ) || exit;
 ```
 
 See: `references/plugin-bootstrap.md`
+
+Completion criterion: Either an existing plugin header file was detected and preserved, or `<plugin-slug>.php` was created with the required header fields.
 
 ### 1b-2) Create readme.txt
 
@@ -170,6 +183,8 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 See: `references/readme-txt.md`
 
+Completion criterion: `readme.txt` exists in valid WordPress.org format, or skip reason is recorded.
+
 ### 1c) Initialize package files (if needed)
 
 If `package.json` does not exist:
@@ -194,6 +209,8 @@ git remote add origin <remote-url>
 
 If `.git/` already exists and has no `origin` remote but the user provided a URL, add it. If `origin` already exists, skip.
 
+Completion criterion: Required init artifacts exist (`package.json`, `composer.json`, `.git`) and remote handling result is reported.
+
 ### 2) Install agent skills
 
 Install the following skills. Skip any that already exist under `~/.copilot/skills/` or `~/.agents/skills/`.
@@ -206,6 +223,8 @@ npx skills add https://github.com/automattic/agent-skills --skill wp-performance
 npx skills add https://github.com/automattic/agent-skills --skill wp-wpcli-and-ops
 npx skills add https://github.com/jeffallan/claude-skills --skill wordpress-pro
 ```
+
+Completion criterion: Each listed skill is installed or explicitly skipped because it already exists.
 
 ### 3) Composer dependencies and scripts
 
@@ -233,6 +252,8 @@ Replace `<plugin-slug>` with the actual plugin slug (folder name / text domain).
 
 See: `references/composer-setup.md`
 
+Completion criterion: Composer dev dependencies are installed and `scripts.test`, `scripts.lint`, and `scripts.check` exist without overwriting unrelated scripts.
+
 ### 4) Config files
 
 **`.editorconfig`** — Skip if it already exists. Create with WordPress-standard settings.
@@ -242,6 +263,8 @@ See: `references/config-files.md`
 **`.gitignore`** — If it exists, merge missing entries. If not, create it.
 
 See: `references/config-files.md`
+
+Completion criterion: `.editorconfig` and `.gitignore` are present, and existing `.gitignore` entries were merged non-destructively.
 
 ### 5) Vitest setup
 
@@ -265,6 +288,8 @@ Merge a `test:js` script into `package.json`:
 
 See: `references/vitest-setup.md`
 
+Completion criterion: `vitest.config.js`, `tests/setup.js`, and `scripts.test:js` are present, or a skip reason is recorded.
+
 ### 6) i18n scaffolding
 
 **Skip if `i18n-map.json` already exists.**
@@ -282,6 +307,8 @@ Then:
 
 See: `references/i18n-setup.md`
 
+Completion criterion: `i18n-map.json`, `languages/`, and i18n npm scripts are present (or explicit skip/defer rationale is recorded).
+
 ### 7) Cleanup
 
 Remove any stray `yarn.lock` file that may have been created by `npx` commands:
@@ -292,12 +319,16 @@ rm -f yarn.lock
 
 Only remove it if it did not exist before the skill ran (check the detection output).
 
-### 9) Final summary
+Completion criterion: `yarn.lock` was removed only when it was created during this run.
+
+### 8) Final summary
 
 Print a status table showing each phase as ✅ installed, ⏭ skipped, or 🔀 merged.
 
 Remind the user to:
 - Run `composer install` and `npm install`.
+
+Completion criterion: Final report includes per-phase status, skipped reasons, and verification outcomes.
 
 ## Verification
 
