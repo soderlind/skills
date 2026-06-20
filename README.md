@@ -1,11 +1,12 @@
 # Skills
 
-Public AI agent skills for WordPress development workflows.
+Public AI agent skills for WordPress development and JavaScript modernization workflows.
 
 ## Available Skills
 
 | Skill | Purpose |
 | --- | --- |
+| [`browser-native`](https://skills.sh/soderlind/skills/browser-native) | Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs. |
 | [`wp-cli-local`](https://skills.sh/soderlind/skills/wp-cli-local) | Run WP-CLI commands against Local by Flywheel sites on macOS. |
 | [`prepare-wordpress`](https://skills.sh/soderlind/skills/prepare-wordpress) | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
 | [`wp-bump`](https://skills.sh/soderlind/skills/wp-bump) | Bump a WordPress plugin version and update related release metadata. |
@@ -18,6 +19,7 @@ Install a skill globally with `npx skills add`:
 npx skills add soderlind/skills --skill wp-cli-local -g
 npx skills add soderlind/skills --skill prepare-wordpress -g
 npx skills add soderlind/skills --skill wp-bump -g
+npx skills add soderlind/skills --skill browser-native -g
 ```
 
 Install all detected agent integrations without prompts:
@@ -26,6 +28,7 @@ Install all detected agent integrations without prompts:
 npx skills add soderlind/skills --skill wp-cli-local -g --all
 npx skills add soderlind/skills --skill prepare-wordpress -g --all
 npx skills add soderlind/skills --skill wp-bump -g --all
+npx skills add soderlind/skills --skill browser-native -g --all
 ```
 
 Preview the skills available from this repository:
@@ -46,6 +49,7 @@ Update a skill:
 npx skills update wp-cli-local -g
 npx skills update prepare-wordpress -g
 npx skills update wp-bump -g
+npx skills update browser-native -g
 ```
 
 Remove a skill:
@@ -54,6 +58,7 @@ Remove a skill:
 npx skills remove wp-cli-local -g
 npx skills remove prepare-wordpress -g
 npx skills remove wp-bump -g
+npx skills remove browser-native -g
 ```
 
 ## Usage
@@ -66,6 +71,7 @@ Example prompts:
 Run wp-cli on my Local site and list plugins.
 Prepare this project for WordPress plugin development.
 Bump this WordPress plugin to 1.2.3.
+Scan this JavaScript project for dependencies that can be replaced by native browser APIs.
 ```
 
 ## Invocation Strategy
@@ -131,12 +137,32 @@ Run wp-bump for version 1.2.3.
 
 The skill does not create commits, tags, or releases unless you explicitly ask your agent to do so.
 
+### browser-native
+
+Use this to scan JavaScript/Node.js dependencies and find packages that can be replaced with built-in APIs (`fetch`, `URL`, `structuredClone`, `crypto.randomUUID`, `Intl`, etc.).
+
+Run the local scanner directly:
+
+```sh
+node skills/browser-native/scripts/cli.js .
+```
+
+Markdown report with before/after examples:
+
+```sh
+node skills/browser-native/scripts/cli.js . --md
+```
+
 ## Repository Layout
 
 Each skill lives in its own folder under `skills/`:
 
 ```txt
 skills/
+  browser-native/
+    SKILL.md
+    references/
+    scripts/
   prepare-wordpress/
     SKILL.md
     references/
@@ -153,6 +179,7 @@ skills/
 - `wp-cli-local`: MIT, as published in the original source repository.
 - `prepare-wordpress`: GPL-2.0-or-later, as published in the original source repository.
 - `wp-bump`: GPL-2.0-or-later, distributed with `prepare-wordpress` in the original source repository.
+- `browser-native`: MIT, as published in the original source repository.
 
 ## AI Contribution Attribution
 
