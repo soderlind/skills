@@ -111,7 +111,9 @@ function buildPlan(state, phases) {
     if (!state.vitest.config || !state.vitest.devDep) vitestCommands.push("npm install --save-dev vitest jsdom");
     if (!state.vitest.config) vitestNotes.push("Manual: create vitest.config.js from references/vitest-setup.md.");
     if (!state.vitest.setupFile) vitestNotes.push("Manual: create tests/setup.js from references/vitest-setup.md.");
-    vitestNotes.push("Manual: merge test:js script into package.json without overwriting existing scripts.");
+      if (!state.vitest.testScript) {
+          vitestNotes.push("Manual: merge test:js script into package.json without overwriting existing scripts.");
+      }
     add("vitest", vitestCommands.length > 0 || vitestNotes.length > 0 ? "Configure Vitest" : "Vitest phase already satisfied", vitestCommands, vitestNotes);
 
     const i18nNotes = [];

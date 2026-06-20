@@ -29,48 +29,62 @@ if [[ -z "$WP_CLI_BIN" ]]; then
   exit 1
 fi
 
-# ── Helpers ──────────────────────────────────────────────────────────
+if ! command -v python3 &>/dev/null; then
+  echo "Error: python3 not found in PATH." >&2
+  exit 1
+fi
+
+if [[ ! -f "$SITES_JSON" ]]; then
+  echo "Error: Local sites metadata not found: $SITES_JSON" >&2
+  echo "Is Local by Flywheel installed and initialized?" >&2
+  exit 1
+fi
+
+# -- Helpers ---------------------------------------------------------------
 
 list_sites() {
-  python3 -c "
-import json, os, sys
+  SITES_JSON_PATH="$SITES_JSON" STATUSES_JSON_PATH="$STATUSES_JSON" python3 - <<'PY'
+import json
+import os
 
-sites_path = os.path.expanduser('$SITES_JSON')
-statuses_path = os.path.expanduser('$STATUSES_JSON')
+sites_path = os.path.expanduser(os.environ["SITES_JSON_PATH"])
+statuses_path = os.path.expanduser(os.environ["STATUSES_JSON_PATH"])
 
-with open(sites_path) as f:
+with open(sites_path, encoding="utf-8") as f:
     sites = json.load(f)
 
 statuses = {}
 if os.path.exists(statuses_path):
-    with open(statuses_path) as f:
+    with open(statuses_path, encoding="utf-8") as f:
         statuses = json.load(f)
 
-for s in sorted(sites.values(), key=lambda x: x['name']):
-    status = statuses.get(s['id'], 'unknown')
-    marker = '●' if status == 'running' else '○'
-    print(f'  {marker} {s[\"name\"]:20s} {status:10s} {s[\"path\"]}')
-"
+for s in sorted(sites.values(), key=lambda x: x["name"]):
+    status = statuses.get(s["id"], "unknown")
+    marker = "*" if status == "running" else "-"
+    print(f"  {marker} {s['name']:20s} {status:10s} {s['path']}")
+PY
 }
 
 # Auto-detect site from CWD: find the site whose path is the longest
 # prefix of the current directory.
 auto_detect_site() {
-  python3 -c "
-import json, os, sys
+  SITES_JSON_PATH="$SITES_JSON" python3 - <<'PY'
+import json
+import os
+import sys
 
 cwd = os.getcwd()
-sites_path = os.path.expanduser('$SITES_JSON')
+sites_path = os.path.expanduser(os.environ["SITES_JSON_PATH"])
 
-with open(sites_path) as f:
+with open(sites_path, encoding="utf-8") as f:
     sites = json.load(f)
 
 best = None
 best_len = 0
 for s in sites.values():
-    p = s['path'].rstrip('/')
+    p = s["path"].rstrip("/")
     # CWD must equal the site path or be a subdirectory of it
-    if cwd == p or cwd.startswith(p + '/'):
+    if cwd == p or cwd.startswith(p + "/"):
         if len(p) > best_len:
             best = s
             best_len = len(p)
@@ -78,57 +92,63 @@ for s in sites.values():
 if best is None:
     sys.exit(1)
 
-php_ver = best['services']['php']['version']
-mysql_ver = best['services']['mysql']['version']
-print(f\"{best['id']}|{best['name']}|{best['path']}|{php_ver}|{mysql_ver}\")
-"
+php_ver = best["services"]["php"]["version"]
+mysql_ver = best["services"]["mysql"]["version"]
+print(f"{best['id']}|{best['name']}|{best['path']}|{php_ver}|{mysql_ver}")
+PY
 }
 
 lookup_site_by_name() {
   local name="$1"
-  python3 -c "
-import json, os, sys
+  SITE_LOOKUP_NAME="$name" SITES_JSON_PATH="$SITES_JSON" python3 - <<'PY' 2>/dev/null
+import json
+import os
+import sys
 
-sites_path = os.path.expanduser('$SITES_JSON')
+sites_path = os.path.expanduser(os.environ["SITES_JSON_PATH"])
+lookup_name = os.environ["SITE_LOOKUP_NAME"]
 
-with open(sites_path) as f:
+with open(sites_path, encoding="utf-8") as f:
     sites = json.load(f)
 
 for s in sites.values():
-    if s['name'] == '$name':
-        php_ver = s['services']['php']['version']
-        mysql_ver = s['services']['mysql']['version']
-        print(f\"{s['id']}|{s['name']}|{s['path']}|{php_ver}|{mysql_ver}\")
+    if s["name"] == lookup_name:
+        php_ver = s["services"]["php"]["version"]
+        mysql_ver = s["services"]["mysql"]["version"]
+        print(f"{s['id']}|{s['name']}|{s['path']}|{php_ver}|{mysql_ver}")
         sys.exit(0)
 
 sys.exit(1)
-" 2>/dev/null
+PY
 }
 
 check_site_status() {
   local site_id="$1"
   local site_name="$2"
-  python3 -c "
-import json, os, sys
+  SITE_ID="$site_id" SITE_NAME="$site_name" STATUSES_JSON_PATH="$STATUSES_JSON" python3 - <<'PY'
+import json
+import os
+import sys
 
-statuses_path = os.path.expanduser('$STATUSES_JSON')
+statuses_path = os.path.expanduser(os.environ["STATUSES_JSON_PATH"])
 
 if not os.path.exists(statuses_path):
     sys.exit(0)
 
-with open(statuses_path) as f:
+with open(statuses_path, encoding="utf-8") as f:
     statuses = json.load(f)
 
-status = statuses.get('$site_id', 'unknown')
-if status != 'running':
-    print(f'Warning: Site \"$site_name\" is {status}. It may need to be started in Local.', file=sys.stderr)
-"
+site_id = os.environ["SITE_ID"]
+site_name = os.environ["SITE_NAME"]
+status = statuses.get(site_id, "unknown")
+if status != "running":
+    print(f"Warning: Site '{site_name}' is {status}. It may need to be started in Local.", file=sys.stderr)
+PY
 }
 
-# ── Parse arguments ──────────────────────────────────────────────────
+# -- Parse arguments -------------------------------------------------------
 
 SITE_NAME=""
-PASSTHROUGH_ARGS=()
 
 # Handle --list
 if [[ "${1:-}" == "--list" ]]; then
@@ -144,7 +164,7 @@ if [[ "${1:-}" == --site=* ]]; then
   shift
 fi
 
-# ── Resolve site ─────────────────────────────────────────────────────
+# -- Resolve site ----------------------------------------------------------
 
 SITE_INFO=""
 
@@ -185,29 +205,29 @@ IFS='|' read -r SITE_ID SITE_NAME SITE_PATH PHP_VER MYSQL_VER <<< "$SITE_INFO"
 
 WP_PATH="$SITE_PATH/app/public"
 
-# ── Warn if site is not running ──────────────────────────────────────
+# -- Warn if site is not running ------------------------------------------
 
 check_site_status "$SITE_ID" "$SITE_NAME"
 
-# ── Resolve PHP binary ───────────────────────────────────────────────
+# -- Resolve PHP binary ----------------------------------------------------
 
-PHP_BASE=$(find "$LOCAL_BASE/lightning-services" -maxdepth 1 -type d -name "php-${PHP_VER}*" | head -1)
+PHP_BASE=$(find "$LOCAL_BASE/lightning-services" -maxdepth 1 -type d -name "php-${PHP_VER}*" | LC_ALL=C sort | head -1)
 if [[ -z "$PHP_BASE" ]]; then
   echo "Error: Could not find PHP $PHP_VER in Local lightning-services." >&2
   exit 1
 fi
 PHP_BIN="$PHP_BASE/bin/$ARCH_DIR/bin/php"
 
-# ── Resolve MySQL binary directory ────────────────────────────────────
+# -- Resolve MySQL binary directory ---------------------------------------
 
-MYSQL_BASE=$(find "$LOCAL_BASE/lightning-services" -maxdepth 1 -type d -name "mysql-${MYSQL_VER}*" | head -1)
+MYSQL_BASE=$(find "$LOCAL_BASE/lightning-services" -maxdepth 1 -type d -name "mysql-${MYSQL_VER}*" | LC_ALL=C sort | head -1)
 if [[ -z "$MYSQL_BASE" ]]; then
   echo "Error: Could not find MySQL $MYSQL_VER in Local lightning-services." >&2
   exit 1
 fi
 MYSQL_BIN_DIR="$MYSQL_BASE/bin/$ARCH_DIR/bin"
 
-# ── Site-specific php.ini ─────────────────────────────────────────────
+# -- Site-specific php.ini -------------------------------------------------
 
 PHP_INI="$LOCAL_BASE/run/$SITE_ID/conf/php/php.ini"
 
@@ -217,7 +237,7 @@ if [[ ! -f "$PHP_INI" ]]; then
   exit 1
 fi
 
-# ── MySQL client config (socket, credentials) ────────────────────────
+# -- MySQL client config (socket, credentials) ----------------------------
 
 MYSQL_CONF_DIR="$LOCAL_BASE/run/$SITE_ID/conf/mysql"
 if [[ -f "$MYSQL_CONF_DIR/my.cnf" ]]; then
@@ -229,7 +249,7 @@ if [[ -S "$MYSQL_SOCKET" ]]; then
   export MYSQL_UNIX_PORT="$MYSQL_SOCKET"
 fi
 
-# ── Execute WP-CLI ────────────────────────────────────────────────────
+# -- Execute WP-CLI --------------------------------------------------------
 
 export PATH="$MYSQL_BIN_DIR:$PATH"
 

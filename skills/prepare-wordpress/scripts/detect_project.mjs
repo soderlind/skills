@@ -68,20 +68,22 @@ export function detectProjectState(targetRoot = process.cwd()) {
         });
     }
 
-    function findPluginFile() {
-        // Scan root for a PHP file with a "Plugin Name:" header.
+    function findPluginFiles() {
+        // Scan root for PHP files with a "Plugin Name:" header.
+        const matches = [];
         try {
             const entries = fs.readdirSync(repoRoot, { withFileTypes: true });
             for (const entry of entries) {
                 if (!entry.isFile() || !entry.name.endsWith(".php")) continue;
                 const content = fs.readFileSync(path.join(repoRoot, entry.name), "utf8").slice(0, 8192);
-                if (/Plugin\s+Name\s*:/i.test(content)) return entry.name;
+                if (/Plugin\s+Name\s*:/i.test(content)) matches.push(entry.name);
             }
         } catch {}
-        return null;
+        return matches;
     }
 
-    const pluginFile = findPluginFile();
+    const pluginFiles = findPluginFiles();
+    const pluginFile = pluginFiles[0] || null;
     const pluginSlug = path.basename(repoRoot);
 
     function getGitRemoteOrigin() {
@@ -98,6 +100,7 @@ export function detectProjectState(targetRoot = process.cwd()) {
     return {
         pluginSlug,
         pluginFile, // null if no plugin file found, filename if found
+        pluginFiles,
         readmeTxt: exists("readme.txt"),
         yarnLock: exists("yarn.lock"),
         git: exists(".git"),
@@ -139,6 +142,7 @@ export function detectProjectState(targetRoot = process.cwd()) {
             config: exists("vitest.config.js") || exists("vitest.config.ts") || exists("vitest.config.mjs"),
             setupFile: exists("tests/setup.js"),
             devDep: packageJsonHasDevDep("vitest"),
+            testScript: packageJsonHasScript("test:js"),
         },
 
         // i18n
@@ -160,6 +164,11 @@ export function buildDetectionSummary(state, repoRoot = process.cwd()) {
 
     if (state.pluginFile) lines.push(`⏭  Plugin file found: ${state.pluginFile}`);
     else lines.push(`📦 No plugin file — will create ${state.pluginSlug}.php`);
+
+    if ((state.pluginFiles || []).length > 1) {
+        lines.push(`⚠  Multiple plugin headers found: ${(state.pluginFiles || []).join(", ")}`);
+        lines.push("   Manual: choose which plugin file should be treated as canonical.");
+    }
 
     if (state.readmeTxt) lines.push("⏭  readme.txt exists");
     else lines.push("📦 No readme.txt — will ask if you want one");
