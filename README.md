@@ -183,10 +183,4 @@ skills/
 
 ## AI Contribution Attribution
 
-When AI tools contribute to development, add an attribution line in commits, PR descriptions, or release notes using:
-
-`Assisted-by: AGENT_NAME:MODEL_VERSION [TOOL1] [TOOL2]`
-
-Example:
-
 `Assisted-by: GitHub Copilot:GPT-5.3-Codex`
