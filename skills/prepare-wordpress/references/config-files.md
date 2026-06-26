@@ -24,7 +24,7 @@ insert_final_newline = true
 
 Required entries for a WordPress plugin/theme project:
 
-```
+```gitignore
 /vendor/
 /node_modules/
 .DS_Store
@@ -36,6 +36,7 @@ Required entries for a WordPress plugin/theme project:
 ### Merge strategy
 
 If `.gitignore` already exists:
+
 1. Read the current file.
 2. For each required entry, check if it (or an equivalent pattern) is already present.
 3. Only append missing entries, separated by a blank line and a comment `# Added by prepare-wordpress`.

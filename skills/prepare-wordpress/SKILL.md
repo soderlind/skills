@@ -95,6 +95,7 @@ Completion criterion: Selected phases and execution mode are explicit, dry-run o
 Derive the **plugin slug** from the current folder name (e.g. `~/Projects/my-plugin` → `my-plugin`). Use this as the default for the text domain.
 
 Ask the user for the following (show defaults in parentheses):
+
 - **Plugin Name**: Human-readable name (default: slug with hyphens replaced by spaces and title-cased, e.g. `My Plugin`)
 - **Plugin URI**: URL for the plugin (default: empty)
 - **Description**: Short description (default: empty)
@@ -153,7 +154,7 @@ Completion criterion: Either an existing plugin header file was detected and pre
 
 Create `readme.txt` using the plugin metadata collected in Phase 1:
 
-```
+```text
 === {Plugin Name} ===
 Contributors: {author-slug}
 Tags:
@@ -188,21 +189,25 @@ Completion criterion: `readme.txt` exists in valid WordPress.org format, or skip
 ### 1c) Initialize package files (if needed)
 
 If `package.json` does not exist:
+
 ```sh
 npm init -y
 ```
 
 If `composer.json` does not exist, create it using the plugin metadata:
+
 ```sh
 composer init --no-interaction --name=<author>/<plugin-slug> --description="{Description}" --license={License}
 ```
 
 If `.git/` does not exist:
+
 ```sh
 git init
 ```
 
 If the user provided a **Git remote URL**, add it as the `origin` remote:
+
 ```sh
 git remote add origin <remote-url>
 ```

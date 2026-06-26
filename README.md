@@ -6,6 +6,7 @@ Public AI agent skills for WordPress development and JavaScript modernization wo
 
 | Skill | Purpose |
 | --- | --- |
+| [`add-apim-api`](https://skills.sh/soderlind/skills/add-apim-api) | Scaffold a new API in Azure API Management with Bicep infrastructure. |
 | [`browser-native`](https://skills.sh/soderlind/skills/browser-native) | Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs. |
 | [`wp-cli-local`](https://skills.sh/soderlind/skills/wp-cli-local) | Run WP-CLI commands against Local by Flywheel sites on macOS. |
 | [`prepare-wordpress`](https://skills.sh/soderlind/skills/prepare-wordpress) | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
@@ -16,6 +17,7 @@ Public AI agent skills for WordPress development and JavaScript modernization wo
 Install a skill globally with `npx skills add`:
 
 ```sh
+npx skills add soderlind/skills --skill add-apim-api -g
 npx skills add soderlind/skills --skill wp-cli-local -g
 npx skills add soderlind/skills --skill prepare-wordpress -g
 npx skills add soderlind/skills --skill wp-bump -g
@@ -25,6 +27,7 @@ npx skills add soderlind/skills --skill browser-native -g
 Install all detected agent integrations without prompts:
 
 ```sh
+npx skills add soderlind/skills --skill add-apim-api -g --all
 npx skills add soderlind/skills --skill wp-cli-local -g --all
 npx skills add soderlind/skills --skill prepare-wordpress -g --all
 npx skills add soderlind/skills --skill wp-bump -g --all
@@ -46,6 +49,7 @@ npx skills list -g
 Update a skill:
 
 ```sh
+npx skills update add-apim-api -g
 npx skills update wp-cli-local -g
 npx skills update prepare-wordpress -g
 npx skills update wp-bump -g
@@ -55,6 +59,7 @@ npx skills update browser-native -g
 Remove a skill:
 
 ```sh
+npx skills remove add-apim-api -g
 npx skills remove wp-cli-local -g
 npx skills remove prepare-wordpress -g
 npx skills remove wp-bump -g
@@ -159,6 +164,8 @@ Each skill lives in its own folder under `skills/`:
 
 ```txt
 skills/
+  add-apim-api/
+    SKILL.md
   browser-native/
     SKILL.md
     references/
@@ -176,6 +183,7 @@ skills/
 
 ## Licenses
 
+- `add-apim-api`: MIT.
 - `wp-cli-local`: MIT, as published in the original source repository.
 - `prepare-wordpress`: GPL-2.0-or-later, as published in the original source repository.
 - `wp-bump`: GPL-2.0-or-later, distributed with `prepare-wordpress` in the original source repository.

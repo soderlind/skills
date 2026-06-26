@@ -58,7 +58,7 @@ The scanner checks `dependencies` and `devDependencies` against an internal data
 Use this quick category map while reviewing:
 
 | Category | Example packages | Native replacement |
-|---|---|---|
+| --- | --- | --- |
 | HTTP | axios, node-fetch | `fetch()` |
 | URL / Query | query-string, qs | `URL`, `URLSearchParams` |
 | Object / Array utils | lodash.* helpers | `structuredClone()`, `Object.*`, array methods |
@@ -66,6 +66,7 @@ Use this quick category map while reviewing:
 | Polyfills / APIs | abort-controller, resize-observer-polyfill | Native globals and browser APIs |
 
 For the full package map and migration details, use:
+
 - `references/replacements-guide.md`
 
 Completion criterion: Review identifies which flagged packages are `full` vs `partial`, and captures any package-specific caveats needed for migration.
@@ -76,6 +77,7 @@ Completion criterion: Review identifies which flagged packages are `full` vs `pa
 - **Partial** — covers most common use cases, but the package may offer features the native API doesn't. Review your usage before removing.
 
 For detailed reference on each replacement including before/after code and browser support, read:
+
 - `references/replacements-guide.md`
 
 Completion criterion: Every recommendation in the user-facing output includes a confidence label and caveat handling for `partial` replacements.
@@ -83,6 +85,7 @@ Completion criterion: Every recommendation in the user-facing output includes a 
 ### 4) Present findings to the user
 
 When showing results:
+
 1. Lead with the summary count (e.g., "14 of 42 dependencies can be replaced")
 2. Group by confidence: list full replacements first (easy wins), then partial
 3. For each flagged package, show the before/after code snippet
@@ -103,6 +106,7 @@ Completion criterion: Report indicates all scanned package manifests or clearly 
 ## Verification
 
 After presenting recommendations, the user can verify by:
+
 1. Removing the flagged package from `package.json`
 2. Replacing imports with the native API (using the "after" code example)
 3. Running the project's test suite

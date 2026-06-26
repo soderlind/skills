@@ -11,7 +11,7 @@ composer require --dev phpunit/phpunit wp-coding-standards/wpcs dealerdirect/php
 ### What each package does
 
 | Package | Purpose |
-|---------|---------|
+| --- | --- |
 | `phpunit/phpunit` | PHP unit testing framework |
 | `wp-coding-standards/wpcs` | WordPress PHP Coding Standards ruleset for PHP_CodeSniffer |
 | `dealerdirect/phpcodesniffer-composer-installer` | Auto-registers PHPCS standards (including WPCS) with Composer |

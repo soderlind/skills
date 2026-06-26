@@ -4,7 +4,7 @@
 
 The `readme.txt` follows the [WordPress.org plugin readme standard](https://developer.wordpress.org/plugins/wordpress-org/how-your-readme-txt-works/).
 
-```
+```text
 === {Plugin Name} ===
 Contributors: {author-slug}
 Tags:

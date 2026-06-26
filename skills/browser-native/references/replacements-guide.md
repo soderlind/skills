@@ -315,6 +315,7 @@ All **full** confidence.
 ## Encoding
 
 ### base-64, js-base64 → `btoa()` / `atob()`
+
 - **Confidence:** partial
 - **Notes:** btoa/atob work with ASCII only. For Unicode text or Buffer-style workflows, use a UTF-8 helper or Buffer in Node.js.
 
@@ -323,10 +324,12 @@ All **full** confidence.
 ## FormData
 
 ### form-data → `FormData`
+
 - **Confidence:** partial
 - **Notes:** Native FormData works well with fetch, but form-data-specific helpers like `getHeaders()` and stream-oriented integrations need manual changes.
 
 ### formdata-polyfill → `FormData`
+
 - **Confidence:** full
 - **Notes:** Polyfill — remove it in modern browsers and Node.js 18+.
 
@@ -337,7 +340,7 @@ All **full** confidence.
 These packages provide functionality that is now globally available:
 
 | Package | Native API | Min Chrome |
-|---|---|---|
+| --- | --- | --- |
 | abort-controller | `AbortController` | 66 |
 | abortcontroller-polyfill | `AbortController` | 66 |
 | text-encoding | `TextEncoder` / `TextDecoder` | 38 |
@@ -356,6 +359,7 @@ These packages provide functionality that is now globally available:
 ## Crypto
 
 ### crypto-js → `crypto.subtle` (Web Crypto API)
+
 - **Confidence:** partial
 - **Notes:** Covers SHA-*, AES, HMAC. API is async. MD5 not available (use SHA-256).
 

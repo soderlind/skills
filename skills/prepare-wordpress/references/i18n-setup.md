@@ -54,5 +54,6 @@ Or if WP-CLI ships with it bundled (v2.5+), it is already available.
 ## After scaffolding
 
 The user must:
+
 1. Replace `BLOCK-NAME` entries in `i18n-map.json` with real block directory names.
 2. Ensure block source files use `__()`, `_e()`, `_n()`, etc. from `@wordpress/i18n`.
