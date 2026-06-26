@@ -1,6 +1,7 @@
 ---
 name: wp-cli-local
 description: "Safe WP-CLI execution for Local by Flywheel via wrapper, including explicit site resolution before mutating operations."
+version: "1.1.0"
 ---
 
 # WP-CLI for Local by Flywheel

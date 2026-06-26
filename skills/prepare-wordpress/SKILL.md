@@ -2,6 +2,7 @@
 name: prepare-wordpress
 description: "Phase-based WordPress project setup workflow with dry-run planning and confirmed apply for predictable scaffolding/standardization."
 compatibility: "macOS/Linux with Node.js 18+, Composer 2+, PHP 8.3+, git. Optional: WP-CLI for i18n commands."
+version: "1.1.0"
 ---
 
 # Prepare WordPress Project

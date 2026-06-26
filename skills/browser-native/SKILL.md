@@ -2,6 +2,7 @@
 name: browser-native
 description: "Scan JavaScript dependencies for packages replaceable by browser/runtime native APIs. Use for dependency-modernization audits, or when another skill needs a native-replacement report with confidence and examples."
 compatibility: "Node.js 18+. Filesystem-based — reads package.json. No network or browser access required."
+version: "1.1.0"
 ---
 
 # Browser-Native Dependency Scanner

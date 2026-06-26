@@ -1,6 +1,7 @@
 ---
 name: add-apim-api
 description: Scaffold a new API in Azure API Management. Use when user asks to add, create, or expose a new API through APIM, or needs to wire up a backend service to the gateway.
+version: "1.1.0"
 ---
 
 # Add APIM API

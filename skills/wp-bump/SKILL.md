@@ -2,6 +2,7 @@
 name: wp-bump
 description: "Structured WordPress plugin release-bump workflow that orchestrates version sync, changelog, rebuild, and validation steps with explicit gates."
 compatibility: "WordPress plugin projects with PHP; optional package.json, Composer, npm, and build/test scripts."
+version: "1.1.0"
 ---
 
 # WP Bump
