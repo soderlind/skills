@@ -77,7 +77,7 @@ function buildPlan(state, phases) {
     const initCommands = [];
     const initNotes = [];
     if (!state.packageJson) initCommands.push("npm init -y");
-    if (!state.composerJson) initCommands.push("composer init --no-interaction --name=<author>/<plugin-slug> --description=\"<description>\" --license=GPL-2.0-or-later");
+    if (!state.composerJson) initNotes.push("Manual: create composer.json as a JSON file with name, description, type, license fields. Do not use composer init with user-provided strings.");
     if (!state.git) initCommands.push("git init");
     if (state.git && !state.gitRemoteOrigin) initNotes.push("Manual: ask user for git remote URL, then run git remote add origin <remote-url>.");
     add("init", initCommands.length > 0 ? "Initialize project files" : "Init phase already satisfied", initCommands, initNotes);
