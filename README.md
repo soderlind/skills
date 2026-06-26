@@ -1,6 +1,6 @@
 # Skills
 
-Public AI agent skills for WordPress development and JavaScript modernization workflows.
+Public AI agent skills for WordPress development, JavaScript modernization, and Azure infrastructure.
 
 [![skills.sh](https://skills.sh/b/soderlind/skills)](https://skills.sh/soderlind/skills)
 
