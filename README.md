@@ -73,6 +73,7 @@ After installation, ask your AI agent for the workflow you want. The matching sk
 Example prompts:
 
 ```txt
+Add a new API to Azure API Management for my backend service.
 Run wp-cli on my Local site and list plugins.
 Prepare this project for WordPress plugin development.
 Bump this WordPress plugin to 1.2.3.
@@ -88,6 +89,24 @@ Use user-invoked skills when you want zero context load and explicit manual cont
 When many user-invoked skills accumulate, add a lightweight router skill that maps tasks to the right skill so you do not rely on memory.
 
 ## Skill Notes
+
+### add-apim-api
+
+Use this to scaffold a new API in Azure API Management with Bicep infrastructure.
+
+Prerequisites:
+
+- Azure CLI with Bicep extension
+- Existing APIM infrastructure project
+- Access to the target Azure subscription
+
+Example prompt:
+
+```txt
+Add a speeches-api to APIM with backend at https://api.example.com/speeches
+```
+
+The skill guides you through gathering requirements, creating Bicep files, and wiring up the API.
 
 ### wp-cli-local
 
