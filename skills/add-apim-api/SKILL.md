@@ -30,7 +30,7 @@ Create in order:
 1. `infra/modules/api-management/apis/{api-name}.bicep` — API definition with CORS, rate limiting, caching policies
 2. `infra/modules/api-management/operations/{api-name}-operations.bicep` — operation definitions following naming conventions below
 
-Follow patterns in `.github/instructions/apim-api-development.instructions.md` for Bicep structure.
+Follow patterns in `references/bicep-patterns.md` for Bicep structure.
 
 If backend API key needed:
 - `infra/modules/api-management/named-values/{api-name}-key.bicep` — Key Vault reference

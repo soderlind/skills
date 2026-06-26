@@ -166,6 +166,7 @@ Each skill lives in its own folder under `skills/`:
 skills/
   add-apim-api/
     SKILL.md
+    references/
   browser-native/
     SKILL.md
     references/
