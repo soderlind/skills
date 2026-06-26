@@ -43,7 +43,7 @@ If backend API key needed:
 Update existing modules:
 
 1. `infra/modules/api-management/api-management.bicep` — add module references
-2. `products/regjeringen-open-data-product.bicep` — associate API with product (if applicable)
+2. `infra/modules/api-management/products/{product-name}.bicep` — associate API with product (if applicable)
 3. `infra/main.bicepparam` — add Front Door route (if new path prefix)
 
 **Done when:** `az bicep build --file infra/main.bicep` succeeds.
