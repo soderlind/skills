@@ -227,7 +227,6 @@ npx skills add https://github.com/automattic/agent-skills --skill wp-block-devel
 npx skills add https://github.com/automattic/agent-skills --skill wordpress-router
 npx skills add https://github.com/automattic/agent-skills --skill wp-performance
 npx skills add https://github.com/automattic/agent-skills --skill wp-wpcli-and-ops
-npx skills add https://github.com/jeffallan/claude-skills --skill wordpress-pro
 ```
 
 Completion criterion: Each listed skill is installed or explicitly skipped because it already exists.

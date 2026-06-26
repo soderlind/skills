@@ -115,7 +115,6 @@ export function detectProjectState(targetRoot = process.cwd()) {
             "wordpress-router": skillExists("wordpress-router"),
             "wp-performance": skillExists("wp-performance"),
             "wp-wpcli-and-ops": skillExists("wp-wpcli-and-ops"),
-            "wordpress-pro": skillExists("wordpress-pro"),
         },
 
         // Composer packages

@@ -83,9 +83,7 @@ function buildPlan(state, phases) {
     add("init", initCommands.length > 0 ? "Initialize project files" : "Init phase already satisfied", initCommands, initNotes);
 
     const skillCommands = skillsToInstall.map((name) => {
-        if (name === "wordpress-pro") {
-            return "npx skills add https://github.com/jeffallan/claude-skills --skill wordpress-pro";
-        }
+
         return `npx skills add https://github.com/automattic/agent-skills --skill ${name}`;
     });
     add("skills", skillCommands.length > 0 ? "Install missing agent skills" : "All agent skills already present", skillCommands, []);
