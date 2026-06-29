@@ -57,12 +57,12 @@ Inspect these files if they exist:
 
 - Main plugin file (`Version:` header)
 - `readme.txt` (`Stable tag:` and `== Changelog ==`)
-- `package.json` (`version` field and available scripts)
+- `package.json` (`version` field and `scripts` object — extract script names for step 5)
 - `package-lock.json` or `npm-shrinkwrap.json`
-- `composer.json` (available scripts)
+- `composer.json` (`scripts` object — extract script names for step 5)
 - `CHANGELOG.md`
 
-Completion criterion: Current version sources and candidate changelog commits are collected before any edits.
+Completion criterion: Current version sources, candidate changelog commits, and available scripts are collected before any edits.
 
 ### 1) Validate the target version
 
@@ -156,23 +156,23 @@ Completion criterion: Existing build command(s) completed or the exact skip reas
 
 ### 5) Run tests and checks
 
-Run available tests. Use scripts already defined by the project; skip missing scripts cleanly.
+Run only the tests and checks that exist in the project. Detect available scripts by inspecting `package.json` and `composer.json`:
 
-Recommended order:
+#### Detect available scripts
 
-```sh
-composer validate --no-check-publish
-composer run test
-composer run lint
-npm test --if-present
-npm run test:js --if-present
-```
+From `package.json`, read the `scripts` object. Common test-related scripts include `test`, `test:unit`, `test:js`, `lint`, `lint:js`, `lint:css`, `check`, `phpcs`. Only run scripts that are actually defined.
 
-If the project has a plugin-check script, run it when the local WordPress/WP-CLI environment is available:
+From `composer.json`, read the `scripts` object. Common test-related scripts include `test`, `test:unit`, `phpunit`, `lint`, `phpcs`, `check`, `analyze`, `stan`. Only run scripts that are actually defined.
 
-```sh
-composer run check
-```
+#### Execution order
+
+1. If `composer.json` exists: run `composer validate --no-check-publish`.
+2. For each test/lint/check script found in `composer.json`, run it with `composer run <script>`.
+3. For each test/lint/check script found in `package.json`, run it with `npm run <script>`.
+
+Do not assume scripts exist. If a project has no test scripts defined, report that no tests were found and continue.
+
+If a script requires a local WordPress/WP-CLI environment that is not available, report the skip reason.
 
 Report any command that could not run because a tool, dependency, or local WordPress environment was missing.
 
