@@ -4,6 +4,8 @@ Public AI agent skills for WordPress development, JavaScript modernization, and 
 
 [![skills.sh](https://skills.sh/b/soderlind/skills)](https://skills.sh/soderlind/skills)
 
+[Available Skills](#available-skills) · [Install](#install) · [Usage](#usage) · [Invocation Strategy](#invocation-strategy) · [Skill Notes](#skill-notes)
+
 ## Available Skills
 
 | Skill | Purpose |
