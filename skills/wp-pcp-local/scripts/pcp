@@ -12,7 +12,12 @@
 #   pcp                             # auto-detect site + plugin from CWD
 #   pcp <slug> [check-args...]      # explicit plugin slug
 #   pcp --site=<name> <slug> [...]  # explicit site + slug
+#   pcp --url=<subsite-url> [slug]  # target a multisite subsite via --url
 #   pcp --list                      # show all sites with status
+#
+# On multisite, target a subsite with --url=<subsite-url>. Plugin Check must be
+# network-activated so its `plugin check` command is registered network-wide.
+# When the slug auto-detects from CWD, do NOT pass it again.
 #
 # Any additional arguments are forwarded to `wp plugin check`, e.g.:
 #   pcp my-plugin --format=csv --categories=plugin_repo
@@ -172,21 +177,62 @@ auto_detect_plugin() {
 }
 
 # -- Parse arguments -------------------------------------------------------
+#
+# Flags may appear in any order. --site= and --url= select the target site
+# (--url is the usual way to target a subsite on multisite). The first bare
+# word is the plugin slug; every other flag/word is forwarded to
+# `wp plugin check`.
 
 SITE_NAME=""
+SITE_URL=""
+EXPLICIT_SLUG=""
+DO_LIST=0
+PASSTHRU=()
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --list)
+      DO_LIST=1
+      shift
+      ;;
+    --site=*)
+      SITE_NAME="${1#--site=}"
+      shift
+      ;;
+    --url=*)
+      SITE_URL="${1#--url=}"
+      shift
+      ;;
+    --)
+      shift
+      while [[ $# -gt 0 ]]; do
+        PASSTHRU+=("$1")
+        shift
+      done
+      ;;
+    -*)
+      # Any other flag is forwarded to `wp plugin check`.
+      PASSTHRU+=("$1")
+      shift
+      ;;
+    *)
+      # First bare word is the plugin slug; extras are forwarded.
+      if [[ -z "$EXPLICIT_SLUG" ]]; then
+        EXPLICIT_SLUG="$1"
+      else
+        PASSTHRU+=("$1")
+      fi
+      shift
+      ;;
+  esac
+done
 
 # Handle --list
-if [[ "${1:-}" == "--list" ]]; then
+if [[ "$DO_LIST" -eq 1 ]]; then
   echo "Local by Flywheel sites:"
   echo ""
   list_sites
   exit 0
-fi
-
-# Handle --site=<name>
-if [[ "${1:-}" == --site=* ]]; then
-  SITE_NAME="${1#--site=}"
-  shift
 fi
 
 # -- Resolve site ----------------------------------------------------------
@@ -219,20 +265,25 @@ IFS='|' read -r SITE_ID SITE_NAME SITE_PATH PHP_VER MYSQL_VER <<< "$SITE_INFO"
 WP_PATH="$SITE_PATH/app/public"
 
 # -- Resolve plugin slug ---------------------------------------------------
+#
+# An explicit slug argument wins; otherwise fall back to CWD auto-detection.
+# The slug is only ever emitted once, so running from inside a plugin
+# directory while also passing the same slug can never produce a duplicate
+# positional argument for `wp plugin check`.
 
-PLUGIN_SLUG=""
+DETECTED_SLUG=$(auto_detect_plugin 2>/dev/null || true)
 
-# First non-flag argument (not starting with '-') is treated as the slug.
-if [[ $# -gt 0 && "${1:0:1}" != "-" ]]; then
-  PLUGIN_SLUG="$1"
-  shift
+if [[ -n "$EXPLICIT_SLUG" ]]; then
+  PLUGIN_SLUG="$EXPLICIT_SLUG"
 else
-  PLUGIN_SLUG=$(auto_detect_plugin 2>/dev/null) || true
-  if [[ -z "$PLUGIN_SLUG" ]]; then
-    echo "Error: No plugin slug provided and none could be auto-detected." >&2
-    echo "Pass a slug (pcp <slug>) or cd into wp-content/plugins/<slug>." >&2
-    exit 1
-  fi
+  PLUGIN_SLUG="$DETECTED_SLUG"
+fi
+
+if [[ -z "$PLUGIN_SLUG" ]]; then
+  echo "Error: No plugin slug provided and none could be auto-detected." >&2
+  echo "Pass a slug (pcp <slug>) or cd into wp-content/plugins/<slug>." >&2
+  echo "Tip: when the slug auto-detects from CWD, do not pass it again." >&2
+  exit 1
 fi
 
 # -- Warn if site is not running ------------------------------------------
@@ -281,17 +332,49 @@ fi
 
 export PATH="$MYSQL_BIN_DIR:$PATH"
 
-# -- Verify the Plugin Check plugin is available --------------------------
+# -- WP-CLI global arguments ----------------------------------------------
+#
+# --url selects a specific (sub)site on multisite and is a WP-CLI *global*
+# parameter, so it must precede the `plugin check` subcommand. Keeping it
+# here (rather than in the passthrough list) guarantees WP-CLI never sees a
+# second positional plugin argument.
 
-if ! "$PHP_BIN" -c "$PHP_INI" "$WP_CLI_BIN" --path="$WP_PATH" cli has-command "plugin check" >/dev/null 2>&1; then
-  echo "Error: The 'plugin check' command is not available on '$SITE_NAME'." >&2
-  echo "Install and activate the Plugin Check plugin first, e.g. via wp-cli-local:" >&2
-  echo "  bash <wp-cli-local>/scripts/wp --site=$SITE_NAME plugin install plugin-check --activate" >&2
+WP_GLOBAL=(--path="$WP_PATH")
+if [[ -n "$SITE_URL" ]]; then
+  WP_GLOBAL+=(--url="$SITE_URL")
+fi
+
+# -- Detect multisite ------------------------------------------------------
+
+IS_MULTISITE=0
+if "$PHP_BIN" -c "$PHP_INI" "$WP_CLI_BIN" "${WP_GLOBAL[@]}" core is-installed --network >/dev/null 2>&1; then
+  IS_MULTISITE=1
+fi
+
+# -- Verify the Plugin Check plugin is available --------------------------
+#
+# The `plugin check` command is only registered where Plugin Check is
+# active. Probe the resolved --url/subsite (falling back to the network main
+# site). On multisite the command must be registered network-wide, so if it
+# is missing we recommend network activation rather than single-site.
+
+if ! "$PHP_BIN" -c "$PHP_INI" "$WP_CLI_BIN" "${WP_GLOBAL[@]}" cli has-command "plugin check" >/dev/null 2>&1; then
+  echo "Error: The 'plugin check' command is not available on '$SITE_NAME'${SITE_URL:+ ($SITE_URL)}." >&2
+  if [[ "$IS_MULTISITE" -eq 1 ]]; then
+    echo "This is a WordPress multisite. Plugin Check must be network-activated" >&2
+    echo "so its WP-CLI command is registered network-wide. Via wp-cli-local:" >&2
+    echo "  bash <wp-cli-local>/scripts/wp --site=$SITE_NAME plugin install plugin-check --activate --network" >&2
+    echo "  # or, if already installed:" >&2
+    echo "  bash <wp-cli-local>/scripts/wp --site=$SITE_NAME plugin activate plugin-check --network" >&2
+  else
+    echo "Install and activate the Plugin Check plugin first, e.g. via wp-cli-local:" >&2
+    echo "  bash <wp-cli-local>/scripts/wp --site=$SITE_NAME plugin install plugin-check --activate" >&2
+  fi
   exit 1
 fi
 
 # -- Execute Plugin Check --------------------------------------------------
 
-echo "[$SITE_NAME] wp plugin check $PLUGIN_SLUG $*" >&2
+echo "[$SITE_NAME] wp ${SITE_URL:+--url=$SITE_URL }plugin check $PLUGIN_SLUG ${PASSTHRU[*]:-}" >&2
 
-exec "$PHP_BIN" -c "$PHP_INI" "$WP_CLI_BIN" --path="$WP_PATH" plugin check "$PLUGIN_SLUG" "$@"
+exec "$PHP_BIN" -c "$PHP_INI" "$WP_CLI_BIN" "${WP_GLOBAL[@]}" plugin check "$PLUGIN_SLUG" ${PASSTHRU[@]+"${PASSTHRU[@]}"}
