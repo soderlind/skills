@@ -18,22 +18,45 @@ bash {{SKILL_DIR}}/scripts/wp <wp-cli-command...>
 
 Apply [DETERMINISM-CHECKLIST.md](../DETERMINISM-CHECKLIST.md) for this skill run.
 
+## Shell compatibility (zsh vs bash)
+
+The default shell in macOS and VS Code terminals is **zsh**, which does **not** word-split unquoted variable expansions. A pattern like `WP="bash .../wp"` followed by `$WP plugin list` runs the whole string as a single command name in zsh and fails with `no such file or directory`.
+
+To make examples work on the first try in both bash and zsh, either:
+
+- **Invoke the wrapper as a full command** (recommended for agents):
+
+  ```bash
+  bash "{{SKILL_DIR}}/scripts/wp" --site=my-site plugin list
+  ```
+
+- **Or define a shell function wrapper** that forwards arguments correctly in both shells:
+
+  ```bash
+  wp() { bash "{{SKILL_DIR}}/scripts/wp" "$@"; }
+
+  wp plugin list
+  ```
+
+Do **not** use a bare `$WP` variable to hold the command. If a variable is truly required in zsh, force word-splitting with `${=WP}` (e.g. `${=WP} plugin list`).
+
 ## Site Detection
 
 The wrapper **auto-detects the site** by matching the current working directory against site paths in Local's `sites.json`. No site name argument is needed when the terminal is inside a Local site directory.
 
 ```bash
-WP="bash {{SKILL_DIR}}/scripts/wp"
+# Define a function wrapper (works in bash and zsh)
+wp() { bash "{{SKILL_DIR}}/scripts/wp" "$@"; }
 
 # Auto-detect (CWD must be inside a Local site directory)
-$WP plugin list
-$WP core version
+wp plugin list
+wp core version
 
 # Explicit site override
-$WP --site=my-site plugin list
+wp --site=my-site plugin list
 
 # List all sites with running/halted status
-$WP --list
+wp --list
 ```
 
 **If auto-detection fails** (CWD is not inside any Local site) and no `--site=` is given, the script prints available sites. Ask the user which site to target, or use `--site=<name>`.
@@ -50,48 +73,49 @@ Completion criterion: A target site is explicitly resolved by auto-detection or 
 ## Common Commands
 
 ```bash
-WP="bash {{SKILL_DIR}}/scripts/wp"
+# Define a function wrapper (works in bash and zsh)
+wp() { bash "{{SKILL_DIR}}/scripts/wp" "$@"; }
 
 # Plugin management
-$WP plugin list
-$WP plugin activate <slug>
-$WP plugin deactivate <slug>
-$WP plugin status <slug>
+wp plugin list
+wp plugin activate <slug>
+wp plugin deactivate <slug>
+wp plugin status <slug>
 
 # Cache / transients
-$WP cache flush
-$WP transient delete --all
+wp cache flush
+wp transient delete --all
 
 # Options
-$WP option get <key>
-$WP option update <key> <value>
-$WP option list --search="<pattern>"
+wp option get <key>
+wp option update <key> <value>
+wp option list --search="<pattern>"
 
 # Database
-$WP db query "SELECT * FROM wp_options WHERE option_name LIKE '<pattern>%' LIMIT 10;"
-$WP db export backup.sql
-$WP db import backup.sql
+wp db query "SELECT * FROM wp_options WHERE option_name LIKE '<pattern>%' LIMIT 10;"
+wp db export backup.sql
+wp db import backup.sql
 
 # Eval PHP
-$WP eval 'echo get_option("siteurl");'
-$WP eval-file script.php
+wp eval 'echo get_option("siteurl");'
+wp eval-file script.php
 
 # Rewrites / cron
-$WP rewrite flush
-$WP cron event list
-$WP cron event run <hook>
+wp rewrite flush
+wp cron event list
+wp cron event run <hook>
 
 # User / site info
-$WP user list
-$WP option get siteurl
-$WP core version
+wp user list
+wp option get siteurl
+wp core version
 ```
 
 ## Failure modes / recovery
 
 - `WP-CLI not found`: Verify `wp --info` works in PATH, then retry wrapper command.
 - `Site is not running`: Start the Local site first, then rerun command.
-- `Auto-detection failed`: Run `$WP --list`, then rerun with `--site=<name>`.
+- `Auto-detection failed`: Run `wp --list` (or `bash "{{SKILL_DIR}}/scripts/wp" --list`), then rerun with `--site=<name>`.
 - `Wrapper path issue`: Use absolute wrapper path from `{{SKILL_DIR}}/scripts/wp` and retry.
 
 **Note:** The AI agent should always use the wrapper script, not direnv. The direnv setup is a convenience for the user's own interactive terminal sessions.

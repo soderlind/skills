@@ -7,6 +7,7 @@
       "description": "Skills for WordPress plugin and theme development.",
       "skills": [
         "wp-cli-local",
+        "wp-pcp-local",
         "prepare-wordpress",
         "wp-bump"
       ]
