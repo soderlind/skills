@@ -11,6 +11,7 @@ Public AI agent skills for WordPress development, JavaScript modernization, and 
 | [`add-apim-api`](https://skills.sh/soderlind/skills/add-apim-api) | Scaffold a new API in Azure API Management with Bicep infrastructure. |
 | [`browser-native`](https://skills.sh/soderlind/skills/browser-native) | Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs. |
 | [`wp-cli-local`](https://skills.sh/soderlind/skills/wp-cli-local) | Run WP-CLI commands against Local by Flywheel sites on macOS. |
+| [`wp-pcp-local`](https://skills.sh/soderlind/skills/wp-pcp-local) | Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS. |
 | [`prepare-wordpress`](https://skills.sh/soderlind/skills/prepare-wordpress) | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
 | [`wp-bump`](https://skills.sh/soderlind/skills/wp-bump) | Bump a WordPress plugin version and update related release metadata. |
 
@@ -21,6 +22,7 @@ Install a skill globally with `npx skills add`:
 ```sh
 npx skills add soderlind/skills --skill add-apim-api -g
 npx skills add soderlind/skills --skill wp-cli-local -g
+npx skills add soderlind/skills --skill wp-pcp-local -g
 npx skills add soderlind/skills --skill prepare-wordpress -g
 npx skills add soderlind/skills --skill wp-bump -g
 npx skills add soderlind/skills --skill browser-native -g
@@ -31,6 +33,7 @@ Install all detected agent integrations without prompts:
 ```sh
 npx skills add soderlind/skills --skill add-apim-api -g --all
 npx skills add soderlind/skills --skill wp-cli-local -g --all
+npx skills add soderlind/skills --skill wp-pcp-local -g --all
 npx skills add soderlind/skills --skill prepare-wordpress -g --all
 npx skills add soderlind/skills --skill wp-bump -g --all
 npx skills add soderlind/skills --skill browser-native -g --all
@@ -53,6 +56,7 @@ Update a skill:
 ```sh
 npx skills update add-apim-api -g
 npx skills update wp-cli-local -g
+npx skills update wp-pcp-local -g
 npx skills update prepare-wordpress -g
 npx skills update wp-bump -g
 npx skills update browser-native -g
@@ -63,6 +67,7 @@ Remove a skill:
 ```sh
 npx skills remove add-apim-api -g
 npx skills remove wp-cli-local -g
+npx skills remove wp-pcp-local -g
 npx skills remove prepare-wordpress -g
 npx skills remove wp-bump -g
 npx skills remove browser-native -g
@@ -125,6 +130,24 @@ The skill always routes WP-CLI through its bundled wrapper:
 
 ```sh
 bash skills/wp-cli-local/scripts/wp --list
+```
+
+### wp-pcp-local
+
+Use this to run the WordPress Plugin Check (PCP) against a plugin on a Local by Flywheel site.
+
+Prerequisites:
+
+- macOS
+- Local by Flywheel installed
+- WP-CLI installed and available in `PATH`
+- The [Plugin Check](https://wordpress.org/plugins/plugin-check/) plugin installed and activated on the target site
+- The target Local site is running
+
+The skill routes Plugin Check through its bundled wrapper, auto-detecting the site and plugin slug from the current directory:
+
+```sh
+bash skills/wp-pcp-local/scripts/pcp my-plugin
 ```
 
 ### prepare-wordpress
@@ -201,12 +224,16 @@ skills/
   wp-cli-local/
     SKILL.md
     scripts/
+  wp-pcp-local/
+    SKILL.md
+    scripts/
 ```
 
 ## Licenses
 
 - `add-apim-api`: MIT.
 - `wp-cli-local`: MIT, as published in the original source repository.
+- `wp-pcp-local`: MIT, as published in the original source repository.
 - `prepare-wordpress`: GPL-2.0-or-later, as published in the original source repository.
 - `wp-bump`: GPL-2.0-or-later, distributed with `prepare-wordpress` in the original source repository.
 - `browser-native`: MIT, as published in the original source repository.
