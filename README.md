@@ -4,7 +4,7 @@ Public AI agent skills for WordPress development, JavaScript modernization, and 
 
 [![skills.sh](https://skills.sh/b/soderlind/skills)](https://skills.sh/soderlind/skills)
 
-[Available Skills](#available-skills) · [Install](#install) · [Usage](#usage) · [Invocation Strategy](#invocation-strategy) · [Skill Notes](#skill-notes)
+[Available Skills](#available-skills) · [Related Skills](#related-skills-other-repositories) · [Install](#install) · [Usage](#usage) · [Invocation Strategy](#invocation-strategy) · [Skill Notes](#skill-notes)
 
 ## Available Skills
 
@@ -16,6 +16,14 @@ Public AI agent skills for WordPress development, JavaScript modernization, and 
 | [`wp-pcp-local`](https://skills.sh/soderlind/skills/wp-pcp-local) | Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS. |
 | [`prepare-wordpress`](https://skills.sh/soderlind/skills/prepare-wordpress) | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
 | [`wp-bump`](https://skills.sh/soderlind/skills/wp-bump) | Bump a WordPress plugin version and update related release metadata. |
+
+## Related Skills (other repositories)
+
+These live in their own repositories and install from there, not from `soderlind/skills`:
+
+| Skill | Purpose | Install |
+| --- | --- | --- |
+| [`use-just-bash-for-scripts`](https://github.com/soderlind/just-bash-runner) | Steer the agent to dry-run generated or untrusted shell scripts through [`just-bash`](https://github.com/vercel-labs/just-bash) before touching the real host. | `npx skills add soderlind/just-bash-runner` |
 
 ## Install
 
