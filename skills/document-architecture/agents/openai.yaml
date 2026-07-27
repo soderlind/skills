@@ -1,0 +1,4 @@
+interface:
+  display_name: "Document Architecture"
+  short_description: "Document software architecture and concepts"
+  default_prompt: "Use $document-architecture to document this repository’s architecture, concepts, flows, and invariants."
