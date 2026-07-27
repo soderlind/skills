@@ -25,6 +25,20 @@
       "skills": [
         "add-apim-api"
       ]
+    },
+    {
+      "title": "Documentation",
+      "description": "Skills for documenting repository architecture.",
+      "skills": [
+        "document-architecture"
+      ]
+    },
+    {
+      "title": "Security",
+      "description": "Skills for pre-launch security and abuse-resistance audits.",
+      "skills": [
+        "pre-launch-security-audit"
+      ]
     }
   ]
 }

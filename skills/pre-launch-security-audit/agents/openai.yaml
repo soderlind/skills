@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pre-launch Security Audit"
+  short_description: "Audit apps for launch security and abuse risks"
+  default_prompt: "Use $pre-launch-security-audit to assess this application before launch and produce an evidence-backed remediation checklist."

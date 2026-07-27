@@ -1,6 +1,6 @@
 # Skills
 
-Public AI agent skills for WordPress development, JavaScript modernization, and Azure infrastructure.
+Public AI agent skills for WordPress development, JavaScript modernization, Azure infrastructure, architecture documentation, and pre-launch security audits.
 
 [![skills.sh](https://skills.sh/b/soderlind/skills)](https://skills.sh/soderlind/skills)
 
@@ -16,6 +16,8 @@ Public AI agent skills for WordPress development, JavaScript modernization, and 
 | [`wp-pcp-local`](https://skills.sh/soderlind/skills/wp-pcp-local) | Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS. |
 | [`prepare-wordpress`](https://skills.sh/soderlind/skills/prepare-wordpress) | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
 | [`wp-bump`](https://skills.sh/soderlind/skills/wp-bump) | Bump a WordPress plugin version and update related release metadata. |
+| [`document-architecture`](https://skills.sh/soderlind/skills/document-architecture) | Create, improve, or audit repository architecture and concept documentation. |
+| [`pre-launch-security-audit`](https://skills.sh/soderlind/skills/pre-launch-security-audit) | Run an evidence-backed security and abuse-resistance review before an application launch. |
 
 ## Install
 
@@ -28,6 +30,8 @@ npx skills add soderlind/skills --skill wp-pcp-local -g
 npx skills add soderlind/skills --skill prepare-wordpress -g
 npx skills add soderlind/skills --skill wp-bump -g
 npx skills add soderlind/skills --skill browser-native -g
+npx skills add soderlind/skills --skill document-architecture -g
+npx skills add soderlind/skills --skill pre-launch-security-audit -g
 ```
 
 Install all detected agent integrations without prompts:
@@ -39,6 +43,8 @@ npx skills add soderlind/skills --skill wp-pcp-local -g --all
 npx skills add soderlind/skills --skill prepare-wordpress -g --all
 npx skills add soderlind/skills --skill wp-bump -g --all
 npx skills add soderlind/skills --skill browser-native -g --all
+npx skills add soderlind/skills --skill document-architecture -g --all
+npx skills add soderlind/skills --skill pre-launch-security-audit -g --all
 ```
 
 Preview the skills available from this repository:
@@ -62,6 +68,8 @@ npx skills update wp-pcp-local -g
 npx skills update prepare-wordpress -g
 npx skills update wp-bump -g
 npx skills update browser-native -g
+npx skills update document-architecture -g
+npx skills update pre-launch-security-audit -g
 ```
 
 Remove a skill:
@@ -73,6 +81,8 @@ npx skills remove wp-pcp-local -g
 npx skills remove prepare-wordpress -g
 npx skills remove wp-bump -g
 npx skills remove browser-native -g
+npx skills remove document-architecture -g
+npx skills remove pre-launch-security-audit -g
 ```
 
 ## Usage
@@ -87,6 +97,8 @@ Run wp-cli on my Local site and list plugins.
 Prepare this project for WordPress plugin development.
 Bump this WordPress plugin to 1.2.3.
 Scan this JavaScript project for dependencies that can be replaced by native browser APIs.
+Document the architecture of this repository for new contributors.
+Run a pre-launch security audit on this application.
 ```
 
 ## Invocation Strategy
@@ -204,6 +216,30 @@ Markdown report with before/after examples:
 node skills/browser-native/scripts/cli.js . --md
 ```
 
+### document-architecture
+
+Use this to create, improve, or audit repository architecture and concept documentation (architecture overviews, domain models, component boundaries, data/control flows, invariants, ADRs).
+
+Example prompt:
+
+```txt
+Document the architecture of this repository so a new contributor can navigate it.
+```
+
+The skill labels current vs. proposed states explicitly and verifies claims against the repository before writing docs; see [references/templates.md](skills/document-architecture/references/templates.md) for document templates.
+
+### pre-launch-security-audit
+
+Use this to run a stack-agnostic security and abuse-resistance review before launching an application (MVP, SaaS, AI app, public API, or mobile backend).
+
+Example prompt:
+
+```txt
+Run a pre-launch security audit on this app before we go live.
+```
+
+The skill inspects the repository first, tests failure cases, and ends with a launch recommendation (block, conditional, or baseline met) rather than a compliance certification; see [references/checklist.md](skills/pre-launch-security-audit/references/checklist.md) for the control set.
+
 ## Repository Layout
 
 Each skill lives in its own folder under `skills/`:
@@ -229,6 +265,14 @@ skills/
   wp-pcp-local/
     SKILL.md
     scripts/
+  document-architecture/
+    SKILL.md
+    agents/
+    references/
+  pre-launch-security-audit/
+    SKILL.md
+    agents/
+    references/
 ```
 
 ## Licenses
@@ -239,6 +283,8 @@ skills/
 - `prepare-wordpress`: GPL-2.0-or-later, as published in the original source repository.
 - `wp-bump`: GPL-2.0-or-later, distributed with `prepare-wordpress` in the original source repository.
 - `browser-native`: MIT, as published in the original source repository.
+- `document-architecture`: MIT.
+- `pre-launch-security-audit`: MIT.
 
 ## AI Contribution Attribution
 
