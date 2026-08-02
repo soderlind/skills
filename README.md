@@ -16,6 +16,7 @@ Public AI agent skills for WordPress development, JavaScript modernization, Azur
 | [`wp-pcp-local`](https://skills.sh/soderlind/skills/wp-pcp-local) | Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS. |
 | [`prepare-wordpress`](https://skills.sh/soderlind/skills/prepare-wordpress) | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
 | [`wp-bump`](https://skills.sh/soderlind/skills/wp-bump) | Bump a WordPress plugin version and update related release metadata. |
+| [`wp-mutate`](https://skills.sh/soderlind/skills/wp-mutate) | Run mutation testing on WordPress PHP and JavaScript to find weak tests, then triage surviving mutants. |
 | [`document-architecture`](https://skills.sh/soderlind/skills/document-architecture) | Create, improve, or audit repository architecture and concept documentation. |
 | [`pre-launch-security-audit`](https://skills.sh/soderlind/skills/pre-launch-security-audit) | Run an evidence-backed security and abuse-resistance review before an application launch. |
 
@@ -37,6 +38,7 @@ npx skills add soderlind/skills --skill wp-cli-local -g
 npx skills add soderlind/skills --skill wp-pcp-local -g
 npx skills add soderlind/skills --skill prepare-wordpress -g
 npx skills add soderlind/skills --skill wp-bump -g
+npx skills add soderlind/skills --skill wp-mutate -g
 npx skills add soderlind/skills --skill browser-native -g
 npx skills add soderlind/skills --skill document-architecture -g
 npx skills add soderlind/skills --skill pre-launch-security-audit -g
@@ -50,6 +52,7 @@ npx skills add soderlind/skills --skill wp-cli-local -g --all
 npx skills add soderlind/skills --skill wp-pcp-local -g --all
 npx skills add soderlind/skills --skill prepare-wordpress -g --all
 npx skills add soderlind/skills --skill wp-bump -g --all
+npx skills add soderlind/skills --skill wp-mutate -g --all
 npx skills add soderlind/skills --skill browser-native -g --all
 npx skills add soderlind/skills --skill document-architecture -g --all
 npx skills add soderlind/skills --skill pre-launch-security-audit -g --all
@@ -75,6 +78,7 @@ npx skills update wp-cli-local -g
 npx skills update wp-pcp-local -g
 npx skills update prepare-wordpress -g
 npx skills update wp-bump -g
+npx skills update wp-mutate -g
 npx skills update browser-native -g
 npx skills update document-architecture -g
 npx skills update pre-launch-security-audit -g
@@ -88,6 +92,7 @@ npx skills remove wp-cli-local -g
 npx skills remove wp-pcp-local -g
 npx skills remove prepare-wordpress -g
 npx skills remove wp-bump -g
+npx skills remove wp-mutate -g
 npx skills remove browser-native -g
 npx skills remove document-architecture -g
 npx skills remove pre-launch-security-audit -g
@@ -104,6 +109,7 @@ Add a new API to Azure API Management for my backend service.
 Run wp-cli on my Local site and list plugins.
 Prepare this project for WordPress plugin development.
 Bump this WordPress plugin to 1.2.3.
+Run mutation testing on this plugin and show me which tests are weak.
 Scan this JavaScript project for dependencies that can be replaced by native browser APIs.
 Document the architecture of this repository for new contributors.
 Run a pre-launch security audit on this application.
@@ -207,6 +213,40 @@ Run wp-bump for version 1.2.3.
 ```
 
 The skill does not create commits, tags, or releases unless you explicitly ask your agent to do so.
+
+### wp-mutate
+
+Use this to measure test *quality* rather than test coverage. Mutation testing changes your source in small ways and re-runs the suite; a mutant that survives marks a line that runs but is never asserted.
+
+Prerequisites:
+
+- An existing test suite. This skill does not create one — use `prepare-wordpress` first.
+- PHP: Pest 3+ (native `--mutate`) or PHPUnit (Infection), plus **Xdebug 3+ with `xdebug.mode=coverage`, or PCOV**. Without a coverage driver Pest refuses to start.
+- JavaScript: Vitest or Jest, for StrykerJS.
+
+Five failure modes are specific to WordPress plugins, and each one produces a clean-looking run rather than an error. The skill checks for all of them:
+
+- PCOV auto-detects `pcov.directory` and often picks an asset folder such as `lib/`, so every file reports 0.0% coverage.
+- Pest's `--everything` enumerates classes via PSR-4, so WordPress `class-*.php` filenames are invisible to it. Scope with `--path=` instead.
+- Pest's `--parallel` workers do not inherit `-d` ini flags, and mutants that time out are scored as killed — which can turn a real 60% into a reported 100%.
+- Brain Monkey (via Patchwork) stops Infection's mutants from taking effect: the run either exits 0 with no summary or reports MSI 0%. The skill blocks that combination and routes you to Pest.
+- StrykerJS copies Composer's `vendor/` into its sandbox unless `ignorePatterns` says otherwise, then tries to parse PHP CodeSniffer's HTML fixtures.
+
+Because all five look like ordinary output, the skill verifies the harness before reporting any score: mutants were created, at least one was killed, and the kills are not just time-outs.
+
+Preview what the skill would run against:
+
+```sh
+node skills/wp-mutate/scripts/detect_mutation_setup.mjs
+```
+
+Example prompt:
+
+```txt
+Run mutation testing on this plugin and show me which tests are weak.
+```
+
+The skill reports two scores (overall and covered-code only), ranks surviving mutants with untested security controls first, and proposes assertions one at a time rather than rewriting tests on its own; see [references/triage-playbook.md](skills/wp-mutate/references/triage-playbook.md) for the mutant-to-assertion mapping and [references/glossary.md](skills/wp-mutate/references/glossary.md) for the engine vocabulary differences.
 
 ### browser-native
 

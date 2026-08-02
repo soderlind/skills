@@ -9,7 +9,8 @@
         "wp-cli-local",
         "wp-pcp-local",
         "prepare-wordpress",
-        "wp-bump"
+        "wp-bump",
+        "wp-mutate"
       ]
     },
     {
