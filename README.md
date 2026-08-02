@@ -10,15 +10,15 @@ Public AI agent skills for WordPress development, JavaScript modernization, Azur
 
 | Skill | Purpose |
 | --- | --- |
-| [`add-apim-api`](https://skills.sh/soderlind/skills/add-apim-api) | Scaffold a new API in Azure API Management with Bicep infrastructure. |
-| [`browser-native`](https://skills.sh/soderlind/skills/browser-native) | Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs. |
-| [`wp-cli-local`](https://skills.sh/soderlind/skills/wp-cli-local) | Run WP-CLI commands against Local by Flywheel sites on macOS. |
-| [`wp-pcp-local`](https://skills.sh/soderlind/skills/wp-pcp-local) | Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS. |
-| [`prepare-wordpress`](https://skills.sh/soderlind/skills/prepare-wordpress) | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
-| [`wp-bump`](https://skills.sh/soderlind/skills/wp-bump) | Bump a WordPress plugin version and update related release metadata. |
-| [`wp-mutate`](https://skills.sh/soderlind/skills/wp-mutate) | Run mutation testing on WordPress PHP and JavaScript to find weak tests, then triage surviving mutants. |
-| [`document-architecture`](https://skills.sh/soderlind/skills/document-architecture) | Create, improve, or audit repository architecture and concept documentation. |
-| [`pre-launch-security-audit`](https://skills.sh/soderlind/skills/pre-launch-security-audit) | Run an evidence-backed security and abuse-resistance review before an application launch. |
+| [`add-apim-api`](#add-apim-api) | Scaffold a new API in Azure API Management with Bicep infrastructure. |
+| [`browser-native`](#browser-native) | Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs. |
+| [`wp-cli-local`](#wp-cli-local) | Run WP-CLI commands against Local by Flywheel sites on macOS. |
+| [`wp-pcp-local`](#wp-pcp-local) | Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS. |
+| [`prepare-wordpress`](#prepare-wordpress) | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
+| [`wp-bump`](#wp-bump) | Bump a WordPress plugin version and update related release metadata. |
+| [`wp-mutate`](#wp-mutate) | Run mutation testing on WordPress PHP and JavaScript to find weak tests, then triage surviving mutants. |
+| [`document-architecture`](#document-architecture) | Create, improve, or audit repository architecture and concept documentation. |
+| [`pre-launch-security-audit`](#pre-launch-security-audit) | Run an evidence-backed security and abuse-resistance review before an application launch. |
 
 ## Related Skills (other repositories)
 
@@ -127,6 +127,10 @@ When many user-invoked skills accumulate, add a lightweight router skill that ma
 
 ### add-apim-api
 
+```sh
+npx skills add soderlind/skills --skill add-apim-api -g
+```
+
 Use this to scaffold a new API in Azure API Management with Bicep infrastructure.
 
 Prerequisites:
@@ -145,6 +149,10 @@ The skill guides you through gathering requirements, creating Bicep files, and w
 
 ### wp-cli-local
 
+```sh
+npx skills add soderlind/skills --skill wp-cli-local -g
+```
+
 Use this when working with WordPress sites in Local by Flywheel.
 
 Prerequisites:
@@ -161,6 +169,10 @@ bash skills/wp-cli-local/scripts/wp --list
 ```
 
 ### wp-pcp-local
+
+```sh
+npx skills add soderlind/skills --skill wp-pcp-local -g
+```
 
 Use this to run the WordPress Plugin Check (PCP) against a plugin on a Local by Flywheel site.
 
@@ -179,6 +191,10 @@ bash skills/wp-pcp-local/scripts/pcp my-plugin
 ```
 
 ### prepare-wordpress
+
+```sh
+npx skills add soderlind/skills --skill prepare-wordpress -g
+```
 
 Use this to set up or refresh a WordPress project with common development tooling.
 
@@ -204,6 +220,10 @@ node skills/prepare-wordpress/scripts/plan_setup.mjs --apply --only=init,compose
 
 ### wp-bump
 
+```sh
+npx skills add soderlind/skills --skill wp-bump -g
+```
+
 Use this for WordPress plugin releases. It updates existing version fields, changelog entries, build outputs, and test checks according to the target project.
 
 Example prompt:
@@ -215,6 +235,10 @@ Run wp-bump for version 1.2.3.
 The skill does not create commits, tags, or releases unless you explicitly ask your agent to do so.
 
 ### wp-mutate
+
+```sh
+npx skills add soderlind/skills --skill wp-mutate -g
+```
 
 Use this to measure test *quality* rather than test coverage. Mutation testing changes your source in small ways and re-runs the suite; a mutant that survives marks a line that runs but is never asserted.
 
@@ -250,6 +274,10 @@ The skill reports two scores (overall and covered-code only), ranks surviving mu
 
 ### browser-native
 
+```sh
+npx skills add soderlind/skills --skill browser-native -g
+```
+
 Use this to scan JavaScript/Node.js dependencies and find packages that can be replaced with built-in APIs (`fetch`, `URL`, `structuredClone`, `crypto.randomUUID`, `Intl`, etc.).
 
 Run the local scanner directly:
@@ -266,6 +294,10 @@ node skills/browser-native/scripts/cli.js . --md
 
 ### document-architecture
 
+```sh
+npx skills add soderlind/skills --skill document-architecture -g
+```
+
 Use this to create, improve, or audit repository architecture and concept documentation (architecture overviews, domain models, component boundaries, data/control flows, invariants, ADRs).
 
 Example prompt:
@@ -277,6 +309,10 @@ Document the architecture of this repository so a new contributor can navigate i
 The skill labels current vs. proposed states explicitly and verifies claims against the repository before writing docs; see [references/templates.md](skills/document-architecture/references/templates.md) for document templates.
 
 ### pre-launch-security-audit
+
+```sh
+npx skills add soderlind/skills --skill pre-launch-security-audit -g
+```
 
 Use this to run a stack-agnostic security and abuse-resistance review before launching an application (MVP, SaaS, AI app, public API, or mobile backend).
 
