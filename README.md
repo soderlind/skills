@@ -74,11 +74,15 @@ Skills for pre-launch security and abuse-resistance audits.
 These live in their own repositories and install from there, not from `soderlind/skills`:
 
 <table>
-<thead><tr><th width="280">Skill</th><th>Purpose</th><th>Install</th></tr></thead>
+<thead><tr><th width="280">Skill</th><th>Purpose</th></tr></thead>
 <tbody>
-<tr><td nowrap><a href="https://github.com/soderlind/just-bash-runner"><samp>use-just-bash-for-scripts</samp></a></td><td>Steer the agent to dry-run generated or untrusted shell scripts through <a href="https://github.com/vercel-labs/just-bash"><code>just-bash</code></a> before touching the real host.</td><td nowrap><samp>npx skills add soderlind/just-bash-runner</samp></td></tr>
+<tr><td nowrap><a href="https://github.com/soderlind/just-bash-runner"><samp>use-just-bash-for-scripts</samp></a></td><td>Steer the agent to dry-run generated or untrusted shell scripts through <a href="https://github.com/vercel-labs/just-bash"><code>just-bash</code></a> before touching the real host.</td></tr>
 </tbody>
 </table>
+
+```sh
+npx skills add soderlind/just-bash-runner
+```
 
 ## Install
 
