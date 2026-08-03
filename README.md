@@ -86,72 +86,33 @@ npx skills add soderlind/just-bash-runner
 
 ## Install
 
-Install a skill globally with `npx skills add`:
+Every skill installs with the [skills](https://skills.sh) CLI. `-g` installs globally, so the skill is available in every project.
+
+Install all skills from this repository:
 
 ```sh
-npx skills add soderlind/skills --skill add-apim-api -g
-npx skills add soderlind/skills --skill wp-cli-local -g
-npx skills add soderlind/skills --skill wp-pcp-local -g
-npx skills add soderlind/skills --skill prepare-wordpress -g
+npx skills add soderlind/skills -g
+```
+
+Install a single skill — swap in any name from [Available Skills](#available-skills):
+
+```sh
 npx skills add soderlind/skills --skill wp-bump -g
-npx skills add soderlind/skills --skill wp-mutate -g
-npx skills add soderlind/skills --skill browser-native -g
-npx skills add soderlind/skills --skill document-architecture -g
-npx skills add soderlind/skills --skill pre-launch-security-audit -g
 ```
 
-Install all detected agent integrations without prompts:
+Add `--all` to install into every detected agent integration without prompts:
 
 ```sh
-npx skills add soderlind/skills --skill add-apim-api -g --all
-npx skills add soderlind/skills --skill wp-cli-local -g --all
-npx skills add soderlind/skills --skill wp-pcp-local -g --all
-npx skills add soderlind/skills --skill prepare-wordpress -g --all
-npx skills add soderlind/skills --skill wp-bump -g --all
-npx skills add soderlind/skills --skill wp-mutate -g --all
-npx skills add soderlind/skills --skill browser-native -g --all
-npx skills add soderlind/skills --skill document-architecture -g --all
-npx skills add soderlind/skills --skill pre-launch-security-audit -g --all
+npx skills add soderlind/skills -g --all
 ```
 
-Preview the skills available from this repository:
+Browse, list, update, and remove:
 
 ```sh
-npx skills add soderlind/skills --list
-```
-
-List installed skills:
-
-```sh
-npx skills list -g
-```
-
-Update a skill:
-
-```sh
-npx skills update add-apim-api -g
-npx skills update wp-cli-local -g
-npx skills update wp-pcp-local -g
-npx skills update prepare-wordpress -g
-npx skills update wp-bump -g
-npx skills update wp-mutate -g
-npx skills update browser-native -g
-npx skills update document-architecture -g
-npx skills update pre-launch-security-audit -g
-```
-
-Remove a skill:
-
-```sh
-npx skills remove add-apim-api -g
-npx skills remove wp-cli-local -g
-npx skills remove wp-pcp-local -g
-npx skills remove prepare-wordpress -g
-npx skills remove wp-bump -g
-npx skills remove wp-mutate -g
-npx skills remove browser-native -g
-npx skills remove document-architecture -g
-npx skills remove pre-launch-security-audit -g
+npx skills add soderlind/skills --list   # preview the skills in this repository
+npx skills list -g                       # list installed skills
+npx skills update wp-bump -g             # update one skill
+npx skills remove wp-bump -g             # remove one skill
 ```
 
 ## Usage
