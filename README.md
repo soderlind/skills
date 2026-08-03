@@ -2,7 +2,6 @@
 
 Public AI agent skills for WordPress development, JavaScript modernization, Azure infrastructure, architecture documentation, and pre-launch security audits.
 
-
 [![skills.sh](https://skills.sh/b/soderlind/skills)](https://skills.sh/soderlind/skills)
 
 [Available Skills](#available-skills) · [Related Skills](#related-skills-other-repositories) · [Install](#install) · [Usage](#usage) · [Invocation Strategy](#invocation-strategy) · [Skill Notes](#skill-notes)
@@ -112,6 +111,31 @@ npx skills add soderlind/skills --list   # preview the skills in this repository
 npx skills list -g                       # list installed skills
 npx skills update wp-bump -g             # update one skill
 npx skills remove wp-bump -g             # remove one skill
+```
+
+### Discovery index
+
+These skills are published as an [Agent Skills discovery index](https://github.com/cloudflare/agent-skills-discovery-rfc) (schema v0.2.0), so agents can enumerate and fetch them without the CLI:
+
+```sh
+curl https://soderlind.no/.well-known/agent-skills/index.json
+```
+
+Each entry carries a `sha256:` digest of its artifact — a single `SKILL.md` for skills with no supporting files, otherwise a `.tar.gz` of the skill directory. Clients must verify the digest before use and must not execute anything under `scripts/` without explicit approval.
+
+Regenerate the index and archives after changing any skill, then deploy the whole `.well-known/agent-skills/` directory to the `soderlind.no` document root — it is self-contained, and every `url` in the index resolves inside it:
+
+```sh
+node scripts/build-agent-skills-index.mjs           # rebuild
+node scripts/build-agent-skills-index.mjs --check   # fail if the committed output is stale (runs in CI)
+```
+
+The server must send `application/json` for `index.json`, `application/gzip` for `.tar.gz`, and `text/markdown` or `text/plain` for `SKILL.md`.
+
+Archives are byte-reproducible (fixed mtimes, sorted entries), so unchanged skills produce unchanged digests. Use `--base-url` to point the index at a different origin:
+
+```sh
+node scripts/build-agent-skills-index.mjs --base-url https://example.com
 ```
 
 ## Usage
@@ -345,6 +369,10 @@ The skill inspects the repository first, tests failure cases, and ends with a la
 Each skill lives in its own folder under `skills/`:
 
 ```txt
+.well-known/
+  agent-skills/            # generated discovery index + skill archives
+scripts/
+  build-agent-skills-index.mjs
 skills/
   add-apim-api/
     SKILL.md
