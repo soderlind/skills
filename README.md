@@ -14,53 +14,71 @@ Public AI agent skills for WordPress development, JavaScript modernization, Azur
 
 Skills for WordPress plugin and theme development.
 
-| Skill | Purpose |
-| --- | --- |
-| [`prepare-wordpress`](#prepare-wordpress) | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
-| [`wp-bump`](#wp-bump) | Bump a WordPress plugin version and update related release metadata. |
-| [`wp-cli-local`](#wp-cli-local) | Run WP-CLI commands against Local by Flywheel sites on macOS. |
-| [`wp-mutate`](#wp-mutate) | Run mutation testing on WordPress PHP and JavaScript to find weak tests, then triage surviving mutants. |
-| [`wp-pcp-local`](#wp-pcp-local) | Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS. |
+<table>
+<thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td nowrap><a href="#prepare-wordpress"><code>prepare-wordpress</code></a></td><td>Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support.</td></tr>
+<tr><td nowrap><a href="#wp-bump"><code>wp-bump</code></a></td><td>Bump a WordPress plugin version and update related release metadata.</td></tr>
+<tr><td nowrap><a href="#wp-cli-local"><code>wp-cli-local</code></a></td><td>Run WP-CLI commands against Local by Flywheel sites on macOS.</td></tr>
+<tr><td nowrap><a href="#wp-mutate"><code>wp-mutate</code></a></td><td>Run mutation testing on WordPress PHP and JavaScript to find weak tests, then triage surviving mutants.</td></tr>
+<tr><td nowrap><a href="#wp-pcp-local"><code>wp-pcp-local</code></a></td><td>Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS.</td></tr>
+</tbody>
+</table>
 
 ### JavaScript
 
 Skills for JavaScript modernization and dependency audits.
 
-| Skill | Purpose |
-| --- | --- |
-| [`browser-native`](#browser-native) | Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs. |
+<table>
+<thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td nowrap><a href="#browser-native"><code>browser-native</code></a></td><td>Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs.</td></tr>
+</tbody>
+</table>
 
 ### Azure
 
 Skills for Azure infrastructure and API Management.
 
-| Skill | Purpose |
-| --- | --- |
-| [`add-apim-api`](#add-apim-api) | Scaffold a new API in Azure API Management with Bicep infrastructure. |
+<table>
+<thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td nowrap><a href="#add-apim-api"><code>add-apim-api</code></a></td><td>Scaffold a new API in Azure API Management with Bicep infrastructure.</td></tr>
+</tbody>
+</table>
 
 ### Documentation
 
 Skills for documenting repository architecture.
 
-| Skill | Purpose |
-| --- | --- |
-| [`document-architecture`](#document-architecture) | Create, improve, or audit repository architecture and concept documentation. |
+<table>
+<thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td nowrap><a href="#document-architecture"><code>document-architecture</code></a></td><td>Create, improve, or audit repository architecture and concept documentation.</td></tr>
+</tbody>
+</table>
 
 ### Security
 
 Skills for pre-launch security and abuse-resistance audits.
 
-| Skill | Purpose |
-| --- | --- |
-| [`pre-launch-security-audit`](#pre-launch-security-audit) | Run an evidence-backed security and abuse-resistance review before an application launch. |
+<table>
+<thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td nowrap><a href="#pre-launch-security-audit"><code>pre-launch-security-audit</code></a></td><td>Run an evidence-backed security and abuse-resistance review before an application launch.</td></tr>
+</tbody>
+</table>
 
 ## Related Skills (other repositories)
 
 These live in their own repositories and install from there, not from `soderlind/skills`:
 
-| Skill | Purpose | Install |
-| --- | --- | --- |
-| [`use-just-bash-for-scripts`](https://github.com/soderlind/just-bash-runner) | Steer the agent to dry-run generated or untrusted shell scripts through [`just-bash`](https://github.com/vercel-labs/just-bash) before touching the real host. | `npx skills add soderlind/just-bash-runner` |
+<table>
+<thead><tr><th>Skill</th><th>Purpose</th><th>Install</th></tr></thead>
+<tbody>
+<tr><td nowrap><a href="https://github.com/soderlind/just-bash-runner"><code>use-just-bash-for-scripts</code></a></td><td>Steer the agent to dry-run generated or untrusted shell scripts through <a href="https://github.com/vercel-labs/just-bash"><code>just-bash</code></a> before touching the real host.</td><td nowrap><code>npx skills add soderlind/just-bash-runner</code></td></tr>
+</tbody>
+</table>
 
 ## Install
 
