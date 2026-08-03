@@ -1,11 +1,17 @@
 ---
 name: document-architecture
-description: Create, improve, or audit repository architecture and concept documentation. Use when asked to document a codebase's architecture, domain model, component boundaries, data or control flows, invariants, failure behavior, change locations, or architectural decisions; create architecture.md, system-context, component, glossary, or ADR documents; make a repository easier for developers or AI coding agents to understand; or reconcile stale architecture documentation with code.
+description: "Create, improve, or audit repository architecture and concept documentation. Use when asked to document a codebase's architecture, domain model, component boundaries, data or control flows, invariants, failure behavior, change locations, or architectural decisions; create architecture.md, system-context, component, glossary, or ADR documents; make a repository easier for developers or AI coding agents to understand; or reconcile stale architecture documentation with code."
+compatibility: "Any repository or language. Read-only inspection plus Markdown output; no network access required."
+version: "1.0.0"
 ---
 
 # Document Architecture
 
 Produce an evidence-backed map of a software system that lets an unfamiliar developer or coding agent locate responsibilities, trace behavior, and change the system without violating its constraints.
+
+## Determinism checklist
+
+Apply [DETERMINISM-CHECKLIST.md](../DETERMINISM-CHECKLIST.md) for this skill run.
 
 ## Workflow
 

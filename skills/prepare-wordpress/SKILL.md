@@ -32,7 +32,7 @@ Apply [DETERMINISM-CHECKLIST.md](../DETERMINISM-CHECKLIST.md) for this skill run
 Run the detection script to discover what already exists:
 
 ```sh
-node skills/prepare-wordpress/scripts/detect_project.mjs
+node {{SKILL_DIR}}/scripts/detect_project.mjs
 ```
 
 This outputs JSON with booleans for each component. Use it to skip phases that are already configured. Report to the user what will be added and what will be skipped.
@@ -58,35 +58,35 @@ Hard gate: Do not run any `--apply` command until dry-run output is shown and th
 Use the planner script to preview actions:
 
 ```sh
-node skills/prepare-wordpress/scripts/plan_setup.mjs --dry-run
+node {{SKILL_DIR}}/scripts/plan_setup.mjs --dry-run
 ```
 
 Feature flags:
 
 ```sh
 # Run only selected phases
-node skills/prepare-wordpress/scripts/plan_setup.mjs --dry-run --only=init,composer,config
+node {{SKILL_DIR}}/scripts/plan_setup.mjs --dry-run --only=init,composer,config
 
 # Skip selected phases
-node skills/prepare-wordpress/scripts/plan_setup.mjs --dry-run --skip=skills,vitest
+node {{SKILL_DIR}}/scripts/plan_setup.mjs --dry-run --skip=skills,vitest
 ```
 
 Apply safe shell commands from the plan (manual file merges are still called out as notes):
 
 ```sh
-node skills/prepare-wordpress/scripts/plan_setup.mjs --apply --only=init,skills,composer
+node {{SKILL_DIR}}/scripts/plan_setup.mjs --apply --only=init,skills,composer
 ```
 
 Machine-readable dry-run output for automation:
 
 ```sh
-node skills/prepare-wordpress/scripts/plan_setup.mjs --json --only=init,composer
+node {{SKILL_DIR}}/scripts/plan_setup.mjs --json --only=init,composer
 ```
 
 Machine-readable apply output with command execution results:
 
 ```sh
-node skills/prepare-wordpress/scripts/plan_setup.mjs --json --apply --only=cleanup
+node {{SKILL_DIR}}/scripts/plan_setup.mjs --json --apply --only=cleanup
 ```
 
 Completion criterion: Selected phases and execution mode are explicit, dry-run output is shown, and user confirmation is captured before apply mode.

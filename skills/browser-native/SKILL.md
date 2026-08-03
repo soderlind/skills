@@ -29,25 +29,27 @@ Apply [DETERMINISM-CHECKLIST.md](../DETERMINISM-CHECKLIST.md) for this skill run
 ### 1) Run the scanner script
 
 ```bash
-node skills/browser-native/scripts/cli.js [target-dir]
+node {{SKILL_DIR}}/scripts/cli.js [target-dir]
 ```
 
 Default output is a colored terminal table showing each replaceable dependency, its category, the native API replacement, and a confidence level (full or partial).
+
+The scanner exits with code `1` when it finds replaceable dependencies and `0` when it finds none — this is a CI signal, not a failure. Do not report exit code `1` as a broken command.
 
 #### Output formats
 
 ```bash
 # Terminal table (default)
-node skills/browser-native/scripts/cli.js [dir]
+node {{SKILL_DIR}}/scripts/cli.js [dir]
 
 # Markdown with before/after code examples
-node skills/browser-native/scripts/cli.js [dir] --md
+node {{SKILL_DIR}}/scripts/cli.js [dir] --md
 
 # JSON for parsing
-node skills/browser-native/scripts/cli.js [dir] --json
+node {{SKILL_DIR}}/scripts/cli.js [dir] --json
 
 # Save to file
-node skills/browser-native/scripts/cli.js [dir] --md --out report.md
+node {{SKILL_DIR}}/scripts/cli.js [dir] --md --out report.md
 ```
 
 Completion criterion: Scanner output is produced in the requested format (`table`, `--md`, or `--json`) for the intended target directory.
@@ -116,5 +118,6 @@ After presenting recommendations, the user can verify by:
 ## Failure modes
 
 - **No package.json found** — the script will print an error. Ask the user for the correct project directory.
+- **Exit code 1 with results** — expected. The scanner exits non-zero when replaceable dependencies exist so it can gate CI. Only exit code `1` *with an error message on stderr* is a real failure.
 - **Zero replaceable deps** — this is a good result! The project is already modern.
 - **Package in database but used for edge-case features** — confidence "partial" covers this. Always check the `notes` field and recommend reviewing actual usage before removing.

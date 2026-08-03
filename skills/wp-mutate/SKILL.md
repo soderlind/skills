@@ -66,7 +66,7 @@ without the other misrepresents the suite.
 ### 0) Detect the stack
 
 ```sh
-node skills/wp-mutate/scripts/detect_mutation_setup.mjs
+node {{SKILL_DIR}}/scripts/detect_mutation_setup.mjs
 ```
 
 The script is read-only. It emits JSON plus a summary covering: PHP engine, Pest version,

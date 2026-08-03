@@ -1,11 +1,17 @@
 ---
 name: pre-launch-security-audit
-description: Run an evidence-backed, stack-agnostic security and abuse-resistance review before an application launch. Use when reviewing an MVP, SaaS product, AI application, public website, API, or mobile backend that handles user data, authentication, public forms, databases, file uploads, webhooks, or paid third-party services; when asked for a launch-security checklist, OWASP review, secrets audit, database authorization review, authentication failure-case test, rate-limit or cost-abuse review, or final security gate.
+description: "Run an evidence-backed, stack-agnostic security and abuse-resistance review before an application launch. Use when reviewing an MVP, SaaS product, AI application, public website, API, or mobile backend that handles user data, authentication, public forms, databases, file uploads, webhooks, or paid third-party services; when asked for a launch-security checklist, OWASP review, secrets audit, database authorization review, authentication failure-case test, rate-limit or cost-abuse review, or final security gate."
+compatibility: "Any stack or language. Uses whatever secret, dependency, static-analysis, and cloud-configuration scanners the project already has; active testing is limited to systems the user owns or authorizes."
+version: "1.0.0"
 ---
 
 # Pre-launch Security Audit
 
 Establish a practical launch baseline without presenting a quick review as a penetration test, legal opinion, or compliance certification.
+
+## Determinism checklist
+
+Apply [DETERMINISM-CHECKLIST.md](../DETERMINISM-CHECKLIST.md) for this skill run.
 
 ## Set scope
 

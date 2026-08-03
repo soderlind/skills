@@ -1,12 +1,17 @@
 ---
 name: add-apim-api
-description: Scaffold a new API in Azure API Management. Use when user asks to add, create, or expose a new API through APIM, or needs to wire up a backend service to the gateway.
+description: "Scaffold a new API in Azure API Management. Use when user asks to add, create, or expose a new API through APIM, or needs to wire up a backend service to the gateway."
+compatibility: "Azure CLI with the Bicep extension, and an existing APIM Bicep infrastructure project. No live Azure deployment is performed."
 version: "1.1.0"
 ---
 
 # Add APIM API
 
 Scaffold a new API in Azure API Management with Bicep infrastructure.
+
+## Determinism checklist
+
+Apply [DETERMINISM-CHECKLIST.md](../DETERMINISM-CHECKLIST.md) for this skill run.
 
 ## Steps
 

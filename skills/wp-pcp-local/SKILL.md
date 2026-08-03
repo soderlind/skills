@@ -1,6 +1,7 @@
 ---
 name: wp-pcp-local
 description: "Run the WordPress Plugin Check (PCP) against a Local by Flywheel site via wrapper, with explicit site and plugin resolution before checks."
+compatibility: "macOS with Local by Flywheel installed, WP-CLI in PATH, and python3. The target Local site must be running with the Plugin Check plugin activated (network-activated on multisite)."
 version: "1.1.0"
 ---
 

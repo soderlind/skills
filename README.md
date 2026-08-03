@@ -206,7 +206,7 @@ Prerequisites:
 - git
 - WP-CLI for i18n commands
 
-Preview the setup plan before changing a project:
+Preview the setup plan before changing a project (paths below assume a clone of this repo; when installed, use the skill's own directory):
 
 ```sh
 node skills/prepare-wordpress/scripts/plan_setup.mjs --dry-run
@@ -258,7 +258,7 @@ Five failure modes are specific to WordPress plugins, and each one produces a cl
 
 Because all five look like ordinary output, the skill verifies the harness before reporting any score: mutants were created, at least one was killed, and the kills are not just time-outs.
 
-Preview what the skill would run against:
+Preview what the skill would run against (path assumes a clone of this repo; when installed, use the skill's own directory):
 
 ```sh
 node skills/wp-mutate/scripts/detect_mutation_setup.mjs
@@ -280,7 +280,7 @@ npx skills add soderlind/skills --skill browser-native -g
 
 Use this to scan JavaScript/Node.js dependencies and find packages that can be replaced with built-in APIs (`fetch`, `URL`, `structuredClone`, `crypto.randomUUID`, `Intl`, etc.).
 
-Run the local scanner directly:
+Run the local scanner directly (path assumes a clone of this repo; when installed, use the skill's own directory):
 
 ```sh
 node skills/browser-native/scripts/cli.js .
@@ -346,6 +346,10 @@ skills/
   wp-cli-local/
     SKILL.md
     scripts/
+  wp-mutate/
+    SKILL.md
+    references/
+    scripts/
   wp-pcp-local/
     SKILL.md
     scripts/
@@ -361,14 +365,7 @@ skills/
 
 ## Licenses
 
-- `add-apim-api`: MIT.
-- `wp-cli-local`: MIT, as published in the original source repository.
-- `wp-pcp-local`: MIT, as published in the original source repository.
-- `prepare-wordpress`: GPL-2.0-or-later, as published in the original source repository.
-- `wp-bump`: GPL-2.0-or-later, distributed with `prepare-wordpress` in the original source repository.
-- `browser-native`: MIT, as published in the original source repository.
-- `document-architecture`: MIT.
-- `pre-launch-security-audit`: MIT.
+All skills in this repository are licensed under the MIT License.
 
 ## AI Contribution Attribution
 

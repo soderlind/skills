@@ -1,6 +1,7 @@
 ---
 name: wp-cli-local
 description: "Safe WP-CLI execution for Local by Flywheel via wrapper, including explicit site resolution before mutating operations."
+compatibility: "macOS with Local by Flywheel installed, WP-CLI in PATH, and python3. The target Local site must be running."
 version: "1.1.0"
 ---
 
