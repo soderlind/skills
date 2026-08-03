@@ -10,16 +10,48 @@ Public AI agent skills for WordPress development, JavaScript modernization, Azur
 
 ## Available Skills
 
+### WordPress
+
+Skills for WordPress plugin and theme development.
+
+| Skill | Purpose |
+| --- | --- |
+| [`prepare-wordpress`](#prepare-wordpress) | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
+| [`wp-bump`](#wp-bump) | Bump a WordPress plugin version and update related release metadata. |
+| [`wp-cli-local`](#wp-cli-local) | Run WP-CLI commands against Local by Flywheel sites on macOS. |
+| [`wp-mutate`](#wp-mutate) | Run mutation testing on WordPress PHP and JavaScript to find weak tests, then triage surviving mutants. |
+| [`wp-pcp-local`](#wp-pcp-local) | Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS. |
+
+### JavaScript
+
+Skills for JavaScript modernization and dependency audits.
+
+| Skill | Purpose |
+| --- | --- |
+| [`browser-native`](#browser-native) | Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs. |
+
+### Azure
+
+Skills for Azure infrastructure and API Management.
+
 | Skill | Purpose |
 | --- | --- |
 | [`add-apim-api`](#add-apim-api) | Scaffold a new API in Azure API Management with Bicep infrastructure. |
-| [`browser-native`](#browser-native) | Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs. |
-| [`wp-cli-local`](#wp-cli-local) | Run WP-CLI commands against Local by Flywheel sites on macOS. |
-| [`wp-pcp-local`](#wp-pcp-local) | Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS. |
-| [`prepare-wordpress`](#prepare-wordpress) | Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support. |
-| [`wp-bump`](#wp-bump) | Bump a WordPress plugin version and update related release metadata. |
-| [`wp-mutate`](#wp-mutate) | Run mutation testing on WordPress PHP and JavaScript to find weak tests, then triage surviving mutants. |
+
+### Documentation
+
+Skills for documenting repository architecture.
+
+| Skill | Purpose |
+| --- | --- |
 | [`document-architecture`](#document-architecture) | Create, improve, or audit repository architecture and concept documentation. |
+
+### Security
+
+Skills for pre-launch security and abuse-resistance audits.
+
+| Skill | Purpose |
+| --- | --- |
 | [`pre-launch-security-audit`](#pre-launch-security-audit) | Run an evidence-backed security and abuse-resistance review before an application launch. |
 
 ## Related Skills (other repositories)
