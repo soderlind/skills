@@ -2,6 +2,8 @@
 
 Public AI agent skills for WordPress development, JavaScript modernization, Azure infrastructure, architecture documentation, and pre-launch security audits.
 
+<img width="1280" height="640" alt="soderlind-skills-social-preview" src="https://github.com/user-attachments/assets/b8da043f-c685-4324-b681-08ec43b145a3" />
+
 [![skills.sh](https://skills.sh/b/soderlind/skills)](https://skills.sh/soderlind/skills)
 
 [Available Skills](#available-skills) · [Related Skills](#related-skills-other-repositories) · [Install](#install) · [Usage](#usage) · [Invocation Strategy](#invocation-strategy) · [Skill Notes](#skill-notes)
