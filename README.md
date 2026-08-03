@@ -15,7 +15,7 @@ Public AI agent skills for WordPress development, JavaScript modernization, Azur
 Skills for WordPress plugin and theme development.
 
 <table>
-<thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+<thead><tr><th width="280">Skill</th><th>Purpose</th></tr></thead>
 <tbody>
 <tr><td nowrap><a href="#prepare-wordpress"><samp>prepare-wordpress</samp></a></td><td>Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support.</td></tr>
 <tr><td nowrap><a href="#wp-bump"><samp>wp-bump</samp></a></td><td>Bump a WordPress plugin version and update related release metadata.</td></tr>
@@ -30,7 +30,7 @@ Skills for WordPress plugin and theme development.
 Skills for JavaScript modernization and dependency audits.
 
 <table>
-<thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+<thead><tr><th width="280">Skill</th><th>Purpose</th></tr></thead>
 <tbody>
 <tr><td nowrap><a href="#browser-native"><samp>browser-native</samp></a></td><td>Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs.</td></tr>
 </tbody>
@@ -41,7 +41,7 @@ Skills for JavaScript modernization and dependency audits.
 Skills for Azure infrastructure and API Management.
 
 <table>
-<thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+<thead><tr><th width="280">Skill</th><th>Purpose</th></tr></thead>
 <tbody>
 <tr><td nowrap><a href="#add-apim-api"><samp>add-apim-api</samp></a></td><td>Scaffold a new API in Azure API Management with Bicep infrastructure.</td></tr>
 </tbody>
@@ -52,7 +52,7 @@ Skills for Azure infrastructure and API Management.
 Skills for documenting repository architecture.
 
 <table>
-<thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+<thead><tr><th width="280">Skill</th><th>Purpose</th></tr></thead>
 <tbody>
 <tr><td nowrap><a href="#document-architecture"><samp>document-architecture</samp></a></td><td>Create, improve, or audit repository architecture and concept documentation.</td></tr>
 </tbody>
@@ -63,7 +63,7 @@ Skills for documenting repository architecture.
 Skills for pre-launch security and abuse-resistance audits.
 
 <table>
-<thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+<thead><tr><th width="280">Skill</th><th>Purpose</th></tr></thead>
 <tbody>
 <tr><td nowrap><a href="#pre-launch-security-audit"><samp>pre-launch-security-audit</samp></a></td><td>Run an evidence-backed security and abuse-resistance review before an application launch.</td></tr>
 </tbody>
@@ -74,7 +74,7 @@ Skills for pre-launch security and abuse-resistance audits.
 These live in their own repositories and install from there, not from `soderlind/skills`:
 
 <table>
-<thead><tr><th>Skill</th><th>Purpose</th><th>Install</th></tr></thead>
+<thead><tr><th width="280">Skill</th><th>Purpose</th><th>Install</th></tr></thead>
 <tbody>
 <tr><td nowrap><a href="https://github.com/soderlind/just-bash-runner"><samp>use-just-bash-for-scripts</samp></a></td><td>Steer the agent to dry-run generated or untrusted shell scripts through <a href="https://github.com/vercel-labs/just-bash"><code>just-bash</code></a> before touching the real host.</td><td nowrap><samp>npx skills add soderlind/just-bash-runner</samp></td></tr>
 </tbody>
