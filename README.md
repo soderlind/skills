@@ -17,11 +17,11 @@ Skills for WordPress plugin and theme development.
 <table>
 <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
 <tbody>
-<tr><td nowrap><a href="#prepare-wordpress"><code>prepare-wordpress</code></a></td><td>Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support.</td></tr>
-<tr><td nowrap><a href="#wp-bump"><code>wp-bump</code></a></td><td>Bump a WordPress plugin version and update related release metadata.</td></tr>
-<tr><td nowrap><a href="#wp-cli-local"><code>wp-cli-local</code></a></td><td>Run WP-CLI commands against Local by Flywheel sites on macOS.</td></tr>
-<tr><td nowrap><a href="#wp-mutate"><code>wp-mutate</code></a></td><td>Run mutation testing on WordPress PHP and JavaScript to find weak tests, then triage surviving mutants.</td></tr>
-<tr><td nowrap><a href="#wp-pcp-local"><code>wp-pcp-local</code></a></td><td>Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS.</td></tr>
+<tr><td nowrap><a href="#prepare-wordpress"><samp>prepare-wordpress</samp></a></td><td>Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support.</td></tr>
+<tr><td nowrap><a href="#wp-bump"><samp>wp-bump</samp></a></td><td>Bump a WordPress plugin version and update related release metadata.</td></tr>
+<tr><td nowrap><a href="#wp-cli-local"><samp>wp-cli-local</samp></a></td><td>Run WP-CLI commands against Local by Flywheel sites on macOS.</td></tr>
+<tr><td nowrap><a href="#wp-mutate"><samp>wp-mutate</samp></a></td><td>Run mutation testing on WordPress PHP and JavaScript to find weak tests, then triage surviving mutants.</td></tr>
+<tr><td nowrap><a href="#wp-pcp-local"><samp>wp-pcp-local</samp></a></td><td>Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS.</td></tr>
 </tbody>
 </table>
 
@@ -32,7 +32,7 @@ Skills for JavaScript modernization and dependency audits.
 <table>
 <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
 <tbody>
-<tr><td nowrap><a href="#browser-native"><code>browser-native</code></a></td><td>Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs.</td></tr>
+<tr><td nowrap><a href="#browser-native"><samp>browser-native</samp></a></td><td>Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs.</td></tr>
 </tbody>
 </table>
 
@@ -43,7 +43,7 @@ Skills for Azure infrastructure and API Management.
 <table>
 <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
 <tbody>
-<tr><td nowrap><a href="#add-apim-api"><code>add-apim-api</code></a></td><td>Scaffold a new API in Azure API Management with Bicep infrastructure.</td></tr>
+<tr><td nowrap><a href="#add-apim-api"><samp>add-apim-api</samp></a></td><td>Scaffold a new API in Azure API Management with Bicep infrastructure.</td></tr>
 </tbody>
 </table>
 
@@ -54,7 +54,7 @@ Skills for documenting repository architecture.
 <table>
 <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
 <tbody>
-<tr><td nowrap><a href="#document-architecture"><code>document-architecture</code></a></td><td>Create, improve, or audit repository architecture and concept documentation.</td></tr>
+<tr><td nowrap><a href="#document-architecture"><samp>document-architecture</samp></a></td><td>Create, improve, or audit repository architecture and concept documentation.</td></tr>
 </tbody>
 </table>
 
@@ -65,7 +65,7 @@ Skills for pre-launch security and abuse-resistance audits.
 <table>
 <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
 <tbody>
-<tr><td nowrap><a href="#pre-launch-security-audit"><code>pre-launch-security-audit</code></a></td><td>Run an evidence-backed security and abuse-resistance review before an application launch.</td></tr>
+<tr><td nowrap><a href="#pre-launch-security-audit"><samp>pre-launch-security-audit</samp></a></td><td>Run an evidence-backed security and abuse-resistance review before an application launch.</td></tr>
 </tbody>
 </table>
 
@@ -76,7 +76,7 @@ These live in their own repositories and install from there, not from `soderlind
 <table>
 <thead><tr><th>Skill</th><th>Purpose</th><th>Install</th></tr></thead>
 <tbody>
-<tr><td nowrap><a href="https://github.com/soderlind/just-bash-runner"><code>use-just-bash-for-scripts</code></a></td><td>Steer the agent to dry-run generated or untrusted shell scripts through <a href="https://github.com/vercel-labs/just-bash"><code>just-bash</code></a> before touching the real host.</td><td nowrap><code>npx skills add soderlind/just-bash-runner</code></td></tr>
+<tr><td nowrap><a href="https://github.com/soderlind/just-bash-runner"><samp>use-just-bash-for-scripts</samp></a></td><td>Steer the agent to dry-run generated or untrusted shell scripts through <a href="https://github.com/vercel-labs/just-bash"><code>just-bash</code></a> before touching the real host.</td><td nowrap><samp>npx skills add soderlind/just-bash-runner</samp></td></tr>
 </tbody>
 </table>
 
