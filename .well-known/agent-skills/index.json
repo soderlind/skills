@@ -34,7 +34,7 @@
       "type": "archive",
       "description": "Phase-based WordPress project setup workflow with dry-run planning and confirmed apply for predictable scaffolding/standardization.",
       "url": "https://soderlind.no/.well-known/agent-skills/prepare-wordpress.tar.gz",
-      "digest": "sha256:c0c7545687f6f8e7cb6e322b2ffde7ea87eface20008592031e7ba47f06d7b1a"
+      "digest": "sha256:dd7e7b2774f0fe5bf635e39c799840ed1262800dad35a9bdc5a3eeb3bf5c714d"
     },
     {
       "name": "wp-bump",
