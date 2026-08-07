@@ -68,6 +68,18 @@ function listFiles(dir, prefix = '') {
 
 const groupings = JSON.parse(fs.readFileSync(path.join(repoRoot, 'skills.sh.json'), 'utf8')).groupings;
 
+function skillDescription(skill) {
+	const source = fs.readFileSync(path.join(skillsDir, skill, 'SKILL.md'), 'utf8');
+	if (!source.startsWith('---\n')) fail(`skills/${skill}/SKILL.md has no frontmatter`);
+	const end = source.indexOf('\n---', 3);
+	if (end === -1) fail(`skills/${skill}/SKILL.md has an unterminated frontmatter block`);
+	for (const line of source.slice(4, end).split('\n')) {
+		const match = /^description:\s*(.*)$/.exec(line);
+		if (match) return match[1].trim().replace(/^"(.*)"$/s, '$1').replace(/^'(.*)'$/s, '$1');
+	}
+	fail(`skills/${skill}/SKILL.md has no description`);
+}
+
 const CHANGE_SECTIONS = [
 	['added', 'Added'],
 	['changed', 'Changed'],
@@ -102,16 +114,20 @@ ${body}
 `;
 }
 
-function renderReadme(manifest, skillNames, distRepo) {
-	const list = skillNames.map((name) => `- \`${name}\``).join('\n');
+function renderReadme(manifest, skills, distRepo) {
 	const installRepo = distRepo ?? manifest.repository;
+	const rows = skills
+		.map(({ name, description }) => `| [\`${name}\`](skills/${name}/SKILL.md) | ${description.replace(/\|/g, '\\|')} |`)
+		.join('\n');
 	return `# ${manifest.name}
 
 ${manifest.description}
 
-An [Agent Plugin](https://agent-plugins.org) (spec v1.0.0) bundling these skills:
+An [Agent Plugin](https://agent-plugins.org) (spec v1.0.0) bundling ${skills.length} skills:
 
-${list}
+| Skill | Description |
+| ----- | ----------- |
+${rows}
 
 ## Install
 
@@ -137,7 +153,8 @@ directory.
 ## Contents
 
 Each skill lives under \`skills/<name>/\` with its own \`SKILL.md\` and any
-\`scripts/\` and \`references/\`. See the Agent Skills specification at
+\`scripts/\` and \`references/\`. Open a skill's \`SKILL.md\` (linked above) for its
+full instructions. See the Agent Skills specification at
 https://agentskills.io/specification.
 
 ---
@@ -157,7 +174,8 @@ function collectPlugin({ grouping, manifest, distRepo, changelog }) {
 
 	const files = new Map();
 	files.set('plugin.json', `${JSON.stringify({ $schema: PLUGIN_SCHEMA, ...manifest }, null, 2)}\n`);
-	files.set('README.md', renderReadme(manifest, group.skills, distRepo));
+	const skills = group.skills.map((name) => ({ name, description: skillDescription(name) }));
+	files.set('README.md', renderReadme(manifest, skills, distRepo));
 	const changelogMd = renderChangelog(manifest, changelog);
 	if (changelogMd) files.set('CHANGELOG.md', changelogMd);
 

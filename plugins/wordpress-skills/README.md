@@ -2,13 +2,15 @@
 
 WordPress development, testing, and release skills.
 
-An [Agent Plugin](https://agent-plugins.org) (spec v1.0.0) bundling these skills:
+An [Agent Plugin](https://agent-plugins.org) (spec v1.0.0) bundling 5 skills:
 
-- `prepare-wordpress`
-- `wp-bump`
-- `wp-cli-local`
-- `wp-mutate`
-- `wp-pcp-local`
+| Skill | Description |
+| ----- | ----------- |
+| [`prepare-wordpress`](skills/prepare-wordpress/SKILL.md) | Phase-based WordPress project setup workflow with dry-run planning and confirmed apply for predictable scaffolding/standardization. |
+| [`wp-bump`](skills/wp-bump/SKILL.md) | Structured WordPress plugin release-bump workflow that orchestrates version sync, changelog, rebuild, and validation steps with explicit gates. |
+| [`wp-cli-local`](skills/wp-cli-local/SKILL.md) | Safe WP-CLI execution for Local by Flywheel via wrapper, including explicit site resolution before mutating operations. |
+| [`wp-mutate`](skills/wp-mutate/SKILL.md) | Run mutation testing on WordPress plugins and themes to find weak tests — Pest --mutate or Infection for PHP, StrykerJS for JavaScript — then triage surviving mutants into concrete test improvements. |
+| [`wp-pcp-local`](skills/wp-pcp-local/SKILL.md) | Run the WordPress Plugin Check (PCP) against a Local by Flywheel site via wrapper, with explicit site and plugin resolution before checks. |
 
 ## Install
 
@@ -34,7 +36,8 @@ directory.
 ## Contents
 
 Each skill lives under `skills/<name>/` with its own `SKILL.md` and any
-`scripts/` and `references/`. See the Agent Skills specification at
+`scripts/` and `references/`. Open a skill's `SKILL.md` (linked above) for its
+full instructions. See the Agent Skills specification at
 https://agentskills.io/specification.
 
 ---
