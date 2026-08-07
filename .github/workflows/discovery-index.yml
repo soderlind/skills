@@ -17,3 +17,4 @@ jobs:
         with:
           node-version: 22
       - run: node scripts/build-agent-skills-index.mjs --check
+      - run: node scripts/build-agent-plugin.mjs --check

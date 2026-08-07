@@ -1,0 +1,60 @@
+name: Mirror plugin
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mirror-wordpress-agent-plugin
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    env:
+      DEST_REPO: soderlind/wordpress-agent-plugin
+      PLUGIN_DIR: plugins/wordpress-skills
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Fail early if the committed plugin is out of sync with skills/.
+      - run: node scripts/build-agent-plugin.mjs --check
+
+      - name: Publish to destination repo
+        env:
+          MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "${MIRROR_TOKEN:-}" || { echo "MIRROR_TOKEN secret is not set"; exit 1; }
+
+          remote="https://x-access-token:${MIRROR_TOKEN}@github.com/${DEST_REPO}.git"
+          workdir="$(mktemp -d)"
+          git clone "$remote" "$workdir"
+          cd "$workdir"
+          git checkout -B main
+
+          # Replace the destination tree with the built plugin (keep .git).
+          find . -mindepth 1 -maxdepth 1 -not -name '.git' -exec rm -rf {} +
+          cp -R "${GITHUB_WORKSPACE}/${PLUGIN_DIR}/." .
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No content changes to mirror."
+          else
+            git commit -m "Mirror ${PLUGIN_DIR} from ${GITHUB_REPOSITORY}@${GITHUB_SHA}"
+          fi
+          git push origin main
+
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            git tag -f "${GITHUB_REF_NAME}"
+            git push -f origin "refs/tags/${GITHUB_REF_NAME}"
+          fi
