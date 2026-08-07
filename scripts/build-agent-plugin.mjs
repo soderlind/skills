@@ -32,6 +32,16 @@ const PLUGINS = [
 			license: 'MIT',
 			keywords: ['wordpress', 'wp-cli', 'testing', 'release'],
 		},
+		// Newest first. Each entry becomes a section in CHANGELOG.md.
+		changelog: [
+			{
+				version: '1.0.0',
+				date: '2026-08-07',
+				added: [
+					'Initial release bundling the prepare-wordpress, wp-bump, wp-cli-local, wp-mutate, and wp-pcp-local skills as an Agent Plugin.',
+				],
+			},
+		],
 	},
 ];
 
@@ -57,6 +67,40 @@ function listFiles(dir, prefix = '') {
 }
 
 const groupings = JSON.parse(fs.readFileSync(path.join(repoRoot, 'skills.sh.json'), 'utf8')).groupings;
+
+const CHANGE_SECTIONS = [
+	['added', 'Added'],
+	['changed', 'Changed'],
+	['deprecated', 'Deprecated'],
+	['removed', 'Removed'],
+	['fixed', 'Fixed'],
+	['security', 'Security'],
+];
+
+function renderChangelog(manifest, changelog) {
+	if (!changelog || changelog.length === 0) return null;
+	if (changelog[0].version !== manifest.version) {
+		fail(`changelog top entry (${changelog[0].version}) does not match manifest version (${manifest.version})`);
+	}
+	const body = changelog
+		.map((entry) => {
+			const heading = `## [${entry.version}]${entry.date ? ` - ${entry.date}` : ''}`;
+			const sections = CHANGE_SECTIONS.filter(([key]) => entry[key]?.length).map(
+				([key, title]) => `### ${title}\n\n${entry[key].map((line) => `- ${line}`).join('\n')}`
+			);
+			return [heading, ...sections].join('\n\n');
+		})
+		.join('\n\n');
+	return `# Changelog
+
+All notable changes to \`${manifest.name}\` are documented here.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+${body}
+`;
+}
 
 function renderReadme(manifest, skillNames, distRepo) {
 	const list = skillNames.map((name) => `- \`${name}\``).join('\n');
@@ -104,7 +148,7 @@ This plugin is generated from [${manifest.repository}](${manifest.repository}) b
 }
 
 // (relative path within plugin root) -> file contents
-function collectPlugin({ grouping, manifest, distRepo }) {
+function collectPlugin({ grouping, manifest, distRepo, changelog }) {
 	if (!NAME_PATTERN.test(manifest.name) || manifest.name.length > 64) {
 		fail(`"${manifest.name}" is not a valid plugin name`);
 	}
@@ -114,6 +158,8 @@ function collectPlugin({ grouping, manifest, distRepo }) {
 	const files = new Map();
 	files.set('plugin.json', `${JSON.stringify({ $schema: PLUGIN_SCHEMA, ...manifest }, null, 2)}\n`);
 	files.set('README.md', renderReadme(manifest, group.skills, distRepo));
+	const changelogMd = renderChangelog(manifest, changelog);
+	if (changelogMd) files.set('CHANGELOG.md', changelogMd);
 
 	for (const skill of group.skills) {
 		const dir = path.join(skillsDir, skill);
