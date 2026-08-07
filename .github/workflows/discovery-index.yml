@@ -5,16 +5,42 @@ on:
     branches: [main]
   pull_request:
 
+# Needs write access to commit the regenerated index back to main.
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: discovery-index-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  check:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - run: node scripts/build-agent-skills-index.mjs --check
+
+      # Plugin output is plain files (reproducible across environments), so a
+      # byte-level drift guard is safe here.
       - run: node scripts/build-agent-plugin.mjs --check
+
+      # The discovery archives are gzip, whose bytes are not reproducible across
+      # Node/zlib versions. CI is the source of truth: rebuild here and commit any
+      # changes on main instead of byte-comparing a locally built copy.
+      - run: node scripts/build-agent-skills-index.mjs
+
+      - name: Commit regenerated discovery index
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          if [ -z "$(git status --porcelain .well-known)" ]; then
+            echo "Discovery index already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .well-known
+          git commit -m "chore: regenerate agent-skills discovery index [skip ci]"
+          git push origin HEAD:main
