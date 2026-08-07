@@ -2,7 +2,7 @@
 name: prepare-wordpress
 description: "Phase-based WordPress project setup workflow with dry-run planning and confirmed apply for predictable scaffolding/standardization."
 compatibility: "macOS/Linux with Node.js 18+, Composer 2+, PHP 8.3+, git. Optional: WP-CLI for i18n commands, curl for downloading coding instructions."
-version: "1.2.0"
+version: "1.3.0"
 ---
 
 # Prepare WordPress Project
@@ -61,6 +61,7 @@ Hard gate: Do not run any `--apply` command until dry-run output is shown and th
 - `composer` — install PHP dev deps and merge scripts
 - `config` — create/merge `.editorconfig` and `.gitignore`
 - `vitest` — install and scaffold Vitest (JavaScript test runner)
+- `eslint` — install and configure ESLint for JavaScript
 - `i18n` — scaffold i18n files/scripts
 - `instructions` — download WordPress Copilot coding instructions
 - `cleanup` — remove stray `yarn.lock`
@@ -205,10 +206,20 @@ If `package.json` does not exist:
 npm init -y
 ```
 
-If `composer.json` does not exist, create it using the plugin metadata:
+If `composer.json` does not exist, create it as a JSON file using the plugin
+metadata. Do **not** pass user-provided metadata to `composer init` on the
+command line — write the file directly to avoid shell-quoting and injection
+issues:
 
-```sh
-composer init --no-interaction --name=<author>/<plugin-slug> --description="{Description}" --license={License}
+```json
+{
+  "name": "<author>/<plugin-slug>",
+  "description": "{Description}",
+  "type": "wordpress-plugin",
+  "license": "{License}",
+  "require": {},
+  "require-dev": {}
+}
 ```
 
 If `.git/` does not exist:
@@ -261,7 +272,7 @@ Replace `<plugin-slug>` with the actual plugin slug (folder name / text domain).
 {
   "scripts": {
     "test": "phpunit",
-    "lint": "phpcs --standard=WordPress --extensions=php .",
+    "lint": "phpcs",
     "check": "wp plugin check <plugin-slug> --format=text"
   }
 }
@@ -269,9 +280,18 @@ Replace `<plugin-slug>` with the actual plugin slug (folder name / text domain).
 
 > **Note:** The `check` script requires [Plugin Check (PCP)](https://wordpress.org/plugins/plugin-check/) installed and activated in WordPress, and WP-CLI available. Install with `wp plugin install plugin-check --activate`.
 
+**PHP lint ruleset.** Create `phpcs.xml` so the `lint` script (`phpcs`) uses a
+committed WordPress ruleset and excludes `vendor/` and `node_modules/`. Skip if
+`phpcs.xml` (or `phpcs.xml.dist`) already exists. See: `references/linting-setup.md`.
+
+**PHP test scaffolding.** Skip any file that already exists. Create
+`phpunit.xml.dist`, `tests/bootstrap.php`, and `tests/TestCase.php` (wires Brain
+Monkey `setUp`/`tearDown`) so `composer test` runs out of the box. See:
+`references/php-testing.md`.
+
 See: `references/composer-setup.md`
 
-Completion criterion: Composer dev dependencies are installed and `scripts.test`, `scripts.lint`, and `scripts.check` exist without overwriting unrelated scripts.
+Completion criterion: Composer dev dependencies are installed; `scripts.test`, `scripts.lint`, and `scripts.check` exist without overwriting unrelated scripts; `phpcs.xml` and the PHPUnit test scaffolding exist (or were already present).
 
 ### 4) Config files
 
@@ -284,6 +304,31 @@ See: `references/config-files.md`
 See: `references/config-files.md`
 
 Completion criterion: `.editorconfig` and `.gitignore` are present, and existing `.gitignore` entries were merged non-destructively.
+
+### 4b) ESLint (JavaScript linting)
+
+**Skip if an ESLint config (`.eslintrc.json`, `.eslintrc.js`, or `eslint.config.js`) already exists.**
+
+Install the latest releases and use WordPress' shared config:
+
+```sh
+npm install --save-dev eslint @wordpress/eslint-plugin
+```
+
+Create `.eslintrc.json` and `.eslintignore`, then merge a `lint:js` script into
+`package.json`:
+
+```json
+{
+  "scripts": {
+    "lint:js": "eslint ."
+  }
+}
+```
+
+See: `references/linting-setup.md`
+
+Completion criterion: `.eslintrc.json`, `.eslintignore`, and `scripts.lint:js` are present, or a skip reason is recorded.
 
 ### 5) Vitest setup
 
@@ -379,6 +424,8 @@ Completion criterion: Final report includes per-phase status, skipped reasons, a
 - `composer validate` passes.
 - `npm ls` shows no missing peer dependencies for vitest.
 - Agent skills are present under `~/.copilot/skills/` or `~/.agents/skills/`.
+- `phpcs.xml`, `phpunit.xml.dist`, and `tests/` scaffolding exist when the `composer` phase ran.
+- `.eslintrc.json` and `scripts.lint:js` exist when the `eslint` phase ran.
 - `.github/instructions/wordpress.instructions.md` exists when the `instructions` phase ran.
 
 ## Failure modes / debugging

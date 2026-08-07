@@ -24,7 +24,7 @@ const PLUGINS = [
 		distRepo: 'https://github.com/soderlind/wordpress-agent-plugin',
 		manifest: {
 			name: 'wordpress-skills',
-			version: '1.0.0',
+			version: '1.1.0',
 			description: 'WordPress development, testing, and release skills.',
 			author: { name: 'Per Soderlind', url: 'https://soderlind.no' },
 			homepage: 'https://github.com/soderlind/wordpress-agent-plugin',
@@ -34,6 +34,19 @@ const PLUGINS = [
 		},
 		// Newest first. Each entry becomes a section in CHANGELOG.md.
 		changelog: [
+			{
+				version: '1.1.0',
+				date: '2026-08-08',
+				added: [
+					'prepare-wordpress: unit tests mock WordPress with Brain Monkey (brain/monkey); added references/php-testing.md and PHPUnit test scaffolding (phpunit.xml.dist, tests/bootstrap.php, tests/TestCase.php).',
+					'prepare-wordpress: ESLint (@wordpress/eslint-plugin) and a committed phpcs.xml ruleset via a new linting-setup.md reference.',
+					'prepare-wordpress: new instructions phase downloads the github/awesome-copilot WordPress coding instructions.',
+				],
+				changed: [
+					'prepare-wordpress: Composer and npm dependencies install the latest compatible releases (unpinned).',
+					'prepare-wordpress: composer.json is written as a file instead of via composer init with user-provided strings.',
+				],
+			},
 			{
 				version: '1.0.0',
 				date: '2026-08-07',

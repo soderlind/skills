@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
 import { detectProjectState } from "./detect_project.mjs";
 
-const ALL_PHASES = ["plugin", "readme", "init", "skills", "composer", "config", "vitest", "i18n", "instructions", "cleanup"];
+const ALL_PHASES = ["plugin", "readme", "init", "skills", "composer", "config", "vitest", "eslint", "i18n", "instructions", "cleanup"];
 
 function parseArgs(argv) {
     const opts = {
@@ -96,6 +96,8 @@ function buildPlan(state, phases) {
     if (!state.composerScripts.test || !state.composerScripts.lint || !state.composerScripts.check) {
         composerNotes.push("Manual: merge composer scripts test/lint/check into composer.json without overwriting existing scripts.");
     }
+    if (!state.phpcsXml) composerNotes.push("Manual: create phpcs.xml from references/linting-setup.md.");
+    if (!state.phpunitConfig) composerNotes.push("Manual: create phpunit.xml.dist, tests/bootstrap.php, and tests/TestCase.php from references/php-testing.md.");
     add("composer", composerCommands.length > 0 || composerNotes.length > 0 ? "Configure Composer tooling" : "Composer phase already satisfied", composerCommands, composerNotes);
 
     const configNotes = [];
@@ -113,6 +115,13 @@ function buildPlan(state, phases) {
           vitestNotes.push("Manual: merge test:js script into package.json without overwriting existing scripts.");
       }
     add("vitest", vitestCommands.length > 0 || vitestNotes.length > 0 ? "Configure Vitest" : "Vitest phase already satisfied", vitestCommands, vitestNotes);
+
+    const eslintCommands = [];
+    const eslintNotes = [];
+    if (!state.eslint.config || !state.eslint.devDep) eslintCommands.push("npm install --save-dev eslint @wordpress/eslint-plugin");
+    if (!state.eslint.config) eslintNotes.push("Manual: create .eslintrc.json and .eslintignore from references/linting-setup.md.");
+    if (!state.eslint.script) eslintNotes.push("Manual: merge lint:js script into package.json without overwriting existing scripts.");
+    add("eslint", eslintCommands.length > 0 || eslintNotes.length > 0 ? "Configure ESLint" : "ESLint phase already satisfied", eslintCommands, eslintNotes);
 
     const i18nNotes = [];
     if (!state.i18n.mapJson) i18nNotes.push("Manual: create i18n-map.json (or empty {} placeholder) from references/i18n-setup.md.");

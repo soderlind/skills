@@ -34,13 +34,18 @@ Replace `<plugin-slug>` with the actual plugin slug (folder name / text domain).
 {
   "scripts": {
     "test": "phpunit",
-    "lint": "phpcs --standard=WordPress --extensions=php .",
+    "lint": "phpcs",
     "check": "wp plugin check <plugin-slug> --format=text"
   }
 }
 ```
 
 > **Note:** The `check` script requires [Plugin Check (PCP)](https://wordpress.org/plugins/plugin-check/) to be installed and activated in the WordPress environment, and WP-CLI to be available. Install it with `wp plugin install plugin-check --activate`.
+
+> **`lint` uses `phpcs.xml`:** The `lint` script runs plain `phpcs`, which reads
+> the committed `phpcs.xml` ruleset. Create it (and the ESLint config) per
+> `linting-setup.md`. Scaffold PHPUnit test files per `php-testing.md` so
+> `composer test` runs out of the box.
 
 ### How to merge via PHP (if jq is unavailable)
 
@@ -50,7 +55,7 @@ $f = "composer.json";
 $c = json_decode(file_get_contents($f), true);
 $c["scripts"] = array_merge($c["scripts"] ?? [], [
     "test" => "phpunit",
-    "lint" => "phpcs --standard=WordPress --extensions=php .",
+    "lint" => "phpcs",
     "check" => "wp plugin check <plugin-slug> --format=text"
 ]);
 file_put_contents($f, json_encode($c, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");

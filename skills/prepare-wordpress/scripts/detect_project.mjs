@@ -133,6 +133,10 @@ export function detectProjectState(targetRoot = process.cwd()) {
             check: composerHasScript("check"),
         },
 
+        // PHP lint/test config
+        phpcsXml: exists("phpcs.xml") || exists("phpcs.xml.dist"),
+        phpunitConfig: exists("phpunit.xml.dist") || exists("phpunit.xml"),
+
         // Config files
         editorconfig: exists(".editorconfig"),
         gitignore: exists(".gitignore"),
@@ -143,6 +147,13 @@ export function detectProjectState(targetRoot = process.cwd()) {
             setupFile: exists("tests/setup.js"),
             devDep: packageJsonHasDevDep("vitest"),
             testScript: packageJsonHasScript("test:js"),
+        },
+
+        // ESLint
+        eslint: {
+            devDep: packageJsonHasDevDep("eslint"),
+            config: exists(".eslintrc.json") || exists(".eslintrc.js") || exists("eslint.config.js") || exists(".eslintrc"),
+            script: packageJsonHasScript("lint:js"),
         },
 
         // i18n
@@ -197,6 +208,11 @@ export function buildDetectionSummary(state, repoRoot = process.cwd()) {
     const missingComposerScripts = Object.entries(state.composerScripts).filter(([, v]) => !v).map(([k]) => k);
     if (missingComposerScripts.length > 0) lines.push(`📦 Composer scripts to add: ${missingComposerScripts.join(", ")}`);
 
+    if (!state.phpcsXml) lines.push("📦 phpcs.xml — will create");
+    else lines.push("⏭  phpcs.xml exists");
+    if (!state.phpunitConfig) lines.push("📦 PHPUnit test scaffolding — will create");
+    else lines.push("⏭  PHPUnit config exists");
+
     // Config files
     if (!state.editorconfig) lines.push("📦 .editorconfig — will create");
     else lines.push("⏭  .editorconfig exists");
@@ -207,6 +223,10 @@ export function buildDetectionSummary(state, repoRoot = process.cwd()) {
     // Vitest
     if (!state.vitest.config) lines.push("\n📦 Vitest — will install and configure");
     else lines.push("\n⏭  Vitest already configured");
+
+    // ESLint
+    if (!state.eslint.config) lines.push("📦 ESLint — will install and configure");
+    else lines.push("⏭  ESLint already configured");
 
     // i18n
     if (!state.i18n.mapJson || !state.i18n.npmScripts) lines.push("📦 i18n — will scaffold");
