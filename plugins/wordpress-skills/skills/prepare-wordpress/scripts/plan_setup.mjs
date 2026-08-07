@@ -3,6 +3,10 @@ import { detectProjectState } from "./detect_project.mjs";
 
 const ALL_PHASES = ["plugin", "readme", "init", "skills", "composer", "config", "vitest", "eslint", "i18n", "instructions", "cleanup"];
 
+const SKILL_SOURCE = "https://github.com/WordPress/agent-skills";
+const ESSENTIAL_SKILLS = ["wp-plugin-development", "wp-wpcli-and-ops"];
+const OPTIONAL_SKILLS = ["wp-block-development", "wp-performance", "wordpress-router"];
+
 function parseArgs(argv) {
     const opts = {
         dryRun: true,
@@ -45,7 +49,8 @@ function parseArgs(argv) {
 
 function buildPlan(state, phases) {
     const items = [];
-    const skillsToInstall = Object.entries(state.skills).filter(([, installed]) => !installed).map(([name]) => name);
+    const essentialMissing = ESSENTIAL_SKILLS.filter((name) => !state.skills[name]);
+    const optionalMissing = OPTIONAL_SKILLS.filter((name) => !state.skills[name]);
     const missingComposer = Object.values(state.composer).some((installed) => !installed);
 
     const add = (phase, title, commands = [], notes = []) => {
@@ -82,11 +87,12 @@ function buildPlan(state, phases) {
     if (state.git && !state.gitRemoteOrigin) initNotes.push("Manual: ask user for git remote URL, then run git remote add origin <remote-url>.");
     add("init", initCommands.length > 0 ? "Initialize project files" : "Init phase already satisfied", initCommands, initNotes);
 
-    const skillCommands = skillsToInstall.map((name) => {
-
-        return `npx skills add https://github.com/automattic/agent-skills --skill ${name}`;
-    });
-    add("skills", skillCommands.length > 0 ? "Install missing agent skills" : "All agent skills already present", skillCommands, []);
+    const skillCommands = essentialMissing.map((name) => `npx skills add ${SKILL_SOURCE} --skill ${name}`);
+    const skillNotes = [];
+    if (optionalMissing.length > 0) {
+        skillNotes.push(`Optional (install only if relevant): ${optionalMissing.map((name) => `npx skills add ${SKILL_SOURCE} --skill ${name}`).join("  |  ")}`);
+    }
+    add("skills", skillCommands.length > 0 || skillNotes.length > 0 ? "Install agent skills" : "All agent skills already present", skillCommands, skillNotes);
 
     const composerCommands = [];
     const composerNotes = [];

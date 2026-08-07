@@ -2,7 +2,7 @@
 name: prepare-wordpress
 description: "Phase-based WordPress project setup workflow with dry-run planning and confirmed apply for predictable scaffolding/standardization."
 compatibility: "macOS/Linux with Node.js 18+, Composer 2+, PHP 8.3+, git. Optional: WP-CLI for i18n commands, curl for downloading coding instructions."
-version: "1.3.0"
+version: "1.4.0"
 ---
 
 # Prepare WordPress Project
@@ -240,17 +240,32 @@ Completion criterion: Required init artifacts exist (`package.json`, `composer.j
 
 ### 2) Install agent skills
 
-Install the following skills. Skip any that already exist under `~/.copilot/skills/` or `~/.agents/skills/`.
+Install the **essential** WordPress development skills from
+[WordPress/agent-skills](https://github.com/WordPress/agent-skills). Skip any
+that already exist under `~/.copilot/skills/` or `~/.agents/skills/`.
 
 ```sh
-npx skills add https://github.com/automattic/agent-skills --skill wp-plugin-development
-npx skills add https://github.com/automattic/agent-skills --skill wp-block-development
-npx skills add https://github.com/automattic/agent-skills --skill wordpress-router
-npx skills add https://github.com/automattic/agent-skills --skill wp-performance
-npx skills add https://github.com/automattic/agent-skills --skill wp-wpcli-and-ops
+npx skills add https://github.com/WordPress/agent-skills --skill wp-plugin-development
+npx skills add https://github.com/WordPress/agent-skills --skill wp-wpcli-and-ops
 ```
 
-Completion criterion: Each listed skill is installed or explicitly skipped because it already exists.
+**Optional** — offer these and install only the ones relevant to the project
+(do not install by default):
+
+```sh
+# Gutenberg blocks (only if the plugin ships blocks)
+npx skills add https://github.com/WordPress/agent-skills --skill wp-block-development
+# Profiling / caching / query optimization
+npx skills add https://github.com/WordPress/agent-skills --skill wp-performance
+# Repo classification / routing to other skills
+npx skills add https://github.com/WordPress/agent-skills --skill wordpress-router
+```
+
+> **Source moved:** these skills are maintained at `WordPress/agent-skills`. The
+> former `automattic/agent-skills` repo is archived (read-only), so it no longer
+> receives fixes.
+
+Completion criterion: The essential skills are installed or skipped (already present); optional skills were offered and installed only if the user opted in.
 
 ### 3) Composer dependencies and scripts
 

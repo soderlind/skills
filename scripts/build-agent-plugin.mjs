@@ -24,7 +24,7 @@ const PLUGINS = [
 		distRepo: 'https://github.com/soderlind/wordpress-agent-plugin',
 		manifest: {
 			name: 'wordpress-skills',
-			version: '1.1.0',
+			version: '1.2.0',
 			description: 'WordPress development, testing, and release skills.',
 			author: { name: 'Per Soderlind', url: 'https://soderlind.no' },
 			homepage: 'https://github.com/soderlind/wordpress-agent-plugin',
@@ -34,6 +34,14 @@ const PLUGINS = [
 		},
 		// Newest first. Each entry becomes a section in CHANGELOG.md.
 		changelog: [
+			{
+				version: '1.2.0',
+				date: '2026-08-08',
+				changed: [
+					'prepare-wordpress: installs agent skills from WordPress/agent-skills (the former automattic/agent-skills repo is archived).',
+					'prepare-wordpress: default skill install trimmed to essentials (wp-plugin-development, wp-wpcli-and-ops); wp-block-development, wp-performance, and wordpress-router are now optional.',
+				],
+			},
 			{
 				version: '1.1.0',
 				date: '2026-08-08',
