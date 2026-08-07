@@ -1,0 +1,19 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "wordpress-skills",
+  "version": "1.0.0",
+  "description": "WordPress development, testing, and release skills.",
+  "author": {
+    "name": "Per Soderlind",
+    "url": "https://soderlind.no"
+  },
+  "homepage": "https://github.com/soderlind/wordpress-agent-plugin",
+  "repository": "https://github.com/soderlind/skills",
+  "license": "MIT",
+  "keywords": [
+    "wordpress",
+    "wp-cli",
+    "testing",
+    "release"
+  ]
+}
