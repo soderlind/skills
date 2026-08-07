@@ -2,10 +2,11 @@
 
 ## Dependencies
 
-Install all PHP dev dependencies in one command:
+Install all PHP dev dependencies in one command (no pinned versions — Composer
+resolves the latest compatible releases):
 
 ```sh
-composer require --dev phpunit/phpunit wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer pestphp/pest
+composer require --dev phpunit/phpunit brain/monkey wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer pestphp/pest
 ```
 
 ### What each package does
@@ -13,9 +14,15 @@ composer require --dev phpunit/phpunit wp-coding-standards/wpcs dealerdirect/php
 | Package | Purpose |
 | --- | --- |
 | `phpunit/phpunit` | PHP unit testing framework |
+| `brain/monkey` | Mocks WordPress core functions/hooks in unit tests (pulls in `mockery/mockery`) so tests run without a WordPress install |
 | `wp-coding-standards/wpcs` | WordPress PHP Coding Standards ruleset for PHP_CodeSniffer |
 | `dealerdirect/phpcodesniffer-composer-installer` | Auto-registers PHPCS standards (including WPCS) with Composer |
 | `pestphp/pest` | Elegant PHP testing framework built on PHPUnit |
+
+> **Latest versions:** Do not pin versions in `composer require`. Run
+> `composer update` periodically to pick up new compatible releases.
+
+For how to write unit tests with Brain Monkey, see `php-testing.md`.
 
 ## Scripts
 

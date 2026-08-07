@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
 import { detectProjectState } from "./detect_project.mjs";
 
-const ALL_PHASES = ["plugin", "readme", "init", "skills", "composer", "config", "vitest", "i18n", "cleanup"];
+const ALL_PHASES = ["plugin", "readme", "init", "skills", "composer", "config", "vitest", "i18n", "instructions", "cleanup"];
 
 function parseArgs(argv) {
     const opts = {
@@ -91,7 +91,7 @@ function buildPlan(state, phases) {
     const composerCommands = [];
     const composerNotes = [];
     if (missingComposer) {
-        composerCommands.push("composer require --dev phpunit/phpunit wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer pestphp/pest");
+        composerCommands.push("composer require --dev phpunit/phpunit brain/monkey wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer pestphp/pest");
     }
     if (!state.composerScripts.test || !state.composerScripts.lint || !state.composerScripts.check) {
         composerNotes.push("Manual: merge composer scripts test/lint/check into composer.json without overwriting existing scripts.");
@@ -119,6 +119,14 @@ function buildPlan(state, phases) {
     if (!state.i18n.languagesDir) i18nNotes.push("Manual: create languages/ directory.");
     if (!state.i18n.npmScripts) i18nNotes.push("Manual: merge i18n npm scripts using the selected text domain.");
     add("i18n", i18nNotes.length > 0 ? "Configure i18n scaffolding" : "i18n phase already satisfied", [], i18nNotes);
+
+    const instructionsCommands = [];
+    const instructionsNotes = [];
+    if (!state.instructionsFile) {
+        instructionsCommands.push("mkdir -p .github/instructions && curl -fsSL https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/wordpress.instructions.md -o .github/instructions/wordpress.instructions.md");
+        instructionsNotes.push("If offline, create .github/instructions/wordpress.instructions.md manually from references/copilot-instructions.md.");
+    }
+    add("instructions", instructionsCommands.length > 0 ? "Download WordPress Copilot coding instructions" : "Copilot instructions already present", instructionsCommands, instructionsNotes);
 
     add(
         "cleanup",

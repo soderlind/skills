@@ -120,6 +120,7 @@ export function detectProjectState(targetRoot = process.cwd()) {
         // Composer packages
         composer: {
             phpunit: composerHasPackage("phpunit/phpunit"),
+            brainMonkey: composerHasPackage("brain/monkey"),
             wpcs: composerHasPackage("wp-coding-standards/wpcs"),
             phpcsInstaller: composerHasPackage("dealerdirect/phpcodesniffer-composer-installer"),
             pest: composerHasPackage("pestphp/pest"),
@@ -150,6 +151,9 @@ export function detectProjectState(targetRoot = process.cwd()) {
             languagesDir: exists("languages"),
             npmScripts: packageJsonHasScript("i18n"),
         },
+
+        // Copilot coding instructions
+        instructionsFile: exists(".github/instructions/wordpress.instructions.md"),
     };
 }
 
@@ -207,6 +211,10 @@ export function buildDetectionSummary(state, repoRoot = process.cwd()) {
     // i18n
     if (!state.i18n.mapJson || !state.i18n.npmScripts) lines.push("📦 i18n — will scaffold");
     else lines.push("⏭  i18n already configured");
+
+    // Copilot instructions
+    if (!state.instructionsFile) lines.push("📦 Copilot instructions — will download wordpress.instructions.md");
+    else lines.push("⏭  Copilot instructions already present");
 
     lines.push("");
     return lines.join("\n");

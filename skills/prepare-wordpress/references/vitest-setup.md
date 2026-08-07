@@ -1,6 +1,10 @@
 # Vitest Setup
 
+Vitest is the JavaScript test runner for the project.
+
 ## Installation
+
+Install the latest releases (do not pin versions):
 
 ```sh
 npm install --save-dev vitest jsdom

@@ -1,8 +1,8 @@
 ---
 name: prepare-wordpress
 description: "Phase-based WordPress project setup workflow with dry-run planning and confirmed apply for predictable scaffolding/standardization."
-compatibility: "macOS/Linux with Node.js 18+, Composer 2+, PHP 8.3+, git. Optional: WP-CLI for i18n commands."
-version: "1.1.0"
+compatibility: "macOS/Linux with Node.js 18+, Composer 2+, PHP 8.3+, git. Optional: WP-CLI for i18n commands, curl for downloading coding instructions."
+version: "1.2.0"
 ---
 
 # Prepare WordPress Project
@@ -60,8 +60,9 @@ Hard gate: Do not run any `--apply` command until dry-run output is shown and th
 - `skills` — install agent skills
 - `composer` — install PHP dev deps and merge scripts
 - `config` — create/merge `.editorconfig` and `.gitignore`
-- `vitest` — install and scaffold Vitest
+- `vitest` — install and scaffold Vitest (JavaScript test runner)
 - `i18n` — scaffold i18n files/scripts
+- `instructions` — download WordPress Copilot coding instructions
 - `cleanup` — remove stray `yarn.lock`
 
 Use the planner script to preview actions:
@@ -245,8 +246,12 @@ Completion criterion: Each listed skill is installed or explicitly skipped becau
 Install all PHP dev dependencies in a single command:
 
 ```sh
-composer require --dev phpunit/phpunit wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer pestphp/pest
+composer require --dev phpunit/phpunit brain/monkey wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer pestphp/pest
 ```
+
+> **Dependencies:** Do not pin versions — let Composer resolve the latest compatible releases. Run `composer update` periodically to stay current.
+
+Unit tests mock WordPress functions with **Brain Monkey** (`brain/monkey`, which pulls in `mockery/mockery`), so tests run without a full WordPress install. See: `references/php-testing.md`.
 
 Then merge these scripts into `composer.json` (do not overwrite existing scripts).
 
@@ -283,6 +288,9 @@ Completion criterion: `.editorconfig` and `.gitignore` are present, and existing
 ### 5) Vitest setup
 
 **Skip if `vitest.config.js` already exists.**
+
+Vitest is the JavaScript test runner for this project. Install the latest
+releases (no pinned versions):
 
 ```sh
 npm install --save-dev vitest jsdom
@@ -323,6 +331,27 @@ See: `references/i18n-setup.md`
 
 Completion criterion: `i18n-map.json`, `languages/`, and i18n npm scripts are present (or explicit skip/defer rationale is recorded).
 
+### 6b) WordPress Copilot coding instructions
+
+**Skip if `.github/instructions/wordpress.instructions.md` already exists.**
+
+Add the community WordPress coding, security, and testing rules from
+[github/awesome-copilot](https://github.com/github/awesome-copilot/blob/main/instructions/wordpress.instructions.md)
+so agents follow WordPress best practices in this project:
+
+```sh
+mkdir -p .github/instructions
+curl -fsSL https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/wordpress.instructions.md \
+  -o .github/instructions/wordpress.instructions.md
+```
+
+If `curl` is unavailable or you are offline, create the file manually from
+`references/copilot-instructions.md`.
+
+See: `references/copilot-instructions.md`
+
+Completion criterion: `.github/instructions/wordpress.instructions.md` exists (downloaded or created manually), or a skip reason is recorded.
+
 ### 7) Cleanup
 
 Remove any stray `yarn.lock` file that may have been created by `npx` commands:
@@ -350,6 +379,7 @@ Completion criterion: Final report includes per-phase status, skipped reasons, a
 - `composer validate` passes.
 - `npm ls` shows no missing peer dependencies for vitest.
 - Agent skills are present under `~/.copilot/skills/` or `~/.agents/skills/`.
+- `.github/instructions/wordpress.instructions.md` exists when the `instructions` phase ran.
 
 ## Failure modes / debugging
 
