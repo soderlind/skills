@@ -59,14 +59,14 @@ export function formatTable(results, totalDeps, packageJsons) {
   const colPkg = 28;
   const colCat = 20;
   const colApi = 32;
-  const colConf = 10;
+  const colConf = 20;
 
   // Table header
   const header = [
     pad(`${BOLD}Package${RESET}`, colPkg + 8), // +8 for ANSI codes
     pad(`${BOLD}Category${RESET}`, colCat + 8),
     pad(`${BOLD}Replace with${RESET}`, colApi + 8),
-    pad(`${BOLD}Confidence${RESET}`, colConf + 8),
+    pad(`${BOLD}Confidence · Baseline${RESET}`, colConf + 8),
   ].join("  ");
   lines.push(header);
 
@@ -85,6 +85,10 @@ export function formatTable(results, totalDeps, packageJsons) {
     const confColor = r.replacement.confidence === "full" ? GREEN : YELLOW;
     const confLabel =
       r.replacement.confidence === "full" ? "✓ full" : "◐ partial";
+    const baseline = r.replacement.baseline;
+    const baseColor =
+      baseline === "widely" ? GREEN : baseline === "newly" ? YELLOW : RED;
+    const baseTag = baseline ? ` ${DIM}·${RESET} ${baseColor}${baseline}${RESET}` : "";
     const typeLabel = r.type === "devDep" ? `${DIM}(dev)${RESET}` : "";
 
     const row = [
@@ -94,7 +98,7 @@ export function formatTable(results, totalDeps, packageJsons) {
         `${CYAN}${truncate(r.replacement.browserApi, colApi)}${RESET}`,
         colApi + 8
       ),
-      `${confColor}${confLabel}${RESET}`,
+      `${confColor}${confLabel}${RESET}${baseTag}`,
     ].join("  ");
 
     lines.push(row);
@@ -109,11 +113,19 @@ export function formatTable(results, totalDeps, packageJsons) {
   // Summary
   const full = results.filter((r) => r.replacement.confidence === "full").length;
   const partial = results.length - full;
+  const newly = results.filter((r) => r.replacement.baseline === "newly").length;
   lines.push("");
   lines.push(
     `${BOLD}Found ${results.length}${RESET} replaceable dep(s) of ${totalDeps} total ` +
       `(${GREEN}${full} full${RESET}, ${YELLOW}${partial} partial${RESET})`
   );
+  if (newly > 0) {
+    lines.push(
+      `${DIM}Baseline:${RESET} ${GREEN}widely${RESET} = safe to adopt · ` +
+        `${YELLOW}newly${RESET} = check your audience or add a fallback ` +
+        `(${YELLOW}${newly}${RESET} flagged).`
+    );
+  }
   lines.push(
     `${DIM}Run with --md for detailed before/after code examples.${RESET}`
   );

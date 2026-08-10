@@ -3,6 +3,28 @@
 Quick-reference for every npm package in the scanner database, grouped by category.  
 Each entry shows: the native API, minimum browser/Node.js version, confidence, caveats, and before/after code.
 
+## Reading confidence vs. Baseline
+
+Two independent signals decide whether a swap is safe:
+
+- **Confidence** — does the native API *do what the library does*? `full` = drop-in; `partial` = covers common cases, check your usage.
+- **Baseline** — can *your users run it*? ([webstatus.dev](https://webstatus.dev) / MDN badges)
+  - **🟢 widely** — in all major engines 30+ months. Adopt freely.
+  - **🟡 newly** — recently in all major engines. Check `browserslist`/analytics or ship behind a feature check + fallback.
+  - **🔴 limited** — not in all engines yet. Keep the library or polyfill.
+
+A `full` + `newly` API (e.g. `Object.groupBy`) is functionally a drop-in but still audience-dependent. Before any swap, ask: (1) Baseline-safe for my audience? (2) Is the polyfill/rewrite cost worth it? (3) Does the native feature cover how I actually use the library?
+
+For `newly` features, prefer progressive enhancement over a hard swap:
+
+```js
+if (typeof Intl.DurationFormat === 'function') {
+  // native
+} else {
+  // fallback / keep the library
+}
+```
+
 ---
 
 ## HTTP
@@ -188,6 +210,32 @@ uniq([1, 2, 2, 3]);
 [0, 1, false, 2, '', 3].filter(Boolean); // [1, 2, 3]
 ```
 
+### lodash.groupby → `Object.groupBy()` / `Map.groupBy()`
+- **Confidence:** full · **Baseline:** 🟡 newly (2024)
+- **Min support:** Chrome 117, Firefox 119, Safari 17.4, Edge 117, Node 21
+- **Notes:** Check your audience or add a fallback. `Object.groupBy` returns a null-prototype object; use `Map.groupBy` for non-string keys.
+
+```js
+// Before
+const byCat = groupBy(products, p => p.category);
+
+// After
+const byCat = Object.groupBy(products, p => p.category);
+```
+
+### lodash.union / lodash.intersection / lodash.difference → `Set` methods
+- **Confidence:** partial · **Baseline:** 🟡 newly (2024)
+- **Min support:** Chrome 122, Firefox 127, Safari 17, Edge 122, Node 22
+- **Notes:** Check your audience or add a fallback. Full set: `union`, `intersection`, `difference`, `symmetricDifference`, `isSubsetOf`, `isSupersetOf`, `isDisjointFrom`. Methods return `Set`s — spread back to an array if needed.
+
+```js
+// Before
+intersection([1, 2, 3], [2, 3, 4]); // [2, 3]
+
+// After
+[...new Set([1, 2, 3]).intersection(new Set([2, 3, 4]))]; // [2, 3]
+```
+
 ### array.prototype.flat, array.prototype.flatmap, array.from, array-from, array.prototype.find, array.prototype.findindex, array.prototype.at
 - **Confidence:** full
 - **Notes:** Polyfills — these methods are natively available.
@@ -246,7 +294,116 @@ new Intl.DateTimeFormat('en-US', {
 }).format(new Date());
 ```
 
+### timeago.js → `Intl.RelativeTimeFormat`
+- **Confidence:** partial · **Baseline:** 🟢 widely
+- **Notes:** Formats a value + unit; unlike timeago.js it does not pick the unit for you. Add a small helper that finds the largest unit that fits.
+
+```js
+const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+rtf.format(-1, 'day');  // 'yesterday'
+rtf.format(3, 'hour');  // 'in 3 hours'
+```
+
+### humanize-duration → `Intl.DurationFormat`
+- **Confidence:** partial · **Baseline:** 🟡 newly
+- **Min support:** Chrome 129, Firefox 133, Safari 16.4, Node 22
+- **Notes:** Landed in all engines March 2025; on track for Widely in 2027. Fine for internal/modern-audience tools; for a broad audience check traffic or guard with a feature check.
+
+```js
+const df = new Intl.DurationFormat('en', { style: 'long' });
+df.format({ hours: 1, minutes: 30 }); // '1 hour, 30 minutes'
+```
+
 ---
+
+## Internationalization
+
+### numeral, accounting → `Intl.NumberFormat`
+- **Confidence:** partial · **Baseline:** 🟢 widely
+- **Notes:** Covers thousands separators, currency, percent, and compact notation. Custom format strings map to option objects.
+
+```js
+new Intl.NumberFormat('en-US').format(1234567.89);        // '1,234,567.89'
+new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(1234.5); // '$1,234.50'
+new Intl.NumberFormat('en', { notation: 'compact' }).format(1200000);   // '1.2M'
+```
+
+### pluralize → `Intl.PluralRules`
+- **Confidence:** partial · **Baseline:** 🟢 widely
+- **Notes:** Selects the plural category (`one`/`other`/…); it does not inflect the word. Map categories to your own word forms.
+
+```js
+const pr = new Intl.PluralRules('en');
+const forms = { one: 'item', other: 'items' };
+forms[pr.select(3)]; // 'items'
+```
+
+### list-joining helpers → `Intl.ListFormat`
+- **Confidence:** full · **Baseline:** 🟢 widely
+
+```js
+const lf = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
+lf.format(['Alice', 'Bob', 'Carol']); // 'Alice, Bob, and Carol'
+```
+
+---
+
+## UI Primitives
+
+Platform features here are often *more* accessible than hand-rolled solutions.
+
+### a11y-dialog / modal libraries → `<dialog>` element
+- **Confidence:** partial · **Baseline:** 🟢 widely
+- **Min support:** Chrome 37, Firefox 98, Safari 15.4, Edge 79 (browser-only)
+- **Notes:** `showModal()` gives focus trapping, `Escape`-to-close, focus restore, top-layer render, and a `::backdrop`.
+
+```html
+<dialog id="confirm"><form method="dialog">
+  <button value="cancel">Cancel</button>
+  <button value="ok">OK</button>
+</form></dialog>
+```
+
+```js
+const dialog = document.querySelector('#confirm');
+dialog.showModal();
+dialog.addEventListener('close', () => console.log(dialog.returnValue));
+```
+
+### focus-trap → modal `<dialog>.showModal()`
+- **Confidence:** partial · **Baseline:** 🟢 widely
+- **Notes:** A modal `<dialog>` makes the rest of the page inert and traps focus for you.
+
+### body-scroll-lock → CSS `:has(dialog:modal)`
+- **Confidence:** partial · **Baseline:** 🟢 widely
+- **Notes:** Use `:modal` (not `[open]`) so scroll only locks once the dialog is actually modal.
+
+```css
+body:has(dialog:modal) { overflow: hidden; }
+```
+
+### tippy.js → Popover API + CSS anchor positioning
+- **Confidence:** partial · **Baseline:** 🟡 newly
+- **Notes:** Popover API (Newly, Jan 2025) gives light-dismiss + top layer with no JS; CSS anchor positioning (Newly, Jan 2026) replaces Popper. Keep a fallback for older browsers and advanced `position-try` features.
+
+```html
+<button popovertarget="menu" id="btn">Options</button>
+<div id="menu" popover>Hello</div>
+```
+
+```css
+#btn  { anchor-name: --trigger; }
+#menu { position-anchor: --trigger; position-area: top; margin: 0; }
+```
+
+---
+
+## Keep for now (not Baseline yet)
+
+### Temporal — do **not** drop your date library yet
+- **Baseline:** 🔴 limited (Safari has not shipped a stable release as of this writing)
+- **Why wait:** the official polyfill (`@js-temporal/polyfill`, ~44 KB gz; a lighter one ~19 KB gz) is far heavier than a lean date library like `dayjs` (~3 KB gz). Swapping today *grows* your bundle unless you load the polyfill conditionally.
+- **Revisit when:** Safari ships Temporal in a stable release and it reaches Baseline. Then use it natively and conditionally polyfill older browsers. This is why the scanner does not flag `dayjs`/`date-fns` for a Temporal swap.
 
 ## Promises
 
