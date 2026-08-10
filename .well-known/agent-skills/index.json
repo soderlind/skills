@@ -11,9 +11,9 @@
     {
       "name": "browser-native",
       "type": "archive",
-      "description": "Scan JavaScript dependencies for packages replaceable by browser/runtime native APIs. Use for dependency-modernization audits, or when another skill needs a native-replacement report with confidence and examples.",
+      "description": "Scan JavaScript dependencies for packages replaceable by browser/runtime native APIs. Use for dependency-modernization audits, or when another skill needs a native-replacement report with confidence, Baseline status, and examples.",
       "url": "https://soderlind.no/.well-known/agent-skills/browser-native.tar.gz",
-      "digest": "sha256:ec740a1efc6d1fa0241186cd875d6224bda1b3a58f37c17e57128e0c0e320d58"
+      "digest": "sha256:f31da659acbc63ae4cb0e532cb659d653ca8670ff1f9483e3a3a261ac3752f4b"
     },
     {
       "name": "document-architecture",
