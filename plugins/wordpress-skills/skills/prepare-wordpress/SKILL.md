@@ -88,6 +88,22 @@ Apply safe shell commands from the plan (manual file merges are still called out
 node {{SKILL_DIR}}/scripts/plan_setup.mjs --apply --only=init,skills,composer
 ```
 
+Available phases (pass any comma-separated subset to `--only=` or `--skip=`):
+
+| Phase | What it includes |
+| --- | --- |
+| `plugin` | Plugin bootstrap `<slug>.php` generated from the collected metadata (manual, from [references/plugin-bootstrap.md](references/plugin-bootstrap.md)). |
+| `readme` | `readme.txt` from the plugin metadata (optional, opt-in only; from [references/readme-txt.md](references/readme-txt.md)). |
+| `init` | Project basics: `npm init -y`, `git init`, a hand-written `composer.json`, and a `git remote add origin` prompt when missing. |
+| `skills` | Installs the essential agent skills via `npx skills add`; optional skills are listed as notes to install only if relevant. |
+| `composer` | PHP dev deps (`phpunit`, `brain/monkey`, `wpcs`, `phpcodesniffer-composer-installer`, `pest`); merges `test`/`lint`/`check` scripts; scaffolds `phpcs.xml`, `phpunit.xml.dist`, and `tests/`. |
+| `config` | Creates or merges `.editorconfig` and `.gitignore` (from [references/config-files.md](references/config-files.md)). |
+| `vitest` | Installs `vitest jsdom`; scaffolds `vitest.config.js`, `tests/setup.js`, and a `test:js` npm script. |
+| `eslint` | Installs `eslint @wordpress/eslint-plugin`; creates `.eslintrc.json`, `.eslintignore`, and a `lint:js` npm script. |
+| `i18n` | Scaffolds `i18n-map.json`, a `languages/` directory, and i18n npm scripts keyed to the text domain. |
+| `instructions` | Downloads `.github/instructions/wordpress.instructions.md` from github/awesome-copilot (manual fallback if offline). |
+| `cleanup` | Removes a stray `yarn.lock`. |
+
 Machine-readable dry-run output for automation:
 
 ```sh
