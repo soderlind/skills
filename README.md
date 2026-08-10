@@ -30,7 +30,7 @@ Skills for JavaScript modernization and dependency audits.
 <table>
 <thead><tr><th width="280">Skill</th><th>Purpose</th></tr></thead>
 <tbody>
-<tr><td nowrap><a href="#browser-native"><samp>browser-native</samp></a></td><td>Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs.</td></tr>
+<tr><td nowrap><a href="#browser-native"><samp>browser-native</samp></a></td><td>Audit JavaScript dependencies and identify packages replaceable by modern browser/runtime native APIs, with Baseline status and confidence.</td></tr>
 </tbody>
 </table>
 
@@ -318,7 +318,9 @@ The skill reports two scores (overall and covered-code only), ranks surviving mu
 npx skills add soderlind/skills --skill browser-native -g
 ```
 
-Use this to scan JavaScript/Node.js dependencies and find packages that can be replaced with built-in APIs (`fetch`, `URL`, `structuredClone`, `crypto.randomUUID`, `Intl`, etc.).
+Use this to scan JavaScript/Node.js dependencies and find packages that can be replaced with built-in APIs (`fetch`, `URL`, `structuredClone`, `crypto.randomUUID`, `Intl`, `Object.groupBy`, `Set` methods, `<dialog>`/Popover API, etc.).
+
+Each finding carries a **confidence** level (does the native API do what the library does?) and a **Baseline** status (can your users run it? — `widely` / `newly` / `limited`), so you can tell the easy wins from swaps that need an audience check or a fallback.
 
 Run the local scanner directly (path assumes a clone of this repo; when installed, use the skill's own directory):
 
