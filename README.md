@@ -140,19 +140,19 @@ node scripts/build-agent-skills-index.mjs --base-url https://example.com
 
 ## Usage
 
-After installation, ask your AI agent for the workflow you want. The matching skill should be selected automatically.
+After installation, ask your AI agent for the workflow you want and the matching skill is selected automatically. You can also target a skill directly with a slash command — `/<skill-name>` — optionally passing arguments, e.g. `/prepare-wordpress i18n` to run just the i18n phase.
 
-Example prompts:
+Example invocations:
 
 ```txt
-Add a new API to Azure API Management for my backend service.
-Run wp-cli on my Local site and list plugins.
-Prepare this project for WordPress plugin development.
-Bump this WordPress plugin to 1.2.3.
-Run mutation testing on this plugin and show me which tests are weak.
-Scan this JavaScript project for dependencies that can be replaced by native browser APIs.
-Document the architecture of this repository for new contributors.
-Run a pre-launch security audit on this application.
+/add-apim-api speeches-api backend https://api.example.com/speeches
+/wp-cli-local list plugins
+/prepare-wordpress i18n
+/wp-bump 1.2.3
+/wp-mutate
+/browser-native
+/document-architecture
+/pre-launch-security-audit
 ```
 
 ## Invocation Strategy
@@ -182,7 +182,7 @@ Prerequisites:
 Example prompt:
 
 ```txt
-Add a speeches-api to APIM with backend at https://api.example.com/speeches
+/add-apim-api speeches-api backend https://api.example.com/speeches
 ```
 
 The skill guides you through gathering requirements, creating Bicep files, and wiring up the API.
@@ -238,6 +238,12 @@ npx skills add soderlind/skills --skill prepare-wordpress -g
 
 Use this to set up or refresh a WordPress project with common development tooling.
 
+Example prompt (pass a phase name to run just that phase):
+
+```txt
+/prepare-wordpress i18n
+```
+
 Prerequisites:
 
 - Node.js 18+
@@ -285,7 +291,7 @@ Use this for WordPress plugin releases. It updates existing version fields, chan
 Example prompt:
 
 ```txt
-Run wp-bump for version 1.2.3.
+/wp-bump 1.2.3
 ```
 
 The skill does not create commits, tags, or releases unless you explicitly ask your agent to do so.
@@ -323,7 +329,7 @@ node skills/wp-mutate/scripts/detect_mutation_setup.mjs
 Example prompt:
 
 ```txt
-Run mutation testing on this plugin and show me which tests are weak.
+/wp-mutate
 ```
 
 The skill reports two scores (overall and covered-code only), ranks surviving mutants with untested security controls first, and proposes assertions one at a time rather than rewriting tests on its own; see [references/triage-playbook.md](skills/wp-mutate/references/triage-playbook.md) for the mutant-to-assertion mapping and [references/glossary.md](skills/wp-mutate/references/glossary.md) for the engine vocabulary differences.
@@ -337,6 +343,12 @@ npx skills add soderlind/skills --skill browser-native -g
 Use this to scan JavaScript/Node.js dependencies and find packages that can be replaced with built-in APIs (`fetch`, `URL`, `structuredClone`, `crypto.randomUUID`, `Intl`, `Object.groupBy`, `Set` methods, `<dialog>`/Popover API, etc.).
 
 Each finding carries a **confidence** level (does the native API do what the library does?) and a **Baseline** status (can your users run it? — `widely` / `newly` / `limited`), so you can tell the easy wins from swaps that need an audience check or a fallback.
+
+Example prompt:
+
+```txt
+/browser-native
+```
 
 Run the local scanner directly (path assumes a clone of this repo; when installed, use the skill's own directory):
 
@@ -361,7 +373,7 @@ Use this to create, improve, or audit repository architecture and concept docume
 Example prompt:
 
 ```txt
-Document the architecture of this repository so a new contributor can navigate it.
+/document-architecture
 ```
 
 The skill labels current vs. proposed states explicitly and verifies claims against the repository before writing docs; see [references/templates.md](skills/document-architecture/references/templates.md) for document templates.
@@ -377,7 +389,7 @@ Use this to run a stack-agnostic security and abuse-resistance review before lau
 Example prompt:
 
 ```txt
-Run a pre-launch security audit on this app before we go live.
+/pre-launch-security-audit
 ```
 
 The skill inspects the repository first, tests failure cases, and ends with a launch recommendation (block, conditional, or baseline met) rather than a compliance certification; see [references/checklist.md](skills/pre-launch-security-audit/references/checklist.md) for the control set.
