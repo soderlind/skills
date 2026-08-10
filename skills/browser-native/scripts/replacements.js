@@ -6,12 +6,18 @@
  *   browserApi – name of the native API replacement
  *   minBrowser – minimum browser/Node.js versions required
  *   confidence – "full" (drop-in safe) or "partial" (covers most cases)
+ *   baseline   – optional Baseline status of the native API:
+ *                "widely" (in all engines 30+ months — safe to adopt),
+ *                "newly"  (in all engines recently — check your audience or add a fallback),
+ *                "limited" (not yet in all engines — keep the library or polyfill)
  *   notes      – optional caveats
  *   before     – code example using the npm package
  *   after      – equivalent code using the native API
+ *
+ * Baseline reference: https://webstatus.dev / MDN Baseline badges.
  */
 
-/** @typedef {{ category: string, browserApi: string, minBrowser: { chrome: number, firefox: number, safari: number, edge: number, node: number }, confidence: "full"|"partial", notes?: string, before: string, after: string }} Replacement */
+/** @typedef {{ category: string, browserApi: string, minBrowser: { chrome: number, firefox: number, safari: number, edge: number, node: number }, confidence: "full"|"partial", baseline?: "widely"|"newly"|"limited", notes?: string, before: string, after: string }} Replacement */
 
 /** @type {Record<string, Replacement>} */
 const replacements = {
@@ -176,7 +182,8 @@ const replacements = {
     browserApi: "structuredClone()",
     minBrowser: { chrome: 98, firefox: 94, safari: 15.4, edge: 98, node: 17 },
     confidence: "full",
-    notes: "structuredClone does not clone functions or DOM nodes. Handles circular refs.",
+    baseline: "widely",
+    notes: "structuredClone does not clone functions, DOM nodes, or class instances (drops the prototype). Handles Date, Map, Set, ArrayBuffer, and circular refs.",
     before: `const cloneDeep = require('lodash.clonedeep');\nconst copy = cloneDeep(original);`,
     after: `const copy = structuredClone(original);`
   },
@@ -186,6 +193,7 @@ const replacements = {
     browserApi: "structuredClone()",
     minBrowser: { chrome: 98, firefox: 94, safari: 15.4, edge: 98, node: 17 },
     confidence: "full",
+    baseline: "widely",
     before: `const cloneDeep = require('clone-deep');\nconst copy = cloneDeep(obj);`,
     after: `const copy = structuredClone(obj);`
   },
@@ -195,6 +203,7 @@ const replacements = {
     browserApi: "structuredClone()",
     minBrowser: { chrome: 98, firefox: 94, safari: 15.4, edge: 98, node: 17 },
     confidence: "full",
+    baseline: "widely",
     notes: "rfdc is faster for hot paths; structuredClone is built-in and handles circular refs.",
     before: `const clone = require('rfdc')();\nconst copy = clone(obj);`,
     after: `const copy = structuredClone(obj);`
@@ -480,6 +489,50 @@ const replacements = {
     after: `[0, 1, false, 2, '', 3].filter(Boolean);  // [1, 2, 3]`
   },
 
+  "lodash.groupby": {
+    category: "Array Utilities",
+    browserApi: "Object.groupBy()",
+    minBrowser: { chrome: 117, firefox: 119, safari: 17.4, edge: 117, node: 21 },
+    confidence: "full",
+    baseline: "newly",
+    notes: "Baseline Newly available (2024) — check your audience or add a fallback. Use Map.groupBy() when keys are not strings. Object.groupBy returns a null-prototype object.",
+    before: `const groupBy = require('lodash.groupby');\nconst byCat = groupBy(products, p => p.category);`,
+    after: `const byCat = Object.groupBy(products, p => p.category);\n// or, for non-string keys:\nconst byCat2 = Map.groupBy(products, p => p.category);`
+  },
+
+  "lodash.union": {
+    category: "Array Utilities",
+    browserApi: "Set.prototype.union()",
+    minBrowser: { chrome: 122, firefox: 127, safari: 17, edge: 122, node: 22 },
+    confidence: "partial",
+    baseline: "newly",
+    notes: "Baseline Newly available (2024) — check your audience or add a fallback. Set methods dedupe and return Sets; spread back to an array if you need one.",
+    before: `const union = require('lodash.union');\nunion([1, 2], [2, 3]);  // [1, 2, 3]`,
+    after: `[...new Set([1, 2]).union(new Set([2, 3]))];  // [1, 2, 3]`
+  },
+
+  "lodash.intersection": {
+    category: "Array Utilities",
+    browserApi: "Set.prototype.intersection()",
+    minBrowser: { chrome: 122, firefox: 127, safari: 17, edge: 122, node: 22 },
+    confidence: "partial",
+    baseline: "newly",
+    notes: "Baseline Newly available (2024) — check your audience or add a fallback. Also available: symmetricDifference, isSubsetOf, isSupersetOf, isDisjointFrom.",
+    before: `const intersection = require('lodash.intersection');\nintersection([1, 2, 3], [2, 3, 4]);  // [2, 3]`,
+    after: `[...new Set([1, 2, 3]).intersection(new Set([2, 3, 4]))];  // [2, 3]`
+  },
+
+  "lodash.difference": {
+    category: "Array Utilities",
+    browserApi: "Set.prototype.difference()",
+    minBrowser: { chrome: 122, firefox: 127, safari: 17, edge: 122, node: 22 },
+    confidence: "partial",
+    baseline: "newly",
+    notes: "Baseline Newly available (2024) — check your audience or add a fallback.",
+    before: `const difference = require('lodash.difference');\ndifference([1, 2, 3], [2, 3]);  // [1]`,
+    after: `[...new Set([1, 2, 3]).difference(new Set([2, 3]))];  // [1]`
+  },
+
   "array.prototype.flat": {
     category: "Array Utilities",
     browserApi: "Array.prototype.flat()",
@@ -595,7 +648,8 @@ const replacements = {
     browserApi: "Intl.DateTimeFormat / Date",
     minBrowser: { chrome: 24, firefox: 29, safari: 10, edge: 12, node: 13 },
     confidence: "partial",
-    notes: "Intl replaces formatting/localization. Complex date math (add/subtract/diff) still needs a library like date-fns or Temporal (stage 3).",
+    baseline: "widely",
+    notes: "Intl replaces formatting/localization. Complex date math (add/subtract/diff) still needs a library like date-fns or Temporal (limited availability — see notes below).",
     before: `const moment = require('moment');\nmoment().format('MMMM Do YYYY, h:mm a');\nmoment().fromNow();`,
     after: `new Intl.DateTimeFormat('en-US', {\n  year: 'numeric', month: 'long',\n  day: 'numeric', hour: 'numeric', minute: 'numeric'\n}).format(new Date());\n\n// Relative time\nnew Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(-3, 'day');`
   },
@@ -605,9 +659,67 @@ const replacements = {
     browserApi: "Intl.DateTimeFormat (timeZone option)",
     minBrowser: { chrome: 24, firefox: 52, safari: 14.1, edge: 14, node: 13 },
     confidence: "partial",
+    baseline: "widely",
     notes: "Intl supports IANA timezones natively. Complex timezone math may still need a library.",
     before: `const moment = require('moment-timezone');\nmoment().tz('America/New_York').format('h:mm a z');`,
     after: `new Intl.DateTimeFormat('en-US', {\n  timeZone: 'America/New_York',\n  hour: 'numeric', minute: 'numeric', timeZoneName: 'short'\n}).format(new Date());`
+  },
+
+  "timeago.js": {
+    category: "Date / Time",
+    browserApi: "Intl.RelativeTimeFormat",
+    minBrowser: { chrome: 71, firefox: 65, safari: 14, edge: 79, node: 12 },
+    confidence: "partial",
+    baseline: "widely",
+    notes: "Intl.RelativeTimeFormat formats a value + unit; unlike timeago.js it does not pick the unit for you. Add a small helper that finds the largest unit that fits.",
+    before: `import { format } from 'timeago.js';\nformat(Date.now() - 3600 * 1000);  // '1 hour ago'`,
+    after: `const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });\nrtf.format(-1, 'hour');  // '1 hour ago'\nrtf.format(-1, 'day');   // 'yesterday'`
+  },
+
+  "humanize-duration": {
+    category: "Date / Time",
+    browserApi: "Intl.DurationFormat",
+    minBrowser: { chrome: 129, firefox: 133, safari: 16.4, edge: 129, node: 22 },
+    confidence: "partial",
+    baseline: "newly",
+    notes: "Baseline Newly available (landed in all engines March 2025; on track for Widely in 2027). Fine for internal/modern-audience tools; for a broad audience check traffic or guard with a feature check.",
+    before: `import humanizeDuration from 'humanize-duration';\nhumanizeDuration(5400000);  // '1 hour, 30 minutes'`,
+    after: `const df = new Intl.DurationFormat('en', { style: 'long' });\ndf.format({ hours: 1, minutes: 30 });  // '1 hour, 30 minutes'`
+  },
+
+  // ───────────────────────── Internationalization ─────────────────────────
+
+  "pluralize": {
+    category: "Internationalization",
+    browserApi: "Intl.PluralRules",
+    minBrowser: { chrome: 63, firefox: 58, safari: 13, edge: 18, node: 10 },
+    confidence: "partial",
+    baseline: "widely",
+    notes: "Intl.PluralRules selects the plural category (one/other/…); it does not inflect the word itself. Map categories to your own word forms.",
+    before: `const pluralize = require('pluralize');\npluralize('item', 3);  // 'items'`,
+    after: `const pr = new Intl.PluralRules('en');\nconst forms = { one: 'item', other: 'items' };\nconst word = forms[pr.select(3)];  // 'items'`
+  },
+
+  "numeral": {
+    category: "Internationalization",
+    browserApi: "Intl.NumberFormat",
+    minBrowser: { chrome: 24, firefox: 29, safari: 10, edge: 12, node: 0.12 },
+    confidence: "partial",
+    baseline: "widely",
+    notes: "Intl.NumberFormat covers thousands separators, currency, percent, and compact notation. Custom format strings map to option objects instead.",
+    before: `const numeral = require('numeral');\nnumeral(1234567.89).format('0,0.00');  // '1,234,567.89'\nnumeral(1200000).format('0.0a');        // '1.2m'`,
+    after: `new Intl.NumberFormat('en-US').format(1234567.89);  // '1,234,567.89'\nnew Intl.NumberFormat('en', { notation: 'compact' }).format(1200000);  // '1.2M'`
+  },
+
+  "accounting": {
+    category: "Internationalization",
+    browserApi: "Intl.NumberFormat",
+    minBrowser: { chrome: 24, firefox: 29, safari: 10, edge: 12, node: 0.12 },
+    confidence: "partial",
+    baseline: "widely",
+    notes: "Use the currency style. Custom symbol/precision options replace accounting.js format strings.",
+    before: `const accounting = require('accounting');\naccounting.formatMoney(1234.5);  // '$1,234.50'`,
+    after: `new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(1234.5);  // '$1,234.50'`
   },
 
   // ───────────────────────── Promises ─────────────────────────
@@ -923,6 +1035,52 @@ const replacements = {
     confidence: "full",
     before: `const globalThis = require('globalthis')();\nglobalThis.myGlobal = 42;`,
     after: `globalThis.myGlobal = 42;`
+  },
+
+  // ───────────────────────── UI Primitives ─────────────────────────
+
+  "a11y-dialog": {
+    category: "UI Primitives",
+    browserApi: "<dialog> element",
+    minBrowser: { chrome: 37, firefox: 98, safari: 15.4, edge: 79, node: Infinity },
+    confidence: "partial",
+    baseline: "widely",
+    notes: "Browser-only. showModal() gives focus trapping, Escape-to-close, focus restore, top-layer render, and a ::backdrop. Migrate ARIA wiring to the native element.",
+    before: `import A11yDialog from 'a11y-dialog';\nconst dialog = new A11yDialog(el);\ndialog.show();`,
+    after: `<dialog id=\"confirm\"><form method=\"dialog\">\n  <button value=\"cancel\">Cancel</button>\n  <button value=\"ok\">OK</button>\n</form></dialog>\n\nconst dialog = document.querySelector('#confirm');\ndialog.showModal();\ndialog.addEventListener('close', () => console.log(dialog.returnValue));`
+  },
+
+  "focus-trap": {
+    category: "UI Primitives",
+    browserApi: "<dialog>.showModal()",
+    minBrowser: { chrome: 37, firefox: 98, safari: 15.4, edge: 79, node: Infinity },
+    confidence: "partial",
+    baseline: "widely",
+    notes: "Browser-only. A modal <dialog> traps focus for you. Keep focus-trap only if you need trapping outside a <dialog>.",
+    before: `import { createFocusTrap } from 'focus-trap';\nconst trap = createFocusTrap(el);\ntrap.activate();`,
+    after: `// A modal <dialog> makes the rest of the page inert automatically\ndocument.querySelector('#modal').showModal();`
+  },
+
+  "body-scroll-lock": {
+    category: "UI Primitives",
+    browserApi: "CSS :has(dialog:modal)",
+    minBrowser: { chrome: 105, firefox: 121, safari: 15.4, edge: 105, node: Infinity },
+    confidence: "partial",
+    baseline: "widely",
+    notes: "Browser-only. Lock background scroll with one CSS rule while a modal dialog is open.",
+    before: `import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';\ndisableBodyScroll(el);`,
+    after: `/* CSS — locks scroll only while a dialog is actually modal */\nbody:has(dialog:modal) {\n  overflow: hidden;\n}`
+  },
+
+  "tippy.js": {
+    category: "UI Primitives",
+    browserApi: "Popover API + CSS anchor positioning",
+    minBrowser: { chrome: 125, firefox: 147, safari: 26, edge: 125, node: Infinity },
+    confidence: "partial",
+    baseline: "newly",
+    notes: "Browser-only. Popover API (Baseline Newly, Jan 2025) gives light-dismiss + top layer with no JS; CSS anchor positioning (Baseline Newly, Jan 2026) replaces Popper. Check your audience and keep a fallback for advanced position-try features.",
+    before: `import tippy from 'tippy.js';\ntippy('#btn', { content: 'Hello' });`,
+    after: `<button popovertarget=\"menu\" id=\"btn\">Options</button>\n<div id=\"menu\" popover>Hello</div>\n\n/* CSS — pin the popover to its trigger */\n#btn { anchor-name: --trigger; }\n#menu { position-anchor: --trigger; position-area: top; margin: 0; }`
   },
 
   // ───────────────────────── Observers ─────────────────────────

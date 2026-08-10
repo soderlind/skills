@@ -18,6 +18,7 @@ export function formatJson(results, totalDeps, packageJsons) {
       replaceableCount: results.length,
       fullReplacements: full,
       partialReplacements: results.length - full,
+      newlyBaseline: results.filter((r) => r.replacement.baseline === "newly").length,
     },
     replaceable: results.map((r) => ({
       package: r.name,
@@ -26,6 +27,7 @@ export function formatJson(results, totalDeps, packageJsons) {
       category: r.replacement.category,
       browserApi: r.replacement.browserApi,
       confidence: r.replacement.confidence,
+      baseline: r.replacement.baseline ?? null,
       notes: r.replacement.notes ?? null,
       minBrowser: r.replacement.minBrowser,
       before: r.replacement.before,

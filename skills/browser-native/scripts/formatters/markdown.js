@@ -32,6 +32,15 @@ export function formatMarkdown(results, totalDeps, packageJsons) {
   );
   lines.push("");
 
+  const newly = results.filter((r) => r.replacement.baseline === "newly").length;
+  if (newly > 0) {
+    lines.push(
+      `> **Baseline note:** ${newly} replacement(s) rely on *Baseline Newly available* features. ` +
+        `Confirm your audience (check \`browserslist\` / analytics) or guard them with a feature check and fallback before shipping.`
+    );
+    lines.push("");
+  }
+
   // Group by category
   /** @type {Map<string, typeof results>} */
   const byCategory = new Map();
@@ -54,6 +63,11 @@ export function formatMarkdown(results, totalDeps, packageJsons) {
       lines.push("");
       lines.push(`**${badge}** → **${r.replacement.browserApi}**`);
       lines.push("");
+
+      if (r.replacement.baseline) {
+        lines.push(`**Baseline:** ${baselineLabel(r.replacement.baseline)}`);
+        lines.push("");
+      }
 
       if (r.replacement.notes) {
         lines.push(`> ${r.replacement.notes}`);
@@ -102,4 +116,22 @@ export function formatMarkdown(results, totalDeps, packageJsons) {
 function fmtVer(ver) {
   if (ver === Infinity) return "N/A";
   return String(ver) + "+";
+}
+
+/**
+ * Human-readable label for a Baseline status.
+ * @param {"widely"|"newly"|"limited"} baseline
+ * @returns {string}
+ */
+function baselineLabel(baseline) {
+  switch (baseline) {
+    case "widely":
+      return "🟢 Widely available — safe to adopt.";
+    case "newly":
+      return "🟡 Newly available — check your audience (browserslist/analytics) or add a fallback.";
+    case "limited":
+      return "🔴 Limited availability — keep the library or polyfill for now.";
+    default:
+      return baseline;
+  }
 }
