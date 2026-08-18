@@ -2,7 +2,7 @@
 name: wp-cli-local
 description: "Safe WP-CLI execution for Local by Flywheel via wrapper, including explicit site resolution before mutating operations."
 compatibility: "macOS with Local by Flywheel installed, WP-CLI in PATH, and python3. The target Local site must be running."
-version: "1.1.0"
+version: "1.1.1"
 ---
 
 # WP-CLI for Local by Flywheel
@@ -52,7 +52,7 @@ Do **not** use a bare `$WP` variable to hold the command. If a variable is truly
 
 ## Site Detection
 
-The wrapper **auto-detects the site** by matching the current working directory against site paths in Local's `sites.json`. No site name argument is needed when the terminal is inside a Local site directory.
+The wrapper **auto-detects the site** by matching the current working directory against site paths in Local's `sites.json`. Paths stored as `~/Local Sites/...` are expanded before matching, so the default macOS Sites folder works. No site name argument is needed when the terminal is inside a Local site directory.
 
 ```bash
 # Define a function wrapper (works in bash and zsh)

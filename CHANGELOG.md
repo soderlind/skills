@@ -37,6 +37,10 @@ version in their frontmatter, so entries below are grouped by date.
   (`--include='*.php'`, excluding `vendor`/`node_modules`/`.git`/`tests`/`dist`/`build`)
   instead of hard-coding `src/ includes/`, so code under `admin/`, `public/`, `app/`,
   etc. is covered and absent directories no longer emit errors.
+- wp-cli-local / wp-pcp-local: expand `~/Local Sites/...` paths from Local's
+  `sites.json` before matching CWD or invoking WP-CLI (1.1.1). Default macOS
+  installs store site directories with a leading tilde, which previously broke
+  auto-detect and produced a non-existent `~/...` filesystem path.
 
 ## [2026-08-08]
 
