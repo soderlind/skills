@@ -10,6 +10,7 @@
         "wp-bump",
         "wp-cli-local",
         "wp-mutate",
+        "wp-org-review",
         "wp-pcp-local"
       ]
     },

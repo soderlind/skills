@@ -5,6 +5,12 @@ All notable changes to `wordpress-skills` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-08-26
+
+### Added
+
+- wp-org-review: prepare a plugin for the WordPress.org Plugin Directory review — audits suppressed sniffs, arbitrary-path writes, output escaping, readme contributors, and bundled translations that Plugin Check/PHPCS miss.
+
 ## [1.2.0] - 2026-08-08
 
 ### Changed

@@ -19,6 +19,7 @@ Skills for WordPress plugin and theme development.
 <tr><td nowrap><a href="#wp-bump"><samp>wp-bump</samp></a></td><td>Bump a WordPress plugin version and update related release metadata.</td></tr>
 <tr><td nowrap><a href="#wp-cli-local"><samp>wp-cli-local</samp></a></td><td>Run WP-CLI commands against Local by Flywheel sites on macOS.</td></tr>
 <tr><td nowrap><a href="#wp-mutate"><samp>wp-mutate</samp></a></td><td>Run mutation testing on WordPress PHP and JavaScript to find weak tests, then triage surviving mutants.</td></tr>
+<tr><td nowrap><a href="#wp-org-review"><samp>wp-org-review</samp></a></td><td>Prepare a plugin for the WordPress.org Directory review, fixing findings the reviewer catches beyond Plugin Check/PHPCS.</td></tr>
 <tr><td nowrap><a href="#wp-pcp-local"><samp>wp-pcp-local</samp></a></td><td>Run the WordPress Plugin Check (PCP) against Local by Flywheel sites on macOS.</td></tr>
 </tbody>
 </table>
@@ -228,6 +229,28 @@ The skill routes Plugin Check through its bundled wrapper, auto-detecting the si
 
 ```sh
 bash skills/wp-pcp-local/scripts/pcp my-plugin
+```
+
+### wp-org-review
+
+```sh
+npx skills add soderlind/skills --skill wp-org-review -g
+```
+
+Use this to harden a plugin for the WordPress.org Plugin Directory review, catching the findings the reviewer flags but local tooling misses.
+
+It audits and fixes:
+
+- Suppressed sniffs (`phpcs:ignore` / `phpcs:disable`) — real fix or justified ignore.
+- Arbitrary-path or disallowed-location filesystem writes.
+- Context-correct output escaping applied at the point of output.
+- `readme.txt` `Contributors:` mapping to the wp.org slug owner.
+- Bundled compiled translations that should not ship in the zip.
+
+Example prompt:
+
+```txt
+/wp-org-review respond to this plugin review email
 ```
 
 ### prepare-wordpress

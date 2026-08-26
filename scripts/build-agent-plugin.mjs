@@ -24,7 +24,7 @@ const PLUGINS = [
 		distRepo: 'https://github.com/soderlind/wordpress-agent-plugin',
 		manifest: {
 			name: 'wordpress-skills',
-			version: '1.2.0',
+			version: '1.3.0',
 			description: 'WordPress development, testing, and release skills.',
 			author: { name: 'Per Soderlind', url: 'https://soderlind.no' },
 			homepage: 'https://github.com/soderlind/wordpress-agent-plugin',
@@ -34,6 +34,13 @@ const PLUGINS = [
 		},
 		// Newest first. Each entry becomes a section in CHANGELOG.md.
 		changelog: [
+			{
+				version: '1.3.0',
+				date: '2026-08-26',
+				added: [
+					'wp-org-review: prepare a plugin for the WordPress.org Plugin Directory review — audits suppressed sniffs, arbitrary-path writes, output escaping, readme contributors, and bundled translations that Plugin Check/PHPCS miss.',
+				],
+			},
 			{
 				version: '1.2.0',
 				date: '2026-08-08',

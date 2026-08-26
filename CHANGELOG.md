@@ -10,6 +10,10 @@ version in their frontmatter, so entries below are grouped by date.
 
 ### Added
 
+- wp-org-review: new skill to prepare a WordPress plugin for the WordPress.org
+  Plugin Directory review — audits suppressed sniffs, arbitrary-path writes,
+  output escaping, readme contributors, and bundled translations that Plugin
+  Check/PHPCS miss (wordpress-skills plugin 1.3.0).
 - browser-native: Baseline status (`widely` / `newly` / `limited`) on replacement
   entries, surfaced alongside confidence in the table, markdown, and JSON output.
 - browser-native: new replaceable packages — `timeago.js`, `pluralize`, `numeral`,

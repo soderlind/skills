@@ -2,7 +2,7 @@
 
 WordPress development, testing, and release skills.
 
-An [Agent Plugin](https://agent-plugins.org) (spec v1.0.0) bundling 5 skills:
+An [Agent Plugin](https://agent-plugins.org) (spec v1.0.0) bundling 6 skills:
 
 | Skill | Description |
 | ----- | ----------- |
@@ -10,6 +10,7 @@ An [Agent Plugin](https://agent-plugins.org) (spec v1.0.0) bundling 5 skills:
 | [`wp-bump`](skills/wp-bump/SKILL.md) | Structured WordPress plugin release-bump workflow that orchestrates version sync, changelog, rebuild, and validation steps with explicit gates. |
 | [`wp-cli-local`](skills/wp-cli-local/SKILL.md) | Safe WP-CLI execution for Local by Flywheel via wrapper, including explicit site resolution before mutating operations. |
 | [`wp-mutate`](skills/wp-mutate/SKILL.md) | Run mutation testing on WordPress plugins and themes to find weak tests — Pest --mutate or Infection for PHP, StrykerJS for JavaScript — then triage surviving mutants into concrete test improvements. |
+| [`wp-org-review`](skills/wp-org-review/SKILL.md) | Prepare a WordPress plugin for the WordPress.org Plugin Directory review. Audits and fixes the findings the reviewer catches but local Plugin Check/PHPCS miss — suppressed sniffs, arbitrary-path writes, output escaping, readme contributors, bundled translations, and disallowed file writes. Use when submitting/resubmitting a plugin to wordpress.org, responding to a plugin review email, or hardening a plugin against Plugin Check. |
 | [`wp-pcp-local`](skills/wp-pcp-local/SKILL.md) | Run the WordPress Plugin Check (PCP) against a Local by Flywheel site via wrapper, with explicit site and plugin resolution before checks. |
 
 ## Install
