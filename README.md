@@ -247,6 +247,8 @@ It audits and fixes:
 - `readme.txt` `Contributors:` mapping to the wp.org slug owner.
 - Bundled compiled translations that should not ship in the zip.
 
+It also bundles [`reviewer-findings.md`](skills/wp-org-review/references/reviewer-findings.md), a generic catalog distilled from real Plugin Directory review emails — every recurring finding (prefixing, location constants, filesystem writes, unneeded files, out-of-date libraries, update checkers, `register_setting` sanitization, textdomain, contributors, enqueuing, escaping, trademarks, external-service disclosure, dead URLs, readme accuracy) with a detection command and a fix for each.
+
 Example prompt:
 
 ```txt

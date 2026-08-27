@@ -2,7 +2,7 @@
 name: wp-org-review
 description: "Prepare a WordPress plugin for the WordPress.org Plugin Directory review. Audits and fixes the findings the reviewer catches but local Plugin Check/PHPCS miss — suppressed sniffs, arbitrary-path writes, output escaping, readme contributors, bundled translations, and disallowed file writes. Use when submitting/resubmitting a plugin to wordpress.org, responding to a plugin review email, or hardening a plugin against Plugin Check."
 compatibility: "WordPress plugin repos using PHPCS (WordPress standard), a .distignore or 10up deploy action, and optional Composer/npm build."
-version: "1.0.0"
+version: "1.1.0"
 ---
 
 # WordPress.org Directory Review
@@ -20,6 +20,16 @@ without honouring your inline `phpcs:ignore` comments, and checks things no stat
 sniff evaluates (contributor↔owner mapping, "writes to a disallowed location",
 translation-file policy). Treat every `phpcs:ignore` as an *unreviewed* line, and
 every human-only rule as invisible to your local tooling.
+
+## Reviewer findings catalog
+
+[reviewer-findings.md](references/reviewer-findings.md) is a generic RAG distilled from
+real Plugin Directory review emails: every recurring finding (prefixing, location
+constants, filesystem writes, unneeded files, out-of-date libraries, update checkers,
+`register_setting` sanitization, textdomain, contributors, enqueuing, escaping,
+trademarks, external-service disclosure, dead URLs, readme accuracy) with a detection
+command and a fix for each. Consult it to map a review email's findings to fixes, and to
+pre-empt the ones the reviewer will raise on the next pass.
 
 ## Procedure
 

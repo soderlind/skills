@@ -59,10 +59,10 @@
     },
     {
       "name": "wp-org-review",
-      "type": "skill-md",
+      "type": "archive",
       "description": "Prepare a WordPress plugin for the WordPress.org Plugin Directory review. Audits and fixes the findings the reviewer catches but local Plugin Check/PHPCS miss — suppressed sniffs, arbitrary-path writes, output escaping, readme contributors, bundled translations, and disallowed file writes. Use when submitting/resubmitting a plugin to wordpress.org, responding to a plugin review email, or hardening a plugin against Plugin Check.",
-      "url": "https://soderlind.no/.well-known/agent-skills/wp-org-review/SKILL.md",
-      "digest": "sha256:6644da7f19ac649184829f0d08f23ed1be290c26de314bb17888636b58b7988b"
+      "url": "https://soderlind.no/.well-known/agent-skills/wp-org-review.tar.gz",
+      "digest": "sha256:89fd60814d3dba254d2694b25da95ac28cdf904b1a88cf000407b70ac7ff1d88"
     },
     {
       "name": "wp-pcp-local",
