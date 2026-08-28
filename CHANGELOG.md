@@ -8,6 +8,8 @@ version in their frontmatter, so entries below are grouped by date.
 
 ## [Unreleased]
 
+## [2026-08-28]
+
 ### Added
 
 - wp-org-review: new skill to prepare a WordPress plugin for the WordPress.org
