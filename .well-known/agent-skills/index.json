@@ -6,35 +6,35 @@
       "type": "archive",
       "description": "Scaffold a new API in Azure API Management. Use when user asks to add, create, or expose a new API through APIM, or needs to wire up a backend service to the gateway.",
       "url": "https://soderlind.no/.well-known/agent-skills/add-apim-api.tar.gz",
-      "digest": "sha256:73bcc7592d26cb2adb5ef69dd37eae501de15587e0ea0cdc569ff566dc361717"
+      "digest": "sha256:4b64f55d08e2828acfa5a9844d182574de0b4f0872b84d6c0051d2cb8fc550c6"
     },
     {
       "name": "browser-native",
       "type": "archive",
       "description": "Scan JavaScript dependencies for packages replaceable by browser/runtime native APIs. Use for dependency-modernization audits, or when another skill needs a native-replacement report with confidence, Baseline status, and examples.",
       "url": "https://soderlind.no/.well-known/agent-skills/browser-native.tar.gz",
-      "digest": "sha256:dd6d660d883f8d8f858a1740cfbf223af28c45d778e1a833a0f21ddb4de4e4e8"
+      "digest": "sha256:f31da659acbc63ae4cb0e532cb659d653ca8670ff1f9483e3a3a261ac3752f4b"
     },
     {
       "name": "document-architecture",
       "type": "archive",
       "description": "Create, improve, or audit repository architecture and concept documentation. Use when asked to document a codebase's architecture, domain model, component boundaries, data or control flows, invariants, failure behavior, change locations, or architectural decisions; create architecture.md, system-context, component, glossary, or ADR documents; make a repository easier for developers or AI coding agents to understand; or reconcile stale architecture documentation with code.",
       "url": "https://soderlind.no/.well-known/agent-skills/document-architecture.tar.gz",
-      "digest": "sha256:c9c0c3f7ddf4dc9044673cf21b9224a6ad23ecbd35dbbd77d6626078f54627af"
+      "digest": "sha256:75c87f392b68dd42c5d7e8f9c99f711b53f2da647dcc98db0ca23bf523748161"
     },
     {
       "name": "pre-launch-security-audit",
       "type": "archive",
       "description": "Run an evidence-backed, stack-agnostic security and abuse-resistance review before an application launch. Use when reviewing an MVP, SaaS product, AI application, public website, API, or mobile backend that handles user data, authentication, public forms, databases, file uploads, webhooks, or paid third-party services; when asked for a launch-security checklist, OWASP review, secrets audit, database authorization review, authentication failure-case test, rate-limit or cost-abuse review, or final security gate.",
       "url": "https://soderlind.no/.well-known/agent-skills/pre-launch-security-audit.tar.gz",
-      "digest": "sha256:f1fbb3e8d0bd2e2c342b90c93085c59dc448f425e80e771a3bf20bee0a2bec42"
+      "digest": "sha256:f472346ffb420dce12855aa92617b580eb6ff8efd6367515e1e8cbf2300badb4"
     },
     {
       "name": "prepare-wordpress",
       "type": "archive",
       "description": "Phase-based WordPress project setup workflow with dry-run planning and confirmed apply for predictable scaffolding/standardization.",
       "url": "https://soderlind.no/.well-known/agent-skills/prepare-wordpress.tar.gz",
-      "digest": "sha256:9fffe8b2209b278b8d9ba303fe9849748a030e383bb43f5abc09b6b208102c60"
+      "digest": "sha256:a34ded59223656505ebe2c600b0575423c1afcc53e5a4de537fead8f8aa50e57"
     },
     {
       "name": "wp-bump",
@@ -48,28 +48,28 @@
       "type": "archive",
       "description": "Safe WP-CLI execution for Local by Flywheel via wrapper, including explicit site resolution before mutating operations.",
       "url": "https://soderlind.no/.well-known/agent-skills/wp-cli-local.tar.gz",
-      "digest": "sha256:0975355df401b1b331ec2dc8b2c1d8aeb2f85c3c238fbfcb7f6f3e4dc45a308f"
+      "digest": "sha256:8e03cf0b37c0fad1153690c86f428d60267d59d6134d6080ec9b0ec4bf45d460"
     },
     {
       "name": "wp-mutate",
       "type": "archive",
       "description": "Run mutation testing on WordPress plugins and themes to find weak tests — Pest --mutate or Infection for PHP, StrykerJS for JavaScript — then triage surviving mutants into concrete test improvements.",
       "url": "https://soderlind.no/.well-known/agent-skills/wp-mutate.tar.gz",
-      "digest": "sha256:4d62ff4468f2a6d3c3a4195b6dbf632145a8fcd3057393b155d97ef04491f5d8"
+      "digest": "sha256:4cb773c1e85a3f03d30c5f2e766b753f7d75d33232d7045eede7bbca701aa0e6"
     },
     {
       "name": "wp-org-review",
       "type": "archive",
       "description": "Prepare a WordPress plugin for the WordPress.org Plugin Directory review. Audits and fixes the findings the reviewer catches but local Plugin Check/PHPCS miss — suppressed sniffs, arbitrary-path writes, output escaping, readme contributors, bundled translations, and disallowed file writes. Use when submitting/resubmitting a plugin to wordpress.org, responding to a plugin review email, or hardening a plugin against Plugin Check.",
       "url": "https://soderlind.no/.well-known/agent-skills/wp-org-review.tar.gz",
-      "digest": "sha256:abae085a1e50836ff28915736f91dd29741816b28a8aa448ee48583e2b007048"
+      "digest": "sha256:e493c242662c5d5a48be64841d7f2cadf587b2b027ab9bed3583d304e6fd6fc6"
     },
     {
       "name": "wp-pcp-local",
       "type": "archive",
       "description": "Run the WordPress Plugin Check (PCP) against a Local by Flywheel site via wrapper, with explicit site and plugin resolution before checks.",
       "url": "https://soderlind.no/.well-known/agent-skills/wp-pcp-local.tar.gz",
-      "digest": "sha256:b9c73c4e9bb3de7ef124ad067ec6886561615df2b49ff0dc7a8a3bbcba78c674"
+      "digest": "sha256:a85687f1ad57533385b7539ec04ae25bdeaf320f3b098e34d903990df2e66b1a"
     }
   ]
 }
