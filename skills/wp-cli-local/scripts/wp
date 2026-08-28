@@ -11,6 +11,9 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export PYTHONPATH="$SCRIPT_DIR${PYTHONPATH:+:$PYTHONPATH}"
+
 LOCAL_BASE="$HOME/Library/Application Support/Local"
 SITES_JSON="$LOCAL_BASE/sites.json"
 STATUSES_JSON="$LOCAL_BASE/site-statuses.json"
@@ -47,6 +50,8 @@ list_sites() {
 import json
 import os
 
+from local_paths import expand_site_path
+
 sites_path = os.path.expanduser(os.environ["SITES_JSON_PATH"])
 statuses_path = os.path.expanduser(os.environ["STATUSES_JSON_PATH"])
 
@@ -61,7 +66,7 @@ if os.path.exists(statuses_path):
 for s in sorted(sites.values(), key=lambda x: x["name"]):
     status = statuses.get(s["id"], "unknown")
     marker = "*" if status == "running" else "-"
-    print(f"  {marker} {s['name']:20s} {status:10s} {s['path']}")
+    print(f"  {marker} {s['name']:20s} {status:10s} {expand_site_path(s['path'])}")
 PY
 }
 
@@ -73,6 +78,8 @@ import json
 import os
 import sys
 
+from local_paths import cwd_is_in_site, expand_site_path
+
 cwd = os.getcwd()
 sites_path = os.path.expanduser(os.environ["SITES_JSON_PATH"])
 
@@ -82,19 +89,17 @@ with open(sites_path, encoding="utf-8") as f:
 best = None
 best_len = 0
 for s in sites.values():
-    p = s["path"].rstrip("/")
-    # CWD must equal the site path or be a subdirectory of it
-    if cwd == p or cwd.startswith(p + "/"):
-        if len(p) > best_len:
-            best = s
-            best_len = len(p)
+    p = expand_site_path(s["path"])
+    if cwd_is_in_site(cwd, s["path"]) and len(p) > best_len:
+        best = s
+        best_len = len(p)
 
 if best is None:
     sys.exit(1)
 
 php_ver = best["services"]["php"]["version"]
 mysql_ver = best["services"]["mysql"]["version"]
-print(f"{best['id']}|{best['name']}|{best['path']}|{php_ver}|{mysql_ver}")
+print(f"{best['id']}|{best['name']}|{expand_site_path(best['path'])}|{php_ver}|{mysql_ver}")
 PY
 }
 
@@ -104,6 +109,8 @@ lookup_site_by_name() {
 import json
 import os
 import sys
+
+from local_paths import expand_site_path
 
 sites_path = os.path.expanduser(os.environ["SITES_JSON_PATH"])
 lookup_name = os.environ["SITE_LOOKUP_NAME"]
@@ -115,7 +122,7 @@ for s in sites.values():
     if s["name"] == lookup_name:
         php_ver = s["services"]["php"]["version"]
         mysql_ver = s["services"]["mysql"]["version"]
-        print(f"{s['id']}|{s['name']}|{s['path']}|{php_ver}|{mysql_ver}")
+        print(f"{s['id']}|{s['name']}|{expand_site_path(s['path'])}|{php_ver}|{mysql_ver}")
         sys.exit(0)
 
 sys.exit(1)

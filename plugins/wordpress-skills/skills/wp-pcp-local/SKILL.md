@@ -2,7 +2,7 @@
 name: wp-pcp-local
 description: "Run the WordPress Plugin Check (PCP) against a Local by Flywheel site via wrapper, with explicit site and plugin resolution before checks."
 compatibility: "macOS with Local by Flywheel installed, WP-CLI in PATH, and python3. The target Local site must be running with the Plugin Check plugin activated (network-activated on multisite)."
-version: "1.1.0"
+version: "1.1.1"
 ---
 
 # Plugin Check (PCP) for Local by Flywheel
@@ -52,7 +52,7 @@ Do **not** use a bare `$PCP` variable to hold the command. If a variable is trul
 
 ## Site and plugin detection
 
-The wrapper **auto-detects the site** by matching the current working directory against site paths in Local's `sites.json`. When run from inside `wp-content/plugins/<slug>`, it also **auto-detects the plugin slug**. No arguments are needed when the terminal is inside a plugin directory of a Local site.
+The wrapper **auto-detects the site** by matching the current working directory against site paths in Local's `sites.json`. Paths stored as `~/Local Sites/...` are expanded before matching, so the default macOS Sites folder works. When run from inside `wp-content/plugins/<slug>`, it also **auto-detects the plugin slug**. No arguments are needed when the terminal is inside a plugin directory of a Local site.
 
 Flags may appear in any order. Use `--site=<name>` to pick a Local site, and `--url=<subsite-url>` to target a specific site on a **multisite** network (see below). The first bare word is the plugin slug; any other flags are forwarded to `wp plugin check`. Because the slug is only ever emitted once, running from inside a plugin directory (slug auto-detected) while also passing the same slug will **not** create a duplicate positional argument. When the slug auto-detects from CWD, do not pass it again.
 

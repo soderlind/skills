@@ -13,6 +13,9 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export PYTHONPATH="$SCRIPT_DIR${PYTHONPATH:+:$PYTHONPATH}"
+
 LOCAL_BASE="$HOME/Library/Application Support/Local"
 SITES_JSON="$LOCAL_BASE/sites.json"
 ARCH="$(uname -m)"
@@ -43,6 +46,8 @@ import json
 import os
 import sys
 
+from local_paths import expand_site_path
+
 sites_path = os.path.expanduser(os.environ["SITES_JSON_PATH"])
 filter_name = os.environ.get("FILTER_NAME", "")
 
@@ -56,7 +61,7 @@ for s in sorted(sites.values(), key=lambda x: x["name"]):
     matched = True
     php_ver = s["services"]["php"]["version"]
     mysql_ver = s["services"]["mysql"]["version"]
-    print(f"{s['id']}|{s['name']}|{s['path']}|{php_ver}|{mysql_ver}")
+    print(f"{s['id']}|{s['name']}|{expand_site_path(s['path'])}|{php_ver}|{mysql_ver}")
 
 if filter_name and not matched:
     print(f"Error: Site '{filter_name}' not found.", file=sys.stderr)
