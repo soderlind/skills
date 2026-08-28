@@ -24,7 +24,7 @@ const PLUGINS = [
 		distRepo: 'https://github.com/soderlind/wordpress-agent-plugin',
 		manifest: {
 			name: 'wordpress-skills',
-			version: '1.4.0',
+			version: '1.4.1',
 			description: 'WordPress development, testing, and release skills.',
 			author: { name: 'Per Soderlind', url: 'https://soderlind.no' },
 			homepage: 'https://github.com/soderlind/wordpress-agent-plugin',
@@ -34,6 +34,13 @@ const PLUGINS = [
 		},
 		// Newest first. Each entry becomes a section in CHANGELOG.md.
 		changelog: [
+			{
+				version: '1.4.1',
+				date: '2026-08-28',
+				fixed: [
+					'wp-cli-local / wp-pcp-local: expand ~/Local Sites/... paths from Local\u2019s sites.json before matching CWD or invoking WP-CLI, so default macOS installs (which store site directories with a leading tilde) auto-detect correctly instead of producing a non-existent ~/... path (both skills 1.1.1).',
+				],
+			},
 			{
 				version: '1.4.0',
 				date: '2026-08-28',

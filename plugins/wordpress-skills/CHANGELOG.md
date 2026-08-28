@@ -5,6 +5,12 @@ All notable changes to `wordpress-skills` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-08-28
+
+### Fixed
+
+- wp-cli-local / wp-pcp-local: expand ~/Local Sites/... paths from Local’s sites.json before matching CWD or invoking WP-CLI, so default macOS installs (which store site directories with a leading tilde) auto-detect correctly instead of producing a non-existent ~/... path (both skills 1.1.1).
+
 ## [1.4.0] - 2026-08-28
 
 ### Fixed
