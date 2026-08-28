@@ -48,7 +48,7 @@
       "type": "archive",
       "description": "Safe WP-CLI execution for Local by Flywheel via wrapper, including explicit site resolution before mutating operations.",
       "url": "https://soderlind.no/.well-known/agent-skills/wp-cli-local.tar.gz",
-      "digest": "sha256:8e03cf0b37c0fad1153690c86f428d60267d59d6134d6080ec9b0ec4bf45d460"
+      "digest": "sha256:8432f021ac85b9b8ba18c77d9d94b16080489a1b24f2468146d2c9d3d84ce55f"
     },
     {
       "name": "wp-mutate",
@@ -69,7 +69,7 @@
       "type": "archive",
       "description": "Run the WordPress Plugin Check (PCP) against a Local by Flywheel site via wrapper, with explicit site and plugin resolution before checks.",
       "url": "https://soderlind.no/.well-known/agent-skills/wp-pcp-local.tar.gz",
-      "digest": "sha256:a85687f1ad57533385b7539ec04ae25bdeaf320f3b098e34d903990df2e66b1a"
+      "digest": "sha256:62514e8f7042ef255badf5e514be34fb3a22d69bfdadb9fc6bee604d046f6f95"
     }
   ]
 }
