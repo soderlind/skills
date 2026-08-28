@@ -24,7 +24,7 @@ const PLUGINS = [
 		distRepo: 'https://github.com/soderlind/wordpress-agent-plugin',
 		manifest: {
 			name: 'wordpress-skills',
-			version: '1.3.0',
+			version: '1.4.0',
 			description: 'WordPress development, testing, and release skills.',
 			author: { name: 'Per Soderlind', url: 'https://soderlind.no' },
 			homepage: 'https://github.com/soderlind/wordpress-agent-plugin',
@@ -34,6 +34,13 @@ const PLUGINS = [
 		},
 		// Newest first. Each entry becomes a section in CHANGELOG.md.
 		changelog: [
+			{
+				version: '1.4.0',
+				date: '2026-08-28',
+				fixed: [
+					'wp-org-review: audit/detection commands scan all PHP from the project root (excluding vendor/node_modules/.git/tests/dist/build) instead of hard-coding src/ includes/, so code under admin/, public/, app/, etc. is covered and absent directories no longer emit errors.',
+				],
+			},
 			{
 				version: '1.3.0',
 				date: '2026-08-26',

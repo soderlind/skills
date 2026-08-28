@@ -30,10 +30,10 @@ carry a prefix unique to the plugin.
 **Detect.**
 
 ```sh
-grep -rnE "function [a-z0-9_]+\(|^\s*(class|trait|interface) |namespace |define\(|const [A-Z]" src/ includes/ *.php
-grep -rnE "update_option\(|get_option\(|add_option\(|set_transient\(|get_transient\(" src/ includes/ *.php
-grep -rnE "wp_enqueue_(script|style)\(|wp_register_(script|style)\(|wp_localize_script\(" src/ includes/ *.php
-grep -rnE "add_shortcode\(|register_setting\(|wp_schedule_event\(|add_action\('wp_ajax_" src/ includes/ *.php
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "function [a-z0-9_]+\(|^\s*(class|trait|interface) |namespace |define\(|const [A-Z]" .
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "update_option\(|get_option\(|add_option\(|set_transient\(|get_transient\(" .
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "wp_enqueue_(script|style)\(|wp_register_(script|style)\(|wp_localize_script\(" .
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "add_shortcode\(|register_setting\(|wp_schedule_event\(|add_action\('wp_ajax_" .
 ```
 
 **Fix.** Rename to `mypfx_*` (snake) / `Mypfx_*` (class) / a distinctive namespace root.
@@ -52,7 +52,7 @@ your own plugin — these vary per install (custom `wp-content`, symlinks, multi
 **Detect.**
 
 ```sh
-grep -rnE "WP_PLUGIN_DIR|WP_CONTENT_DIR|WP_CONTENT_URL|plugins_url\(\)|__DIR__|ABSPATH" src/ includes/ *.php
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "WP_PLUGIN_DIR|WP_CONTENT_DIR|WP_CONTENT_URL|plugins_url\(\)|__DIR__|ABSPATH" .
 ```
 
 **Fix.** Anchor everything to `__FILE__` in the main file, saved into prefixed defines,
@@ -89,7 +89,7 @@ backup/migration storage) — and you should expect to justify it.
 **Detect.**
 
 ```sh
-grep -rnE "file_put_contents|fopen|fwrite|fputs|mkdir|unlink|rename\(|copy\(" src/ includes/ *.php
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "file_put_contents|fopen|fwrite|fputs|mkdir|unlink|rename\(|copy\(" .
 ```
 
 **Fix.** Confine any user/CLI-supplied output path to `uploads/<slug>/`, stripping
@@ -214,7 +214,7 @@ blocks echoed into markup.
 **Detect.**
 
 ```sh
-grep -rnE "<script|<style" src/ includes/ templates/ *.php
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "<script|<style" .
 ```
 
 **Fix.** Move code into enqueued files or inline-attach it. A genuinely inert
@@ -243,8 +243,8 @@ echo '<a href="' . esc_url( $link ) . '" class="' . esc_attr( $cls ) . '">'
 **Detect.**
 
 ```sh
-grep -rnE "echo|print|printf|<\?=" src/ includes/ templates/ *.php
-grep -rn "EscapeOutput.OutputNotEscaped" src/ includes/ *.php   # each phpcs:ignore is a re-flag
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "echo|print|printf|<\?=" .
+grep -rn --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "EscapeOutput.OutputNotEscaped" .   # each phpcs:ignore is a re-flag
 ```
 
 **Fix.** Escape the variable, not the literal. For inline script/JSON payloads that are
@@ -286,7 +286,7 @@ service's **terms of service** and **privacy policy**.
 **Detect.**
 
 ```sh
-grep -rnE "wp_remote_(get|post|request)|curl_|file_get_contents\('https?://|https?://[a-z0-9.-]+/" src/ includes/ *.php
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "wp_remote_(get|post|request)|curl_|file_get_contents\('https?://|https?://[a-z0-9.-]+/" .
 ```
 
 **Fix.** Add an `== External services ==` section to `readme.txt`:
@@ -313,7 +313,7 @@ not-yet-pushed doc files fail.
 **Detect / fix.**
 
 ```sh
-grep -rnhoE "https?://[^ )\"'<>]+" readme.txt *.php | sort -u | while read u; do
+grep -rnhoE --include='*.php' --include='readme.txt' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "https?://[^ )\"'<>]+" . | sort -u | while read u; do
   printf '%s %s\n' "$(curl -s -o /dev/null -w '%{http_code}' -L "$u")" "$u"
 done
 ```
@@ -343,14 +343,14 @@ grep -n "wp-content/plugins/" readme.txt   # slug must match
 
 ```sh
 # Suppressed sniffs — each is something the reviewer will re-flag.
-grep -rn "phpcs:ignore\|phpcs:disable" src/ includes/ *.php
+grep -rn --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "phpcs:ignore\|phpcs:disable" .
 
 # Prefixing / naming, location constants, filesystem writes, remote calls, raw tags.
-grep -rnE "WP_PLUGIN_DIR|WP_CONTENT_DIR|__DIR__" src/ includes/ *.php
-grep -rnE "file_put_contents|fopen|fwrite|mkdir|unlink" src/ includes/ *.php
-grep -rnE "wp_remote_|curl_|https?://" src/ includes/ *.php
-grep -rnE "<script|<style" src/ includes/ templates/ *.php
-grep -rn  "load_plugin_textdomain\|plugin-update-checker" . 
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "WP_PLUGIN_DIR|WP_CONTENT_DIR|__DIR__" .
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "file_put_contents|fopen|fwrite|mkdir|unlink" .
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "wp_remote_|curl_|https?://" .
+grep -rnE --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "<script|<style" .
+grep -rn  --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "load_plugin_textdomain\|plugin-update-checker" .
 
 # Then run the real checks and build the real payload.
 ./vendor/bin/phpcs --standard=phpcs.xml.dist .

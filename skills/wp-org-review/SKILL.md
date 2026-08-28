@@ -2,7 +2,7 @@
 name: wp-org-review
 description: "Prepare a WordPress plugin for the WordPress.org Plugin Directory review. Audits and fixes the findings the reviewer catches but local Plugin Check/PHPCS miss — suppressed sniffs, arbitrary-path writes, output escaping, readme contributors, bundled translations, and disallowed file writes. Use when submitting/resubmitting a plugin to wordpress.org, responding to a plugin review email, or hardening a plugin against Plugin Check."
 compatibility: "WordPress plugin repos using PHPCS (WordPress standard), a .distignore or 10up deploy action, and optional Composer/npm build."
-version: "1.1.0"
+version: "1.2.0"
 ---
 
 # WordPress.org Directory Review
@@ -39,13 +39,13 @@ Find everything local tooling was told to skip, or that it cannot see:
 
 ```sh
 # Suppressed sniffs — each one is something the reviewer WILL re-flag.
-grep -rn "phpcs:ignore\|phpcs:disable" src/ includes/ *.php 2>/dev/null
+grep -rn --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "phpcs:ignore\|phpcs:disable" .
 
 # Filesystem writes (arbitrary-path / disallowed-location risk).
-grep -rn "file_put_contents\|fopen\|fwrite\|fputs\|mkdir\|unlink\|file_get_contents" src/ includes/ 2>/dev/null
+grep -rn --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "file_put_contents\|fopen\|fwrite\|fputs\|mkdir\|unlink\|file_get_contents" .
 
 # Direct output that may be unescaped.
-grep -rn "echo\|print\|printf\|<script\|<style" src/ includes/ 2>/dev/null
+grep -rn --include='*.php' --exclude-dir={vendor,node_modules,.git,tests,dist,build} "echo\|print\|printf\|<script\|<style" .
 ```
 
 Map each hit to a category below. Fix real findings; for genuine false positives,

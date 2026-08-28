@@ -13,7 +13,7 @@ version in their frontmatter, so entries below are grouped by date.
 - wp-org-review: new skill to prepare a WordPress plugin for the WordPress.org
   Plugin Directory review — audits suppressed sniffs, arbitrary-path writes,
   output escaping, readme contributors, and bundled translations that Plugin
-  Check/PHPCS miss (wordpress-skills plugin 1.3.0).
+  Check/PHPCS miss (wordpress-skills plugin 1.4.0).
 - browser-native: Baseline status (`widely` / `newly` / `limited`) on replacement
   entries, surfaced alongside confidence in the table, markdown, and JSON output.
 - browser-native: new replaceable packages — `timeago.js`, `pluralize`, `numeral`,
@@ -26,7 +26,15 @@ version in their frontmatter, so entries below are grouped by date.
 
 ### Changed
 
+- wp-org-review: skill version bumped to 1.2.0.
 - browser-native: skill version bumped to 1.2.0.
+
+### Fixed
+
+- wp-org-review: audit/detection commands now scan all PHP from the project root
+  (`--include='*.php'`, excluding `vendor`/`node_modules`/`.git`/`tests`/`dist`/`build`)
+  instead of hard-coding `src/ includes/`, so code under `admin/`, `public/`, `app/`,
+  etc. is covered and absent directories no longer emit errors.
 
 ## [2026-08-08]
 
