@@ -37,6 +37,13 @@
       "digest": "sha256:a34ded59223656505ebe2c600b0575423c1afcc53e5a4de537fead8f8aa50e57"
     },
     {
+      "name": "wp-ability-auth",
+      "type": "archive",
+      "description": "Audit or implement authorization for WordPress abilities (wp_register_ability) and REST routes using a two-tier permission model — a coarse capability gate in permission_callback and a per-object meta-capability check inside the execute callback. Use when adding permission_callback logic, reviewing wp_register_ability or register_rest_route authorization, hunting IDOR gaps, centralizing an ability→capability map, enforcing a consistent WP_Error 403 contract, or hardening abilities invoked via MCP/agent or background contexts.",
+      "url": "https://soderlind.no/.well-known/agent-skills/wp-ability-auth.tar.gz",
+      "digest": "sha256:ac56e06be659213bedf8c38260201bc9bab5d735f947e9f95acc251ef835ba01"
+    },
+    {
       "name": "wp-bump",
       "type": "skill-md",
       "description": "Structured WordPress plugin release-bump workflow that orchestrates version sync, changelog, rebuild, and validation steps with explicit gates.",
