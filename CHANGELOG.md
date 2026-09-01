@@ -8,6 +8,16 @@ version in their frontmatter, so entries below are grouped by date.
 
 ## [Unreleased]
 
+## [2026-09-01]
+
+### Added
+
+- wp-ability-auth: new skill to audit or implement two-tier authorization for WordPress
+  abilities (`wp_register_ability`) and REST routes — a coarse capability gate in
+  `permission_callback` plus a per-object meta-capability check inside the execute
+  callback, catching IDOR gaps, inconsistent `WP_Error` 403 contracts, and scattered
+  capability logic (wordpress-skills plugin 1.5.0).
+
 ## [2026-08-28]
 
 ### Added

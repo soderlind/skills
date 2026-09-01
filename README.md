@@ -16,6 +16,7 @@ Skills for WordPress plugin and theme development.
 <thead><tr><th width="280">Skill</th><th>Purpose</th></tr></thead>
 <tbody>
 <tr><td nowrap><a href="#prepare-wordpress"><samp>prepare-wordpress</samp></a></td><td>Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support.</td></tr>
+<tr><td nowrap><a href="#wp-ability-auth"><samp>wp-ability-auth</samp></a></td><td>Audit or implement two-tier authorization for WordPress abilities and REST routes, catching IDOR gaps and inconsistent 403 contracts.</td></tr>
 <tr><td nowrap><a href="#wp-bump"><samp>wp-bump</samp></a></td><td>Bump a WordPress plugin version and update related release metadata.</td></tr>
 <tr><td nowrap><a href="#wp-cli-local"><samp>wp-cli-local</samp></a></td><td>Run WP-CLI commands against Local by Flywheel sites on macOS.</td></tr>
 <tr><td nowrap><a href="#wp-mutate"><samp>wp-mutate</samp></a></td><td>Run mutation testing on WordPress PHP and JavaScript to find weak tests, then triage surviving mutants.</td></tr>
@@ -229,6 +230,30 @@ The skill routes Plugin Check through its bundled wrapper, auto-detecting the si
 
 ```sh
 bash skills/wp-pcp-local/scripts/pcp my-plugin
+```
+
+### wp-ability-auth
+
+```sh
+npx skills add soderlind/skills --skill wp-ability-auth -g
+```
+
+Use this to audit or implement authorization for WordPress abilities (`wp_register_ability`)
+and REST routes with a two-tier permission model: a coarse capability gate in
+`permission_callback`, then a per-object meta-capability check inside the execute callback.
+
+It enforces:
+
+- A single `WP_Error` 403 contract across both tiers (never `array('success' => false)`).
+- A tier-2 per-object check on every ability that touches a specific object (IDOR guard).
+- Plural caps in tier 1 (`edit_posts`), singular meta-caps in tier 2 (`edit_post`, `$id`).
+- A centralized, filterable ability→capability map instead of scattered `current_user_can`.
+- An auth-principal check for MCP/agent or background invocations with no current user.
+
+Example prompt:
+
+```txt
+/wp-ability-auth audit the abilities in this plugin
 ```
 
 ### wp-org-review

@@ -24,7 +24,7 @@ const PLUGINS = [
 		distRepo: 'https://github.com/soderlind/wordpress-agent-plugin',
 		manifest: {
 			name: 'wordpress-skills',
-			version: '1.4.1',
+			version: '1.5.0',
 			description: 'WordPress development, testing, and release skills.',
 			author: { name: 'Per Soderlind', url: 'https://soderlind.no' },
 			homepage: 'https://github.com/soderlind/wordpress-agent-plugin',
@@ -34,6 +34,13 @@ const PLUGINS = [
 		},
 		// Newest first. Each entry becomes a section in CHANGELOG.md.
 		changelog: [
+			{
+				version: '1.5.0',
+				date: '2026-09-01',
+				added: [
+					'wp-ability-auth: audit or implement two-tier authorization for WordPress abilities (wp_register_ability) and REST routes — a coarse capability gate in permission_callback plus a per-object meta-capability check inside the execute callback, catching IDOR gaps, inconsistent WP_Error 403 contracts, and scattered capability logic.',
+				],
+			},
 			{
 				version: '1.4.1',
 				date: '2026-08-28',

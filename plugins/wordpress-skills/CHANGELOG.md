@@ -5,6 +5,12 @@ All notable changes to `wordpress-skills` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-09-01
+
+### Added
+
+- wp-ability-auth: audit or implement two-tier authorization for WordPress abilities (wp_register_ability) and REST routes — a coarse capability gate in permission_callback plus a per-object meta-capability check inside the execute callback, catching IDOR gaps, inconsistent WP_Error 403 contracts, and scattered capability logic.
+
 ## [1.4.1] - 2026-08-28
 
 ### Fixed
