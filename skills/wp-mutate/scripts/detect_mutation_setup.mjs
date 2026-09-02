@@ -360,7 +360,7 @@ export function buildSummary(state) {
 
 	lines.push("PHP");
 	if (php.engine === "none") {
-		lines.push("  ⛔ No PHP test suite — run prepare-wordpress first, or skip the PHP phase.");
+		lines.push("  ⛔ No PHP test suite — run wp-prepare first, or skip the PHP phase.");
 	} else {
 		lines.push(`  Engine: ${php.engine} (${php.engineReason})`);
 		if (php.pestVersion) lines.push(`  Pest: ${php.pestVersion} (from ${php.pestVersionSource})`);

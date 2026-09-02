@@ -5,6 +5,12 @@ All notable changes to `wordpress-skills` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-09-02
+
+### Changed
+
+- prepare-wordpress renamed to wp-prepare (breaking): the /prepare-wordpress command and --skill prepare-wordpress no longer resolve; use wp-prepare. The skill now lists wp-bump, wp-mutate, wp-org-review, and wp-ability-auth as companion skills.
+
 ## [1.5.0] - 2026-09-01
 
 ### Added

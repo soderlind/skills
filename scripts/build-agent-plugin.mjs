@@ -24,7 +24,7 @@ const PLUGINS = [
 		distRepo: 'https://github.com/soderlind/wordpress-agent-plugin',
 		manifest: {
 			name: 'wordpress-skills',
-			version: '1.5.0',
+			version: '2.0.0',
 			description: 'WordPress development, testing, and release skills.',
 			author: { name: 'Per Soderlind', url: 'https://soderlind.no' },
 			homepage: 'https://github.com/soderlind/wordpress-agent-plugin',
@@ -34,6 +34,13 @@ const PLUGINS = [
 		},
 		// Newest first. Each entry becomes a section in CHANGELOG.md.
 		changelog: [
+			{
+				version: '2.0.0',
+				date: '2026-09-02',
+				changed: [
+					'prepare-wordpress renamed to wp-prepare (breaking): the /prepare-wordpress command and --skill prepare-wordpress no longer resolve; use wp-prepare. The skill now lists wp-bump, wp-mutate, wp-org-review, and wp-ability-auth as companion skills.',
+				],
+			},
 			{
 				version: '1.5.0',
 				date: '2026-09-01',

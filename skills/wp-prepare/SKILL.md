@@ -1,8 +1,8 @@
 ---
-name: prepare-wordpress
+name: wp-prepare
 description: "Phase-based WordPress project setup workflow with dry-run planning and confirmed apply for predictable scaffolding/standardization."
 compatibility: "macOS/Linux with Node.js 18+, Composer 2+, PHP 8.3+, git. Optional: WP-CLI for i18n commands, curl for downloading coding instructions."
-version: "1.4.0"
+version: "2.0.0"
 ---
 
 # Prepare WordPress Project
@@ -468,3 +468,13 @@ Completion criterion: Final report includes per-phase status, skipped reasons, a
 ## Escalation
 
 If a specific tool or dependency fails, install it manually and re-run the detection script to continue from where you left off.
+
+## Related skills
+
+After scaffolding, these companion skills cover the rest of the plugin lifecycle
+(install separately; this skill does not pull them in):
+
+- `wp-bump` — cut a release: bump version fields, changelog, build outputs, and test checks.
+- `wp-mutate` — measure test quality via mutation testing once a suite exists.
+- `wp-org-review` — harden the plugin for the WordPress.org Plugin Directory review.
+- `wp-ability-auth` — audit or implement two-tier authorization for abilities and REST routes.

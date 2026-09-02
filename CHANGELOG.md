@@ -8,6 +8,15 @@ version in their frontmatter, so entries below are grouped by date.
 
 ## [Unreleased]
 
+## [2026-09-02]
+
+### Changed
+
+- prepare-wordpress renamed to wp-prepare (breaking): the `/prepare-wordpress`
+  command and `--skill prepare-wordpress` no longer resolve; use `wp-prepare`
+  (skill 2.0.0, wordpress-skills plugin 2.0.0). The skill now lists `wp-bump`,
+  `wp-mutate`, `wp-org-review`, and `wp-ability-auth` as companion skills.
+
 ## [2026-09-01]
 
 ### Added

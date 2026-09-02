@@ -15,7 +15,7 @@ Skills for WordPress plugin and theme development.
 <table>
 <thead><tr><th width="280">Skill</th><th>Purpose</th></tr></thead>
 <tbody>
-<tr><td nowrap><a href="#prepare-wordpress"><samp>prepare-wordpress</samp></a></td><td>Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support.</td></tr>
+<tr><td nowrap><a href="#wp-prepare"><samp>wp-prepare</samp></a></td><td>Scaffold or update a WordPress project with dev tooling, coding standards, testing, and i18n support.</td></tr>
 <tr><td nowrap><a href="#wp-ability-auth"><samp>wp-ability-auth</samp></a></td><td>Audit or implement two-tier authorization for WordPress abilities and REST routes, catching IDOR gaps and inconsistent 403 contracts.</td></tr>
 <tr><td nowrap><a href="#wp-bump"><samp>wp-bump</samp></a></td><td>Bump a WordPress plugin version and update related release metadata.</td></tr>
 <tr><td nowrap><a href="#wp-cli-local"><samp>wp-cli-local</samp></a></td><td>Run WP-CLI commands against Local by Flywheel sites on macOS.</td></tr>
@@ -142,14 +142,14 @@ node scripts/build-agent-skills-index.mjs --base-url https://example.com
 
 ## Usage
 
-After installation, ask your AI agent for the workflow you want and the matching skill is selected automatically. You can also target a skill directly with a slash command — `/<skill-name>` — optionally passing arguments, e.g. `/prepare-wordpress i18n` to run just the i18n phase.
+After installation, ask your AI agent for the workflow you want and the matching skill is selected automatically. You can also target a skill directly with a slash command — `/<skill-name>` — optionally passing arguments, e.g. `/wp-prepare i18n` to run just the i18n phase.
 
 Example invocations:
 
 ```txt
 /add-apim-api speeches-api backend https://api.example.com/speeches
 /wp-cli-local list plugins
-/prepare-wordpress i18n
+/wp-prepare i18n
 /wp-bump 1.2.3
 /wp-mutate
 /browser-native
@@ -280,10 +280,10 @@ Example prompt:
 /wp-org-review respond to this plugin review email
 ```
 
-### prepare-wordpress
+### wp-prepare
 
 ```sh
-npx skills add soderlind/skills --skill prepare-wordpress -g
+npx skills add soderlind/skills --skill wp-prepare -g
 ```
 
 Use this to set up or refresh a WordPress project with common development tooling.
@@ -291,7 +291,7 @@ Use this to set up or refresh a WordPress project with common development toolin
 Example prompt (pass a phase name to run just that phase):
 
 ```txt
-/prepare-wordpress i18n
+/wp-prepare i18n
 ```
 
 Prerequisites:
@@ -305,13 +305,13 @@ Prerequisites:
 Preview the setup plan before changing a project (paths below assume a clone of this repo; when installed, use the skill's own directory):
 
 ```sh
-node skills/prepare-wordpress/scripts/plan_setup.mjs --dry-run
+node skills/wp-prepare/scripts/plan_setup.mjs --dry-run
 ```
 
 Apply selected safe setup phases:
 
 ```sh
-node skills/prepare-wordpress/scripts/plan_setup.mjs --apply --only=init,composer,config
+node skills/wp-prepare/scripts/plan_setup.mjs --apply --only=init,composer,config
 ```
 
 Available phases (pass any comma-separated subset to `--only=` or `--skip=`):
@@ -356,7 +356,7 @@ Use this to measure test *quality* rather than test coverage. Mutation testing c
 
 Prerequisites:
 
-- An existing test suite. This skill does not create one — use `prepare-wordpress` first.
+- An existing test suite. This skill does not create one — use `wp-prepare` first.
 - PHP: Pest 3+ (native `--mutate`) or PHPUnit (Infection), plus **Xdebug 3+ with `xdebug.mode=coverage`, or PCOV**. Without a coverage driver Pest refuses to start.
 - JavaScript: Vitest or Jest, for StrykerJS.
 
@@ -461,7 +461,7 @@ skills/
     SKILL.md
     references/
     scripts/
-  prepare-wordpress/
+  wp-prepare/
     SKILL.md
     references/
     scripts/

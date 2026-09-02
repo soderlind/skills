@@ -6,13 +6,13 @@
       "title": "WordPress",
       "description": "Skills for WordPress plugin and theme development.",
       "skills": [
-        "prepare-wordpress",
         "wp-ability-auth",
         "wp-bump",
         "wp-cli-local",
         "wp-mutate",
         "wp-org-review",
-        "wp-pcp-local"
+        "wp-pcp-local",
+        "wp-prepare"
       ]
     },
     {

@@ -23,7 +23,7 @@ Use this skill when:
 - You want a regression ratchet on test quality, not just test quantity.
 
 Do not use this skill to create a test suite from scratch. If there are no tests, stop and
-point the user at `prepare-wordpress`.
+point the user at `wp-prepare`.
 
 ## Inputs required
 
@@ -93,7 +93,7 @@ Stop with the exact fix, do not continue, if any of these hold:
 | Condition | Why it is a hard stop |
 | --- | --- |
 | `php.driver` is `none` | Pest mutation and Infection both need line coverage. Pest aborts with `Pest\Exceptions\InvalidOption: Mutation testing requires code coverage to be enabled`; Infection reports no covered code. Fix: install PCOV, or set `xdebug.mode=coverage` — an installed Xdebug in `debug` mode only is not enough. |
-| `php.engine` is `none` **and** `js.runner` is `none` | Nothing to mutate. Point at `prepare-wordpress`. |
+| `php.engine` is `none` **and** `js.runner` is `none` | Nothing to mutate. Point at `wp-prepare`. |
 | The plain test suite is failing | Mutation testing on a red suite is meaningless — every mutant reads as killed. |
 | `js.runner` is `unsupported` (mocha/karma only) | Without a supported runner there is no per-test coverage analysis, so every mutant runs the whole suite. Report and skip the JS phase; do not fall back to Stryker's `command` runner. |
 

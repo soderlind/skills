@@ -7,7 +7,7 @@ per-test coverage analysis. There is no alternative worth offering.
 
 | Detected | Runner | Notes |
 | --- | --- | --- |
-| `vitest` dependency or `vitest.config.*` | `@stryker-mutator/vitest-runner` | Matches what `prepare-wordpress` scaffolds. Preferred. |
+| `vitest` dependency or `vitest.config.*` | `@stryker-mutator/vitest-runner` | Matches what `wp-prepare` scaffolds. Preferred. |
 | `@wordpress/scripts` with `test-unit-js` | `@stryker-mutator/jest-runner` | Jest under the hood. Slower — Jest cannot bail inside Stryker. |
 | `jest` dependency directly | `@stryker-mutator/jest-runner` | |
 | mocha / karma only | none | Report and stop. The `command` runner has no coverage analysis, so every mutant runs the entire suite. |

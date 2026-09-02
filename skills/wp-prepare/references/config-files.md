@@ -39,6 +39,6 @@ If `.gitignore` already exists:
 
 1. Read the current file.
 2. For each required entry, check if it (or an equivalent pattern) is already present.
-3. Only append missing entries, separated by a blank line and a comment `# Added by prepare-wordpress`.
+3. Only append missing entries, separated by a blank line and a comment `# Added by wp-prepare`.
 
 If `.gitignore` does not exist, create it with all entries.
