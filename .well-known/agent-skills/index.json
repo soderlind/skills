@@ -16,6 +16,13 @@
       "digest": "sha256:f31da659acbc63ae4cb0e532cb659d653ca8670ff1f9483e3a3a261ac3752f4b"
     },
     {
+      "name": "bump",
+      "type": "skill-md",
+      "description": "Structured, language-agnostic release-bump workflow that detects version files across ecosystems, syncs them, updates the changelog from commit history, and runs the project's own build and test gates.",
+      "url": "https://soderlind.no/.well-known/agent-skills/bump/SKILL.md",
+      "digest": "sha256:48d5849112f282620ca4d82efb91ea668084eda4dabb62795498f33c23a00b6a"
+    },
+    {
       "name": "document-architecture",
       "type": "archive",
       "description": "Create, improve, or audit repository architecture and concept documentation. Use when asked to document a codebase's architecture, domain model, component boundaries, data or control flows, invariants, failure behavior, change locations, or architectural decisions; create architecture.md, system-context, component, glossary, or ADR documents; make a repository easier for developers or AI coding agents to understand; or reconcile stale architecture documentation with code.",
