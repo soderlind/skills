@@ -69,6 +69,17 @@ Skills for pre-launch security and abuse-resistance audits.
 </tbody>
 </table>
 
+### Release
+
+Language-agnostic release tooling.
+
+<table>
+<thead><tr><th width="280">Skill</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td nowrap><a href="#bump"><samp>bump</samp></a></td><td>Bump a project's version across every detected manifest, update the changelog from commit history, and run the project's own build and test gates.</td></tr>
+</tbody>
+</table>
+
 ## Related Skills (other repositories)
 
 These live in their own repositories and install from there, not from `soderlind/skills`:
@@ -155,6 +166,7 @@ Example invocations:
 /browser-native
 /document-architecture
 /pre-launch-security-audit
+/bump 1.2.3
 ```
 
 ## Invocation Strategy
@@ -345,6 +357,22 @@ Example prompt:
 ```
 
 The skill does not create commits, tags, or releases unless you explicitly ask your agent to do so.
+
+### bump
+
+```sh
+npx skills add soderlind/skills --skill bump -g
+```
+
+Use this for releases in any language. It detects the version files that already exist — `package.json`, `Cargo.toml`, `pyproject.toml`, `composer.json`, `*.csproj`, `pom.xml`, `build.gradle`, `*.gemspec`, `pubspec.yaml`, `mix.exs`, plain `VERSION` files — syncs them to the target version, drafts a changelog entry from `git log` since the last tag, and runs the project's own build and test scripts as a release gate.
+
+It only touches files that are present, never edits dependency versions, prefers each ecosystem's own tool (`npm version`, `cargo set-version`, `poetry version`) when a lockfile is present, and leaves commits, tags, and releases to you unless you explicitly ask. For WordPress plugin releases (main-file header, `readme.txt` stable tag), use `wp-bump` instead.
+
+Example prompt:
+
+```txt
+/bump 1.2.3
+```
 
 ### wp-mutate
 
