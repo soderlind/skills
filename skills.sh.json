@@ -42,6 +42,13 @@
       "skills": [
         "pre-launch-security-audit"
       ]
+    },
+    {
+      "title": "Release",
+      "description": "Language-agnostic release tooling.",
+      "skills": [
+        "bump"
+      ]
     }
   ]
 }

@@ -8,6 +8,17 @@ version in their frontmatter, so entries below are grouped by date.
 
 ## [Unreleased]
 
+### Added
+
+- bump: new language-agnostic release-bump skill — the generic counterpart to
+  `wp-bump`. Detects the version files already present in a repo (`package.json`,
+  `Cargo.toml`, `pyproject.toml`, `composer.json`, `*.csproj`, `pom.xml`,
+  `build.gradle`, `*.gemspec`, `pubspec.yaml`, `mix.exs`, plain `VERSION` files),
+  syncs them to the target version, drafts a changelog entry from `git log` since
+  the last tag, and runs the project's own build and test gates. Prefers each
+  ecosystem's own tool when a lockfile is present and never touches dependency
+  versions or creates commits/tags unless asked (skill 1.0.0).
+
 ## [2026-09-02]
 
 ### Changed
