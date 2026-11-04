@@ -548,6 +548,15 @@ skills/
 
 All skills in this repository are licensed under the MIT License.
 
+## Credits
+
+These skills build on, reference, or scaffold the following open-source projects and libraries:
+
+- **Design diagrams:** [PR Lens schema](https://www.npmjs.com/package/@coldtea/pr-lens-schema) and [PR Lens renderer](https://www.npmjs.com/package/@coldtea/pr-lens-renderer).
+- **WordPress guidance:** [WordPress Agent Skills](https://github.com/WordPress/agent-skills) and the [WordPress instructions in GitHub's awesome-copilot](https://github.com/github/awesome-copilot/blob/main/instructions/wordpress.instructions.md).
+- **PHP testing and quality:** [PHPUnit](https://phpunit.de/), [Brain Monkey](https://github.com/Brain-WP/BrainMonkey), [Pest](https://pestphp.com/), [WordPress Coding Standards](https://github.com/WordPress/WordPress-Coding-Standards), and [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer).
+- **JavaScript testing and quality:** [Vitest](https://vitest.dev/), [jsdom](https://github.com/jsdom/jsdom), [Stryker Mutator](https://stryker-mutator.io/), [ESLint](https://eslint.org/), [@wordpress/eslint-plugin](https://www.npmjs.com/package/@wordpress/eslint-plugin), and [@wordpress/scripts](https://www.npmjs.com/package/@wordpress/scripts).
+
 ## AI Contribution Attribution
 
 `Assisted-by: GitHub Copilot:GPT-5.3-Codex`
