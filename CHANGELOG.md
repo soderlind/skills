@@ -18,6 +18,9 @@ version in their frontmatter, so entries below are grouped by date.
   the last tag, and runs the project's own build and test gates. Prefers each
   ecosystem's own tool when a lockfile is present and never touches dependency
   versions or creates commits/tags unless asked (skill 1.0.0).
+- illustrate-design: evidence-backed PR Lens architecture, sequence, and decision
+  dependency diagrams from design documents, code, or interviews, with light/dark
+  SVGs, local PNG companions, and a validated rendering helper (skill 1.0.0).
 
 ## [2026-09-02]
 

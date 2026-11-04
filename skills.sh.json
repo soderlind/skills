@@ -31,9 +31,10 @@
     },
     {
       "title": "Documentation",
-      "description": "Skills for documenting repository architecture.",
+      "description": "Skills for documenting and illustrating software architecture.",
       "skills": [
-        "document-architecture"
+        "document-architecture",
+        "illustrate-design"
       ]
     },
     {

@@ -49,12 +49,13 @@ Skills for Azure infrastructure and API Management.
 
 ### Documentation
 
-Skills for documenting repository architecture.
+Skills for documenting and illustrating software architecture.
 
 <table>
 <thead><tr><th width="280">Skill</th><th>Purpose</th></tr></thead>
 <tbody>
 <tr><td nowrap><a href="#document-architecture"><samp>document-architecture</samp></a></td><td>Create, improve, or audit repository architecture and concept documentation.</td></tr>
+<tr><td nowrap><a href="#illustrate-design"><samp>illustrate-design</samp></a></td><td>Illustrate a software design with evidence-backed architecture and sequence diagrams.</td></tr>
 </tbody>
 </table>
 
@@ -165,6 +166,7 @@ Example invocations:
 /wp-mutate
 /browser-native
 /document-architecture
+/illustrate-design
 /pre-launch-security-audit
 /bump 1.2.3
 ```
@@ -456,6 +458,30 @@ Example prompt:
 
 The skill labels current vs. proposed states explicitly and verifies claims against the repository before writing docs; see [references/templates.md](skills/document-architecture/references/templates.md) for document templates.
 
+### illustrate-design
+
+```sh
+npx skills add soderlind/skills --skill illustrate-design -g
+```
+
+Use this to turn requirements, ADRs, code, and other design evidence into PR Lens
+architecture, sequence, and optional decision-dependency diagrams. A
+`grill-with-docs` interview can provide evidence but is not required. Its
+[rendering helper](skills/illustrate-design/scripts/render.mjs) validates the graph
+and produces light/dark SVGs; the workflow converts PNG companions locally.
+
+Example prompt:
+
+```txt
+/illustrate-design
+```
+
+The workflow requires truthful repository provenance, compatible Node.js and PR
+Lens packages, a local SVG-to-PNG converter, and visual inspection. It labels
+unfinished designs as drafts and does not modify the source glossary, ADRs, or
+application code. Run `node --test <repository>/skills/illustrate-design/scripts/test_render.mjs`
+from a Node workspace with both PR Lens packages installed to test the helper.
+
 ### pre-launch-security-audit
 
 ```sh
@@ -509,6 +535,9 @@ skills/
     SKILL.md
     agents/
     references/
+  illustrate-design/
+    SKILL.md
+    scripts/
   pre-launch-security-audit/
     SKILL.md
     agents/

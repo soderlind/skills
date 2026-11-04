@@ -30,6 +30,13 @@
       "digest": "sha256:75c87f392b68dd42c5d7e8f9c99f711b53f2da647dcc98db0ca23bf523748161"
     },
     {
+      "name": "illustrate-design",
+      "type": "archive",
+      "description": "Illustrates software designs using evidence-backed PR Lens architecture, sequence, and decision-dependency diagrams, exported as light/dark SVG and PNG. Use when visualizing requirements, ADRs, domain models, architecture, behavior, or design decisions.",
+      "url": "https://soderlind.no/.well-known/agent-skills/illustrate-design.tar.gz",
+      "digest": "sha256:0521f9945bd131993f8d9d447f47a09cabd6e3045ed486d7a30e21873819c017"
+    },
+    {
       "name": "pre-launch-security-audit",
       "type": "archive",
       "description": "Run an evidence-backed, stack-agnostic security and abuse-resistance review before an application launch. Use when reviewing an MVP, SaaS product, AI application, public website, API, or mobile backend that handles user data, authentication, public forms, databases, file uploads, webhooks, or paid third-party services; when asked for a launch-security checklist, OWASP review, secrets audit, database authorization review, authentication failure-case test, rate-limit or cost-abuse review, or final security gate.",
