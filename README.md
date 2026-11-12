@@ -81,6 +81,17 @@ Language-agnostic release tooling.
 </tbody>
 </table>
 
+### Testing
+
+Skills for acceptance and end-to-end testing.
+
+<table>
+<thead><tr><th width="280">Skill</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td nowrap><a href="#acceptance-test"><samp>acceptance-test</samp></a></td><td>Learn an app from code and docs, grill the user on acceptance criteria, then write and run Playwright acceptance tests.</td></tr>
+</tbody>
+</table>
+
 ## Related Skills (other repositories)
 
 These live in their own repositories and install from there, not from `soderlind/skills`:
@@ -169,6 +180,7 @@ Example invocations:
 /illustrate-design
 /pre-launch-security-audit
 /bump 1.2.3
+/acceptance-test checkout flow
 ```
 
 ## Invocation Strategy
@@ -498,6 +510,28 @@ Example prompt:
 
 The skill inspects the repository first, tests failure cases, and ends with a launch recommendation (block, conditional, or baseline met) rather than a compliance certification; see [references/checklist.md](skills/pre-launch-security-audit/references/checklist.md) for the control set.
 
+### acceptance-test
+
+```sh
+npx skills add soderlind/skills --skill acceptance-test -g
+```
+
+Use this to get Playwright acceptance tests that prove the app does what you agreed it should.
+The skill reads the code and docs to build a behavior inventory, then runs a
+[`grilling`](https://www.aihero.dev/skills-grilling) session (or its built-in round-based rules) to settle
+scope, actors, Given/When/Then criteria, and environment. It records them in `tests/acceptance/CRITERIA.md`
+and then writes one test per criterion.
+
+Example prompt:
+
+```txt
+/acceptance-test checkout flow
+```
+
+Tests run with `npx playwright test tests/acceptance`. Each failure is classified as a test bug, an environment
+problem, or an app bug. App bugs are reported and never hidden by weakened assertions. See
+[references/playwright.md](skills/acceptance-test/references/playwright.md) for config, auth, and data patterns.
+
 ## Repository Layout
 
 Each skill lives in its own folder under `skills/`:
@@ -508,6 +542,9 @@ Each skill lives in its own folder under `skills/`:
 scripts/
   build-agent-skills-index.mjs
 skills/
+  acceptance-test/
+    SKILL.md
+    references/
   add-apim-api/
     SKILL.md
     references/

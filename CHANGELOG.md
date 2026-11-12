@@ -10,6 +10,12 @@ version in their frontmatter, so entries below are grouped by date.
 
 ### Added
 
+- acceptance-test: new skill that learns an app from its code and docs,
+  runs a `grilling` interview to agree on acceptance criteria (recorded in
+  `tests/acceptance/CRITERIA.md` with stable `AC-xx` IDs), then writes and runs
+  Playwright tests that trace to each criterion. Failures are triaged as test,
+  environment, or app bugs; app bugs are reported, never hidden by weakening
+  assertions (skill 1.0.0).
 - bump: new language-agnostic release-bump skill — the generic counterpart to
   `wp-bump`. Detects the version files already present in a repo (`package.json`,
   `Cargo.toml`, `pyproject.toml`, `composer.json`, `*.csproj`, `pom.xml`,

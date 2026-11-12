@@ -50,6 +50,13 @@
       "skills": [
         "bump"
       ]
+    },
+    {
+      "title": "Testing",
+      "description": "Skills for acceptance and end-to-end testing.",
+      "skills": [
+        "acceptance-test"
+      ]
     }
   ]
 }
