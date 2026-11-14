@@ -41,7 +41,7 @@
       "type": "archive",
       "description": "Illustrates software designs using evidence-backed PR Lens architecture, sequence, and decision-dependency diagrams, exported as light/dark SVG and PNG. Use when visualizing requirements, ADRs, domain models, architecture, behavior, or design decisions.",
       "url": "https://soderlind.no/.well-known/agent-skills/illustrate-design.tar.gz",
-      "digest": "sha256:3a6a5809c13f5543940248897bb1dba6a4bf29a81efbc9e577d9b514c842522b"
+      "digest": "sha256:5448e010ca650ed687bf5f0ff968d1168d62d4943c03270ea983895e114fb475"
     },
     {
       "name": "pre-launch-security-audit",
