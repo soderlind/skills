@@ -10,6 +10,12 @@ version in their frontmatter, so entries below are grouped by date.
 
 ### Changed
 
+- illustrate-design: palettes can colour each diagram role. `--palette github` applies the
+  GitHub Light/Dark Default syntax colours (purple titles, blue subtitles and edges, red lane
+  labels, orange icons). Palette files can set `title`, `subtitle`, `label`, `laneLabel`,
+  `badge` and `icon`, which recolour only elements with that role, and can `extends` a preset.
+  The contrast check now tests each role, including badge text on faded participant cards,
+  which the 1.1.0 check missed (skill 1.2.0).
 - illustrate-design: contrast is measured, not judged by eye. The new
   `scripts/check-contrast.mjs` checks WCAG 2.2 ratios in both themes, including text on
   faded cards; failures block completion. `render.mjs --palette` applies palette overrides,

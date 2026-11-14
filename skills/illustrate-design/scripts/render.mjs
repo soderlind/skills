@@ -14,7 +14,7 @@ if (paletteIndex !== -1) {
   args.splice(paletteIndex, 2);
 }
 if (args.length !== 2 || (paletteIndex !== -1 && !palettePath)) {
-  console.error("Usage: node render.mjs <graph.json> <output-directory> [--palette overrides.json]");
+  console.error("Usage: node render.mjs <graph.json> <output-directory> [--palette github|overrides.json]");
   process.exit(1);
 }
 

@@ -2,7 +2,7 @@
 name: illustrate-design
 description: "Illustrates software designs using evidence-backed PR Lens architecture, sequence, and decision-dependency diagrams, exported as light/dark SVG and PNG. Use when visualizing requirements, ADRs, domain models, architecture, behavior, or design decisions."
 compatibility: "Node.js compatible with the installed PR Lens packages, a local SVG-to-PNG converter, and an image viewer."
-version: "1.1.0"
+version: "1.2.0"
 ---
 
 # Illustrate Design
@@ -110,14 +110,25 @@ ratios for every colour pair in both themes, including text on faded cards: 4.5:
 3:1 for edges and lifelines. A `FAIL` blocks completion. A `warn` marks a pair that appears
 only in change diagrams and cannot be overridden; report it as a limitation.
 
-The default PR Lens palette may fail. Do not change colours without the user's approval.
-With approval, write a JSON file of overrides, for example
-`{"light":{"muted":"#4d5560"},"dark":{"lifeline":"#5c646e"}}`. Only `foreground`, `muted`,
-`edge` and `lifeline` are supported. Check it with
-`node check-contrast.mjs --palette overrides.json`, then render into a new directory with
-`node render.mjs graph.json diagrams/ --palette overrides.json`. This is the only allowed
-change to the renderer's `svg` output. Deliver the overrides file, and suggest reporting the
-palette upstream. Without approval, render unchanged and report each failure.
+The default PR Lens palette is grey and may fail. Do not change colours without the user's
+approval. With approval, pass `--palette` to both scripts, either a preset name or a JSON file:
+
+- `github`: the built-in preset with the syntax colours of the VS Code themes GitHub Light
+  Default and GitHub Dark Default. Titles are function purple, subtitles constant blue, edge
+  labels string blue, lane labels and neutral badges keyword red, icons variable orange,
+  edges link blue, lifelines comment grey. It passes every required pair.
+- A JSON file of `light` and `dark` colours, for example
+  `{"extends":"github","light":{"title":"#8250df"}}`. `extends` starts from a preset.
+  `foreground`, `muted` and `edge` replace that colour everywhere. `title`, `subtitle`,
+  `label`, `laneLabel`, `badge`, `icon` and `lifeline` change only the elements with that
+  role, so change-diagram colours are never touched.
+
+Check the palette with `node check-contrast.mjs --palette github`, then render into a new
+directory with `node render.mjs graph.json diagrams/ --palette github`, and rerun the check
+with `--svg diagrams/`. If a colour fails, choose a stronger step of the same hue rather
+than dropping the colour. This is the only allowed change to the renderer's `svg` output.
+Deliver the palette name or file, and suggest reporting the palette upstream. Without
+approval, render unchanged and report each failure.
 
 Check schema validation and references; open every view in both themes and
 inspect labels, clipping, arrow direction, and sequence order. Check

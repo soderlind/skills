@@ -183,8 +183,8 @@ test("refuses to overwrite existing output", async () => {
 });
 
 const PASSING_OVERRIDES = {
-  light: { muted: "#4d5560", edge: "#7d8590", lifeline: "#848d97" },
-  dark: { muted: "#a0a8b1", lifeline: "#5c646e" },
+  light: { muted: "#444c56", edge: "#7d8590", lifeline: "#848d97" },
+  dark: { muted: "#a8b0b9", lifeline: "#5c646e" },
 };
 
 async function writePalette(name, overrides) {
@@ -209,7 +209,7 @@ test("contrast check passes the reference overrides and fails a low-contrast col
     await writePalette("failing", { ...PASSING_OVERRIDES, light: { ...PASSING_OVERRIDES.light, muted: "#c0c4c8" } }),
   ]);
   assert.equal(failing.status, 1);
-  assert.match(failing.stdout, /FAIL .*text: muted on card/);
+  assert.match(failing.stdout, /FAIL .*text: node subtitle on card/);
 });
 
 test("palette overrides recolour text, edges and lifelines but not card borders", async () => {
@@ -219,13 +219,46 @@ test("palette overrides recolour text, edges and lifelines but not card borders"
 
   const light = paletteFor("light");
   const flow = await readFile(path.join(input.outputDirectory, "send-pipeline-view-light.svg"), "utf8");
-  assert.ok(!flow.includes(`"${light.muted}"`) && flow.includes('"#4d5560"'));
+  assert.ok(!flow.includes(`"${light.muted}"`) && flow.includes('"#444c56"'));
   assert.match(flow, /<line class="lifeline"[^>]*stroke="#848d97"/);
   assert.doesNotMatch(flow, /<line class="lifeline"[^>]*stroke="#d1d9e0"/);
   assert.ok(flow.includes(`"${light.cardBorder}"`), "card borders keep their colour");
 
   const contrastFromSvg = checkContrast(["--palette", await writePalette("svg", PASSING_OVERRIDES), "--svg", input.outputDirectory]);
   assert.equal(contrastFromSvg.status, 0, contrastFromSvg.stdout);
+});
+
+test("github preset colours each role by class and passes the contrast check", async () => {
+  const preset = checkContrast(["--palette", "github"]);
+  assert.equal(preset.status, 0, preset.stdout + preset.stderr);
+  assert.doesNotMatch(preset.stdout, /FAIL/);
+
+  const input = await fixture("github", postmarkRefactorGraph);
+  const result = run(input, ["--palette", "github"]);
+  assert.equal(result.status, 0, result.stderr);
+  const light = await readFile(path.join(input.outputDirectory, "send-pipeline-view-light.svg"), "utf8");
+  assert.match(light, /class="ntitle[^"]*"[^>]*fill="#6639ba"/);
+  assert.match(light, /class="nsub"[^>]*fill="#0550ae"/);
+  assert.match(light, /class="glyph[^"]*"[^>]*(fill|stroke)="#953800"/);
+  assert.match(light, /<line class="lifeline"[^>]*stroke="#6e7781"/);
+  assert.ok(light.includes('"#0969da"') && !light.includes(`"${paletteFor("light").edge}"`));
+  // Dark lifelines reuse the renderer's edge grey; they must not turn edge blue.
+  const dark = await readFile(path.join(input.outputDirectory, "send-pipeline-view-dark.svg"), "utf8");
+  assert.match(dark, /<line class="lifeline"[^>]*stroke="#8b949e"/);
+  // Change-toned labels keep their delta colour.
+  const architecture = (await readdir(input.outputDirectory)).find((f) => !f.includes("send-pipeline") && f.endsWith("-light.svg"));
+  const svg = await readFile(path.join(input.outputDirectory, architecture), "utf8");
+  for (const match of svg.matchAll(/class="ltext ltext-[a-z]+"[^>]*fill="(#[0-9a-f]{6})"/g)) {
+    assert.notEqual(match[1], "#0a3069");
+  }
+});
+
+test("a palette file can extend a preset", async () => {
+  const file = await writePalette("extends", { extends: "github", light: { title: "#c0c4c8" } });
+  const result = checkContrast(["--palette", file]);
+  assert.equal(result.status, 1);
+  assert.match(result.stdout, /FAIL .*text: node title on card/);
+  assert.match(result.stdout, /ok .*graphic: edge on background/);
 });
 
 test("rejects an unsupported palette key before writing files", async () => {

@@ -3,7 +3,7 @@
 // Measures WCAG 2.2 contrast for the colour pairs PR Lens paints, in both
 // themes, using the installed renderer palette plus optional overrides.
 //
-//   node check-contrast.mjs [--palette overrides.json] [--svg rendered-dir]
+//   node check-contrast.mjs [--palette github|overrides.json] [--svg rendered-dir]
 //
 // --svg reads the faded card opacities from rendered SVGs instead of the
 // defaults. Exits 1 when a required pair fails. Pairs that appear only in change
@@ -17,18 +17,47 @@ import { pathToFileURL } from "node:url";
 import { paletteFor } from "@coldtea/pr-lens-renderer";
 
 const THEMES = ["light", "dark"];
-// Keys whose default colour is unique in the SVG (or targeted by element class),
-// so a substitution cannot repaint something else.
-const OVERRIDABLE = ["foreground", "muted", "edge", "lifeline"];
+// Keys replaced everywhere: their default colour must be unique in the SVG.
+const GLOBAL_KEYS = ["foreground", "muted", "edge"];
+// Keys applied by element class, so they never repaint anything else.
+// [key, class token (or exact class with "="), attribute]
+const CLASS_ROLES = [
+  ["title", "ntitle", "fill"],
+  ["subtitle", "nsub", "fill"],
+  ["label", "=ltext", "fill"],
+  ["laneLabel", "lanelabel", "fill"],
+  ["icon", "glyph", "fill"],
+  ["icon", "glyph-stroke", "stroke"],
+  ["lifeline", "lifeline", "stroke"],
+];
+const ROLE_KEYS = ["title", "subtitle", "label", "laneLabel", "badge", "icon", "lifeline"];
+const OVERRIDABLE = [...GLOBAL_KEYS, ...ROLE_KEYS];
+// Built-in palettes for --palette <name>. "github" uses the syntax colours of the VS Code
+// themes GitHub Light Default and GitHub Dark Default (primer/github-vscode-theme,
+// @primer/primitives 7.10.0): function purple titles, constant blue subtitles, string
+// labels, keyword red lanes and badges, variable orange icons, link blue edges, comment
+// grey lifelines. Light titles and both badges are one step stronger than the theme so
+// they pass on faded cards and chips.
+export const PRESETS = {
+  github: {
+    light: {
+      title: "#6639ba", subtitle: "#0550ae", label: "#0a3069", laneLabel: "#cf222e",
+      badge: "#a40e26", icon: "#953800", edge: "#0969da", lifeline: "#6e7781",
+    },
+    dark: {
+      title: "#d2a8ff", subtitle: "#79c0ff", label: "#a5d6ff", laneLabel: "#ff7b72",
+      badge: "#ffa198", icon: "#ffa657", edge: "#58a6ff", lifeline: "#8b949e",
+    },
+  },
+};
 // Sequence participants outside the flow ("context") and removed nodes in
 // change diagrams ("ghost") are drawn faded, text included.
 const DEFAULT_OPACITY = { context: 0.82, ghost: 0.55 };
 
-export async function loadOverrides(file) {
-  const raw = JSON.parse(await readFile(file, "utf8"));
+function validate(raw, source) {
   const overrides = {};
   for (const [theme, values] of Object.entries(raw)) {
-    if (!THEMES.includes(theme)) throw new Error(`Unknown theme "${theme}" in ${file}; use light or dark.`);
+    if (!THEMES.includes(theme)) throw new Error(`Unknown theme "${theme}" in ${source}; use light or dark.`);
     for (const [key, colour] of Object.entries(values)) {
       if (!OVERRIDABLE.includes(key)) {
         throw new Error(`Cannot override "${key}"; supported keys: ${OVERRIDABLE.join(", ")}.`);
@@ -40,19 +69,50 @@ export async function loadOverrides(file) {
   return overrides;
 }
 
+// Accepts a preset name or a JSON file; a file may extend a preset with "extends".
+export async function loadOverrides(nameOrFile) {
+  if (Object.hasOwn(PRESETS, nameOrFile)) return validate(PRESETS[nameOrFile], nameOrFile);
+  const { extends: preset, ...raw } = JSON.parse(await readFile(nameOrFile, "utf8"));
+  if (preset !== undefined && !Object.hasOwn(PRESETS, preset)) {
+    throw new Error(`Unknown preset "${preset}" in ${nameOrFile}; available: ${Object.keys(PRESETS).join(", ")}.`);
+  }
+  const base = preset ? PRESETS[preset] : {};
+  const merged = {};
+  for (const theme of new Set([...Object.keys(base), ...Object.keys(raw)])) {
+    merged[theme] = { ...base[theme], ...raw[theme] };
+  }
+  return validate(merged, nameOrFile);
+}
+
+const recolourClass = (svg, className, attribute, colour) => {
+  const classPattern = className.startsWith("=")
+    ? `class="${className.slice(1)}"`
+    : `class="(?:[^"]* )?${className}(?: [^"]*)?"`;
+  return svg.replace(
+    new RegExp(`(<[a-z]+ [^>]*?${classPattern}[^>]*?\\b${attribute}=")#[0-9a-fA-F]{6}(")`, "g"),
+    `$1${colour}$2`,
+  );
+};
+
 export function applyOverrides(svg, theme, overrides) {
   const base = paletteFor(theme);
   const values = overrides?.[theme] ?? {};
   let out = svg;
-  for (const [key, colour] of Object.entries(values)) {
-    if (key === "lifeline") continue;
+  // Global keys first, so class roles win even if they reuse a replaced colour.
+  for (const key of GLOBAL_KEYS) {
+    if (!values[key]) continue;
     const clash = Object.entries(base).find(([other, value]) => other !== key && value === base[key]);
     if (clash) throw new Error(`${theme}.${key} shares ${base[key]} with ${clash[0]}; it cannot be overridden safely.`);
-    out = out.replaceAll(`"${base[key]}"`, `"${colour}"`);
+    out = out.replaceAll(`"${base[key]}"`, `"${values[key]}"`);
   }
-  // Lifelines can share a colour with card borders, so only lifeline elements change.
-  if (values.lifeline) {
-    out = out.replace(/(<line class="lifeline"[^>]*?stroke=")[^"]+(")/g, `$1${values.lifeline}$2`);
+  for (const [key, className, attribute] of CLASS_ROLES) {
+    if (values[key]) out = recolourClass(out, className, attribute, values[key]);
+  }
+  if (values.badge) {
+    out = out.replace(
+      /(<g class="bdg bdg-neutral"><rect [^>]*\/><text [^>]*?\bfill=")#[0-9a-fA-F]{6}(")/g,
+      `$1${values.badge}$2`,
+    );
   }
   return out;
 }
@@ -82,25 +142,39 @@ export const contrast = (a, b) => {
 export function contrastPairs(palette, opacity = DEFAULT_OPACITY) {
   const bg = parse(palette.background);
   const card = over(palette.card, bg);
+  const chip = over(palette.chip, card);
   const lane = over(palette.lane, bg);
-  const fg = parse(palette.foreground);
-  const muted = parse(palette.muted);
-  const faded = fade(card, bg, opacity.context);
-  const ghost = fade(card, bg, opacity.ghost);
+  const pill = over(palette.pill, bg);
+  const role = (key, fallback) => over(palette[key] ?? palette[fallback], bg);
+  const title = role("title", "foreground");
+  const subtitle = role("subtitle", "muted");
+  const label = role("label", "muted");
+  const laneLabel = role("laneLabel", "muted");
+  const badgeFill = over(palette.neutralFill, card);
+  const badge = role("badge", "muted");
+  const icon = role("icon", "muted");
+  const faded = (colour) => fade(colour, bg, opacity.context);
+  const ghosted = (colour) => fade(colour, bg, opacity.ghost);
+  const c = `(${opacity.context})`;
+  const g = `(${opacity.ghost})`;
   return [
-    ["text", "foreground on card", fg, card, 4.5],
-    ["text", "muted on card", muted, card, 4.5],
-    ["text", "muted on chip", muted, over(palette.chip, card), 4.5],
-    ["text", "muted on edge-label pill", muted, over(palette.pill, bg), 4.5],
-    ["text", "muted on lane", muted, lane, 4.5],
-    ["text", "muted on background", muted, bg, 4.5],
-    ["text", `foreground on faded context card (${opacity.context})`, fade(fg, bg, opacity.context), faded, 4.5],
-    ["text", `muted on faded context card (${opacity.context})`, fade(muted, bg, opacity.context), faded, 4.5],
+    ["text", "node title on card", title, card, 4.5],
+    ["text", `node title on faded context card ${c}`, faded(title), faded(card), 4.5],
+    ["text", "node subtitle on card", subtitle, card, 4.5],
+    ["text", `node subtitle on faded context card ${c}`, faded(subtitle), faded(card), 4.5],
+    ["text", "edge label on its pill", label, pill, 4.5],
+    ["text", "lane label on lane", laneLabel, lane, 4.5],
+    ["text", "lane label on background", laneLabel, bg, 4.5],
+    ["text", "badge text on its fill", badge, badgeFill, 4.5],
+    ["text", `badge text on faded context card ${c}`, faded(badge), faded(badgeFill), 4.5],
+    ["text", "other muted text on background", parse(palette.muted), bg, 4.5],
     ["diff", "added badge text on its fill", parse(palette.addedText), over(palette.addedFill, card), 4.5],
     ["diff", "changed badge text on its fill", parse(palette.modifiedText), over(palette.modifiedFill, card), 4.5],
     ["diff", "removed badge text on its fill", parse(palette.removedText), over(palette.removedFill, card), 4.5],
-    ["diff", `foreground on removed (ghost) card (${opacity.ghost})`, fade(fg, bg, opacity.ghost), ghost, 4.5],
-    ["diff", `muted on removed (ghost) card (${opacity.ghost})`, fade(muted, bg, opacity.ghost), ghost, 4.5],
+    ["diff", `node title on removed (ghost) card ${g}`, ghosted(title), ghosted(card), 4.5],
+    ["diff", `node subtitle on removed (ghost) card ${g}`, ghosted(subtitle), ghosted(card), 4.5],
+    ["graphic", "node icon on chip", icon, chip, 3],
+    ["graphic", `node icon on faded context chip ${c}`, faded(icon), faded(chip), 3],
     ["graphic", "edge on background", parse(palette.edge), bg, 3],
     ["graphic", "edge on lane", parse(palette.edge), lane, 3],
     ["graphic", "lifeline on background", over(palette.lifeline, bg), bg, 3],

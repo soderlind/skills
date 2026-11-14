@@ -483,7 +483,8 @@ are checked against the code. Its
 [rendering helper](skills/illustrate-design/scripts/render.mjs) validates the graph
 and produces light/dark SVGs; the workflow converts PNG companions locally. The
 [contrast checker](skills/illustrate-design/scripts/check-contrast.mjs) measures WCAG 2.2
-contrast in both themes. With your approval, palette overrides fix colours that fail.
+contrast in both themes. With your approval, `--palette github` colours the diagrams with
+GitHub Light/Dark Default syntax colours, or a palette file overrides individual roles.
 
 Example prompt:
 
