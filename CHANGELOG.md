@@ -8,6 +8,16 @@ version in their frontmatter, so entries below are grouped by date.
 
 ## [Unreleased]
 
+### Changed
+
+- illustrate-design: contrast is measured, not judged by eye. The new
+  `scripts/check-contrast.mjs` checks WCAG 2.2 ratios in both themes, including text on
+  faded cards; failures block completion. `render.mjs --palette` applies palette overrides,
+  only with the user's approval. Architecture documents such as `document-architecture`
+  output are now accepted evidence, with claims checked against the code. Added notes on
+  renderer limits: notes are not drawn, node selections drop outside edges, and long
+  subtitles are cut off (skill 1.1.0).
+
 ### Added
 
 - acceptance-test: new skill that learns an app from its code and docs,

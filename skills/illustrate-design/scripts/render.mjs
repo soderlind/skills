@@ -7,9 +7,23 @@ import { safeParseGraphDoc } from "@coldtea/pr-lens-schema";
 import { flattenViews, render, renderAssetId } from "@coldtea/pr-lens-renderer";
 
 const args = process.argv.slice(2);
-if (args.length !== 2) {
-  console.error("Usage: node render.mjs <graph.json> <output-directory>");
+const paletteIndex = args.indexOf("--palette");
+let palettePath;
+if (paletteIndex !== -1) {
+  palettePath = args[paletteIndex + 1];
+  args.splice(paletteIndex, 2);
+}
+if (args.length !== 2 || (paletteIndex !== -1 && !palettePath)) {
+  console.error("Usage: node render.mjs <graph.json> <output-directory> [--palette overrides.json]");
   process.exit(1);
+}
+
+// Palette overrides are opt-in and need check-contrast.mjs next to this file.
+let recolour = (svg) => svg;
+if (palettePath) {
+  const { loadOverrides, applyOverrides } = await import("./check-contrast.mjs");
+  const overrides = await loadOverrides(palettePath);
+  recolour = (svg, theme) => applyOverrides(svg, theme, overrides);
 }
 
 const [graphPath, outputDirectory] = args;
@@ -45,7 +59,7 @@ for (const view of supportedViews) {
     }
     filenames.add(normalizedName);
     const { svg, width, height } = render(parsed.value, { lens: view.lens, view: view.id, theme });
-    outputs.push({ filename, svg, width, height });
+    outputs.push({ filename, svg: recolour(svg, theme), width, height });
   }
 }
 

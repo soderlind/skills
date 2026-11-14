@@ -477,10 +477,13 @@ npx skills add soderlind/skills --skill illustrate-design -g
 ```
 
 Use this to turn requirements, ADRs, code, and other design evidence into PR Lens
-architecture, sequence, and optional decision-dependency diagrams. A
-`grill-with-docs` interview can provide evidence but is not required. Its
+architecture, sequence, and optional decision-dependency diagrams. Possible evidence includes a
+`grill-with-docs` interview (not required) and a `document-architecture` document, whose claims
+are checked against the code. Its
 [rendering helper](skills/illustrate-design/scripts/render.mjs) validates the graph
-and produces light/dark SVGs; the workflow converts PNG companions locally.
+and produces light/dark SVGs; the workflow converts PNG companions locally. The
+[contrast checker](skills/illustrate-design/scripts/check-contrast.mjs) measures WCAG 2.2
+contrast in both themes. With your approval, palette overrides fix colours that fail.
 
 Example prompt:
 
@@ -492,7 +495,7 @@ The workflow requires truthful repository provenance, compatible Node.js and PR
 Lens packages, a local SVG-to-PNG converter, and visual inspection. It labels
 unfinished designs as drafts and does not modify the source glossary, ADRs, or
 application code. Run `node --test <repository>/skills/illustrate-design/scripts/test_render.mjs`
-from a Node workspace with both PR Lens packages installed to test the helper.
+from a Node workspace with both PR Lens packages installed to test the helpers.
 
 ### pre-launch-security-audit
 

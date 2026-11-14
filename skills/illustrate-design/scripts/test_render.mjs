@@ -12,7 +12,10 @@ const examplesPath = requireFromWorkspace.resolve("@coldtea/pr-lens-schema/examp
 const { minimalGraph, postmarkRefactorGraph } = await import(pathToFileURL(examplesPath).href);
 const root = await mkdtemp(path.join(workspace, ".illustrate-design-test-"));
 const renderer = path.join(root, "render.mjs");
+const contrastChecker = path.join(root, "check-contrast.mjs");
 await copyFile(new URL("./render.mjs", import.meta.url), renderer);
+await copyFile(new URL("./check-contrast.mjs", import.meta.url), contrastChecker);
+const { paletteFor } = await import(pathToFileURL(requireFromWorkspace.resolve("@coldtea/pr-lens-renderer")).href);
 
 after(async () => {
   await rm(root, { recursive: true, force: true });
@@ -26,8 +29,8 @@ async function fixture(name, graph) {
   return { graphPath, outputDirectory: path.join(directory, "out") };
 }
 
-function run({ graphPath, outputDirectory }) {
-  const result = spawnSync(process.execPath, [renderer, graphPath, outputDirectory], {
+function run({ graphPath, outputDirectory }, extra = []) {
+  const result = spawnSync(process.execPath, [renderer, graphPath, outputDirectory, ...extra], {
     cwd: workspace,
     encoding: "utf8",
   });
@@ -177,4 +180,58 @@ test("refuses to overwrite existing output", async () => {
   assert.match(result.stderr, /refusing to overwrite/i);
   assert.equal(await readFile(existing, "utf8"), "keep this file");
   assert.deepEqual(await readdir(input.outputDirectory), ["overview-light.svg"]);
+});
+
+const PASSING_OVERRIDES = {
+  light: { muted: "#4d5560", edge: "#7d8590", lifeline: "#848d97" },
+  dark: { muted: "#a0a8b1", lifeline: "#5c646e" },
+};
+
+async function writePalette(name, overrides) {
+  const file = path.join(root, `${name}.json`);
+  await writeFile(file, JSON.stringify(overrides));
+  return file;
+}
+
+function checkContrast(extra = []) {
+  const result = spawnSync(process.execPath, [contrastChecker, ...extra], { cwd: workspace, encoding: "utf8" });
+  if (result.error) throw result.error;
+  return result;
+}
+
+test("contrast check passes the reference overrides and fails a low-contrast colour", async () => {
+  const passing = checkContrast(["--palette", await writePalette("passing", PASSING_OVERRIDES)]);
+  assert.equal(passing.status, 0, passing.stdout + passing.stderr);
+  assert.doesNotMatch(passing.stdout, /FAIL/);
+
+  const failing = checkContrast([
+    "--palette",
+    await writePalette("failing", { ...PASSING_OVERRIDES, light: { ...PASSING_OVERRIDES.light, muted: "#c0c4c8" } }),
+  ]);
+  assert.equal(failing.status, 1);
+  assert.match(failing.stdout, /FAIL .*text: muted on card/);
+});
+
+test("palette overrides recolour text, edges and lifelines but not card borders", async () => {
+  const input = await fixture("palette", postmarkRefactorGraph);
+  const result = run(input, ["--palette", await writePalette("render", PASSING_OVERRIDES)]);
+  assert.equal(result.status, 0, result.stderr);
+
+  const light = paletteFor("light");
+  const flow = await readFile(path.join(input.outputDirectory, "send-pipeline-view-light.svg"), "utf8");
+  assert.ok(!flow.includes(`"${light.muted}"`) && flow.includes('"#4d5560"'));
+  assert.match(flow, /<line class="lifeline"[^>]*stroke="#848d97"/);
+  assert.doesNotMatch(flow, /<line class="lifeline"[^>]*stroke="#d1d9e0"/);
+  assert.ok(flow.includes(`"${light.cardBorder}"`), "card borders keep their colour");
+
+  const contrastFromSvg = checkContrast(["--palette", await writePalette("svg", PASSING_OVERRIDES), "--svg", input.outputDirectory]);
+  assert.equal(contrastFromSvg.status, 0, contrastFromSvg.stdout);
+});
+
+test("rejects an unsupported palette key before writing files", async () => {
+  const input = await fixture("bad-palette", postmarkRefactorGraph);
+  const result = run(input, ["--palette", await writePalette("bad", { light: { cardBorder: "#000000" } })]);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /cannot override "cardBorder"/i);
+  await assert.rejects(readdir(input.outputDirectory), { code: "ENOENT" });
 });
